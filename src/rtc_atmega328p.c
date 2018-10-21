@@ -1,7 +1,8 @@
 #include <stdint.h>
 #include <avr/interrupt.h>
 
-#define CLOCK_DIVISOR      8000
+#include "rtc_atmega328p.h"
+
 
 volatile uint32_t		_realTimeClock = 0L;
 
