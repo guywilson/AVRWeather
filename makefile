@@ -65,7 +65,7 @@ SFLAGS=-C --mcu=$(DEVICE)
 SCHEDOBJ=$(BUILD)/scheduler.o
 
 # Object files
-OBJFILES=$(SCHEDOBJ) $(BUILD)/led_utils.o $(BUILD)/heartbeat.o $(BUILD)/adctask.o $(BUILD)/anemometer.o $(BUILD)/rainguage.o $(BUILD)/rtc_atmega328p.o $(BUILD)/serial_atmega328p.o $(BUILD)/adc_atmega328p.o $(BUILD)/spi_atmega328p.o $(BUILD)/error_atmega328p.o $(BUILD)/txtask.o $(BUILD)/main.o
+OBJFILES=$(SCHEDOBJ) $(BUILD)/led_utils.o $(BUILD)/heartbeat.o $(BUILD)/adctask.o $(BUILD)/anemometer.o $(BUILD)/rainguage.o $(BUILD)/rtc_atmega328p.o $(BUILD)/serial_atmega328p.o $(BUILD)/adc_atmega328p.o $(BUILD)/extint_atmega328p.o $(BUILD)/error_atmega328p.o $(BUILD)/txtask.o $(BUILD)/main.o
 
 # Target
 all: $(TARGET)
@@ -101,11 +101,11 @@ $(BUILD)/rainguage.o: $(SRC)/rainguage.c $(SRC)/rainguage.h $(SRC)/rainfall.h $(
 $(BUILD)/rtc_atmega328p.o: $(SRC)/rtc_atmega328p.c $(SRC)/rtc_atmega328p.h
 	$(CC) $(CFLAGS) -o $(BUILD)/rtc_atmega328p.o $(SRC)/rtc_atmega328p.c
 
+$(BUILD)/extint_atmega328p.o: $(SRC)/extint_atmega328p.c $(SRC)/extint_atmega328p.h $(SRC)/rtc_atmega328p.h
+	$(CC) $(CFLAGS) -o $(BUILD)/extint_atmega328p.o $(SRC)/extint_atmega328p.c
+
 $(BUILD)/adc_atmega328p.o: $(SRC)/adc_atmega328p.c $(SRC)/adc_atmega328p.h $(SRC)/scheduler.h $(SRC)/adctask.h $(SRC)/taskdef.h
 	$(CC) $(CFLAGS) -o $(BUILD)/adc_atmega328p.o $(SRC)/adc_atmega328p.c
-
-$(BUILD)/spi_atmega328p.o: $(SRC)/spi_atmega328p.c $(SRC)/spi_atmega328p.h $(SRC)/scheduler.h $(SRC)/taskdef.h
-	$(CC) $(CFLAGS) -o $(BUILD)/spi_atmega328p.o $(SRC)/spi_atmega328p.c
 
 $(BUILD)/serial_atmega328p.o: $(SRC)/serial_atmega328p.c $(SRC)/serial_atmega328p.h $(SRC)/rxtxmsgdef.h $(SRC)/scheduler.h $(SRC)/taskdef.h
 	$(CC) $(CFLAGS) -o $(BUILD)/serial_atmega328p.o $(SRC)/serial_atmega328p.c
