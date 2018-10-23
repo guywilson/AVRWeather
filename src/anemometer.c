@@ -4,7 +4,7 @@
 #include <avr/pgmspace.h>
 
 #include "scheduler.h"
-#include "spi_atmega328p.h"
+#include "extint_atmega328p.h"
 #include "kphlookup.h"
 #include "anemometer.h"
 #include "taskdef.h"
@@ -24,7 +24,7 @@ void anemometerTask(PTASKPARM p)
 	** wind speed. This value is accumulated to calculate the
 	** average every 64 seconds...
 	*/
-	revolutionsPerSecond = getCounterValue(ANEMOMETER_CHANNEL);
+	revolutionsPerSecond = getExtIntPin0Count();
 
 	rpsBuffer[i++] = revolutionsPerSecond;
 

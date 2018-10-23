@@ -5,6 +5,14 @@
 
 
 volatile uint32_t		_realTimeClock = 0L;
+volatile uint16_t		_tickCount = 0;
+
+void (* _tickTask)();
+
+void nullTick()
+{
+	// Do nothing...
+}
 
 void setupRTC()
 {
@@ -15,12 +23,10 @@ void setupRTC()
     TCNT1  = 0;
     
     /*
-    ** Set timer count for 1KHz, e.g 1ms...
-    **
     ** Timer value = (clock_speed / (interrupt_freq * pre-scaler)) - 1
     ** Timer value = (16,000,000 / (1000 * 8)) - 1
     */
-    OCR1A = (F_CPU / CLOCK_DIVISOR) - 1;
+    OCR1A = (F_CPU / __CLOCK_DIVISOR) - 1;
 
     // turn on CTC mode
     TCCR1B |= (1 << WGM12);
@@ -30,6 +36,9 @@ void setupRTC()
     
     // enable timer compare interrupt
     TIMSK1 |= (1 << OCIE1A);
+
+    // Register the nullTick() function...
+    registerTickTask(&nullTick);
 }
 
 uint32_t getCurrentTime()
@@ -37,12 +46,31 @@ uint32_t getCurrentTime()
 	return _realTimeClock;
 }
 
+void registerTickTask(void (* tickTask)())
+{
+	_tickTask = tickTask;
+}
+
 ISR(TIMER1_COMPA_vect, ISR_BLOCK)
 {
-    /*
-    ** This interrupt fires every 1 ms,
-	** it is used to drive the real time clock
-	** for the scheduler...
-    */
-	_realTimeClock++;
+	_tickCount++;
+
+	if (_tickCount == RTC_INTERRUPT_PRESCALER) {
+	    /*
+	    ** The RTC is incremented every 1 ms,
+		** it is used to drive the real time clock
+		** for the scheduler...
+	    */
+		_realTimeClock++;
+
+		_tickCount = 0;
+	}
+
+	/*
+	 * Run the tick task, defaults to the nullTick() function.
+	 *
+	 * This must be a very fast operation, as it is outside of
+	 * the scheduler's control. Also, there can be only 1 tick task...
+	 */
+	_tickTask();
 }

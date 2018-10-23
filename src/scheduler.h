@@ -28,6 +28,6 @@ void		scheduleTask(uint16_t taskID, timer_t time, PTASKPARM p);
 void		rescheduleTask(uint16_t taskID, PTASKPARM p);
 void		unscheduleTask(uint16_t taskID);
 
-void		startScheduler();
+void		schedule();
 
 #endif

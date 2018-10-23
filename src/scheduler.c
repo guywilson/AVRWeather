@@ -47,7 +47,7 @@ typedef TASKDEF *	PTASKDEF;
 
 extern volatile timer_t _realTimeClock;		// External ref to the RTC
 
-TASKDEF		taskDefs[MAX_TASKS];			// Array of tasks for ther scheduler
+TASKDEF		taskDefs[MAX_TASKS];			// Array of tasks for the scheduler
 int			taskCount = 0;					// Number of tasks registered
 
 /******************************************************************************
@@ -341,7 +341,7 @@ void unscheduleTask(uint16_t taskID)
 ** Returns:		it doesn't 
 **
 ******************************************************************************/
-void startScheduler()
+void schedule()
 {
 	int			i = 0;
 	PTASKDEF	td = NULL;
