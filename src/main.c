@@ -14,7 +14,6 @@
 #include "led_utils.h"
 #include "rtc_atmega328p.h"
 #include "adc_atmega328p.h"
-#include "spi_atmega328p.h"
 #include "serial_atmega328p.h"
 #include "extint_atmega328p.h"
 #include "error.h"

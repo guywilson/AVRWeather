@@ -331,7 +331,7 @@ void unscheduleTask(uint16_t taskID)
 
 /******************************************************************************
 **
-** Name: startScheduler()
+** Name: schedule()
 **
 ** Description: The main scheduler loop, this will loop forever waiting for 
 ** tasks to be scheduled. This must be the last function called from main().

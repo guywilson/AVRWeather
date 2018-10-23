@@ -44,7 +44,7 @@ OBJDUMP=avr-objdump
 SIZETOOL=avr-size
 
 # Upload tool
-UPLOADTOOL=upload.sh
+UPLOADTOOL=./upload.sh
 
 # C compiler flags
 CFLAGS=-c -Os -Wall -ffunction-sections -fdata-sections -mmcu=$(DEVICE) -DF_CPU=16000000L -DARDUINO=10804 -DARDUINO_AVR_UNO -DARDUINO_ARCH_AVR -DARCH_SIZE=$(ARCHSIZE)
