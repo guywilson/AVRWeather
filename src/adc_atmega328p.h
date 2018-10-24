@@ -9,8 +9,11 @@
 #define ADC_CHANNEL3				0x03
 #define ADC_CHANNEL4				0x04
 #define ADC_CHANNEL5				0x05
+
+#ifdef ARDUINO_AVR_NANO
 #define ADC_CHANNEL6				0x06
 #define ADC_CHANNEL7				0x07
+#endif
 
 #define ADC_CHANNEL_TEMP			0x08
 
@@ -23,15 +26,18 @@
 #define ADC_PRESCALER_DIV64			0x06
 #define ADC_PRESCALER_DIV128		0x07
 
+#ifdef ARDUINO_AVR_NANO
 #define ADC_MAX_CHANNEL_NUM			7
-
+#else
+#define ADC_MAX_CHANNEL_NUM			5
+#endif
 /*
  * Define which sensor is attached to which channel
  */
-#define ADC_BAROMETER_CHANNEL			ADC_CHANNEL0
-#define ADC_HUMIDITY_CHANNEL			ADC_CHANNEL1
-#define ADC_THERMOPOS_CHANNEL			ADC_CHANNEL5
-#define ADC_THERMONEG_CHANNEL			ADC_CHANNEL6
+#define ADC_HUMIDITY_CHANNEL			ADC_CHANNEL0
+#define ADC_BAROMETER_CHANNEL			ADC_CHANNEL1
+#define ADC_THERMOPOS_CHANNEL			ADC_CHANNEL2
+#define ADC_THERMONEG_CHANNEL			ADC_CHANNEL3
 
 
 void setupADC(void);

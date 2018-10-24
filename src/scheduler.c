@@ -196,7 +196,7 @@ void registerTask(uint16_t taskID, void (* run)(PTASKPARM))
 **
 ** Name: deregisterTask()
 **
-** Description: Deregisters a task with the scheduler, freeing up the task
+** Description: De-registers a task with the scheduler, freeing up the task
 ** definition.
 **
 ** Parameters:	uint16_t	taskID		The unique ID for the task
@@ -302,7 +302,7 @@ void rescheduleTask(uint16_t taskID, PTASKPARM p)
 **
 ** Name: unscheduleTask()
 **
-** Description: Unschedules a task that has previously been scheduled, e.g. this
+** Description: Un-schedules a task that has previously been scheduled, e.g. this
 ** will cancel the scheduled run.
 **
 ** Parameters:	
