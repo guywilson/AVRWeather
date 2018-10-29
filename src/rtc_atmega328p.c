@@ -3,11 +3,12 @@
 
 #include "rtc_atmega328p.h"
 
+volatile uint32_t _realTimeClock;
 
-volatile uint32_t		_realTimeClock = 0L;
-volatile uint16_t		_tickCount = 0;
 
-void (* _tickTask)();
+static volatile uint16_t	_tickCount = 0;
+
+static void (* _tickTask)();
 
 void nullTick()
 {
@@ -39,6 +40,17 @@ void setupRTC()
 
     // Register the nullTick() function...
     registerTickTask(&nullTick);
+
+    _realTimeClock = 0L;
+
+#ifdef TRACK_CPU_PCT
+	/*
+	** Set Port B - Pin 5 as output
+	** On the Arduino Nano/Uno, this is connected to the
+	** onboard LED...
+	*/
+    DDRB |= _BV(DDB5);
+#endif
 }
 
 uint32_t getCurrentTime()
@@ -66,6 +78,13 @@ ISR(TIMER1_COMPA_vect, ISR_BLOCK)
 		_tickCount = 0;
 	}
 
+#ifdef TRACK_CPU_PCT
+	/*
+	 * Turn on
+	 */
+	PORTB |= _BV(PORTB5);
+#endif
+
 	/*
 	 * Run the tick task, defaults to the nullTick() function.
 	 *
@@ -73,4 +92,11 @@ ISR(TIMER1_COMPA_vect, ISR_BLOCK)
 	 * the scheduler's control. Also, there can be only 1 tick task...
 	 */
 	_tickTask();
+
+#ifdef TRACK_CPU_PCT
+	/*
+	 * Turn off
+	 */
+	PORTB &= ~(_BV(PORTB5));
+#endif
 }

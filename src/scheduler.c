@@ -20,7 +20,6 @@
 #include "error.h"
 
 #define CHECK_TIMER_OVERFLOW
-//#define TRACK_CPU_PCT
 
 /******************************************************************************
 **
@@ -44,8 +43,6 @@ typedef struct
 TASKDEF;
 
 typedef TASKDEF *	PTASKDEF;
-
-extern volatile timer_t _realTimeClock;		// External ref to the RTC
 
 TASKDEF		taskDefs[MAX_TASKS];			// Array of tasks for the scheduler
 int			taskCount = 0;					// Number of tasks registered
@@ -143,14 +140,6 @@ void initScheduler()
 		td->pParameter		= NULL;
 		td->run				= &_nullTask;
 	}
-#ifdef TRACK_CPU_PCT
-	/*
-	** Set Port B - Pin 5 as output
-	** On the Arduino Nano, this is connected to the
-	** onboard LED...
-	*/
-    DDRB |= _BV(DDB5);
-#endif
 }
 
 /******************************************************************************

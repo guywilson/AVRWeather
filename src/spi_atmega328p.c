@@ -45,10 +45,10 @@ void SpiTask(PTASKPARM p)
 	SPDR = lo_hi | channel;
 	
 	if (lo_hi == REQ_LOW_BYTE) {
-		scheduleTask(TASK_SPI, 5, NULL);
+		scheduleTask(TASK_SPI, rtc_val_ms(5), NULL);
 	}
 	else {
-		scheduleTask(TASK_SPI, 495, NULL);
+		scheduleTask(TASK_SPI, rtc_val_ms(495), NULL);
 	}
 }
 

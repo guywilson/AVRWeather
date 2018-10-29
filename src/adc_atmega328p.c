@@ -1,6 +1,7 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
+#include "rtc_atmega328p.h"
 #include "scheduler.h"
 #include "adctask.h"
 #include "taskdef.h"
@@ -56,5 +57,5 @@ ISR(ADC_vect, ISR_BLOCK)
 	** This will fill the moving average buffer for each 
 	** channel every second...
 	*/
-	scheduleTask(TASK_ADC, 15, (PTASKPARM)&adcr);
+	scheduleTask(TASK_ADC, rtc_val_ms(15), (PTASKPARM)&adcr);
 }
