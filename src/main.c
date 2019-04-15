@@ -22,42 +22,44 @@ void main(void) __attribute__ ((noreturn));
 
 void setup(void)
 {
-	//stop interrupts
+	setupLEDPin();
+	setupRTC();
+	setupSerial();
+	setupADC();
+	setupExtIntInputs();
+}
+
+#pragma GCC diagnostic ignored  "-Wmain"
+void main(void)
+{
+	/*
+	 * Disable interrupts...
+	 */
 	cli();
+
+	setup();
+
+	/*
+	 * Register RTC tick task...
+	 */
+	registerTickTask(&readExtIntTask);
+
+	/*
+	 * Enable interrupts...
+	 */
+    sei();
 	
 	initScheduler();
-	
+
 	registerTask(TASK_HEARTBEAT, &HeartbeatTask);
 	registerTask(TASK_ADC, &ADCTask);
 	registerTask(TASK_ANEMOMETER, &anemometerTask);
 	registerTask(TASK_RAINGUAGE, &rainGuageTask);
 	registerTask(TASK_TX, &TxTask);
 
-	registerTickTask(&readExtIntTask);
-
-	setupLEDPin();
-	setupRTC();
-	setupSerial();
-	setupADC();
-	setupExtIntInputs();
-
-	//enable interrupts
-    sei();
-	
-    /*
-     * Trigger the first conversion...
-     */
-	triggerADC();
-}
-
-#pragma GCC diagnostic ignored  "-Wmain"
-void main(void)
-{
-	setup();
-	
 	scheduleTask(
 			TASK_HEARTBEAT,
-			rtc_val_ms(2950),
+			rtc_val_ms(950),
 			NULL);
 
 	scheduleTask(
@@ -74,6 +76,11 @@ void main(void)
 			TASK_TX,
 			rtc_val_sec(5),
 			NULL);
+
+    /*
+     * Trigger the first ADC conversion...
+     */
+	triggerADC();
 
 	/*
 	** Start the scheduler...

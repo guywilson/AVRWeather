@@ -25,8 +25,8 @@ BUILD=build
 SRC=src
 
 # Port we use to upload the tearget to the device
-UPLOADPORT=/dev/cu.wchusbserial1410
-#UPLOADPORT=/dev/cu.usbmodem1411
+#UPLOADPORT=/dev/cu.wchusbserial1410
+UPLOADPORT=/dev/cu.usbmodem1411
 
 # C compiler
 CC=avr-gcc

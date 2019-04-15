@@ -32,6 +32,8 @@ void ADCTask(PTASKPARM p)
 #ifdef MOVING_AVG_ENABLE
 	uint8_t				ptr;
 	uint8_t				oldestPtr;
+	uint32_t			avgSum;
+	uint8_t				i = 0;
 #endif
 
 	c	= r->channel;
@@ -49,18 +51,35 @@ void ADCTask(PTASKPARM p)
 	** Recommended that the first conversion result for each channel
 	** is ignored as it is likely to be inaccurate...
 	*/
-	if (conversionCount < ADC_MAX_CHANNEL_NUM) {
+	if (conversionCount < NUM_ADC_CHANNELS) {
 		conversionCount++;
 	}
 	else {
 #ifdef MOVING_AVG_ENABLE
-		/*
-		 * Calculate the moving average...
-		 */
-		MAV[c] = MAV[c] + (r->result >> ADC_RESULT_AVG_SHIFT) - (adcResults[c][oldestPtr] >> ADC_RESULT_AVG_SHIFT);
-
 		adcResults[c][ptr] = r->result;
-		
+
+		/*
+		 * If the results buffer is full, calculate
+		 * the first average...
+		 */
+		if (conversionCount = ADC_MIN_AVG_CONVERSION_COUNT) {
+			for (i = 0;i < ADC_RESULT_ARRAY_SIZE;i++) {
+				avgSum += adcResults[c][i];
+			}
+
+			MAV[c] = (uint16_t)((avgSum >> ADC_RESULT_AVG_SHIFT) & 0xFFFF);
+		}
+		/*
+		 * Calculate the moving average, the most efficient way to do this
+		 * is to add the latest reading to the previous moving average and
+		 * subtract the oldest reading:
+		 *
+		 * MAV[n+1] = MAV[n] + result[new] - result[oldest]
+		 */
+		else if (conversionCount > ADC_MIN_AVG_CONVERSION_COUNT) {
+			MAV[c] = MAV[c] + r->result - adcResults[c][oldestPtr];
+		}
+
 		resultPtr[c]++;
 		
 		if (resultPtr[c] == ADC_RESULT_ARRAY_SIZE) {
@@ -116,16 +135,11 @@ int getHumidity(char * pszDest)
 int getTemperature(char * pszDest)
 {
 	PGM_P			temperature;
-	int16_t			avgPositiveTempADC;
-	int16_t			avgNegativeTempADC;
-	int16_t			t;
+	int16_t			avgTempADC;
 	
-	avgPositiveTempADC = getADCAverage(ADC_THERMOPOS_CHANNEL);
-	avgNegativeTempADC = getADCAverage(ADC_THERMONEG_CHANNEL);
+	avgTempADC = getADCAverage(ADC_THERMO_CHANNEL);
 	
-	t = (avgPositiveTempADC - avgNegativeTempADC) + TEMP_INDEX_OFFSET;
-	
-	memcpy_P(&temperature, &tempLookup[t], sizeof(PGM_P));
+	memcpy_P(&temperature, &tempLookup[avgTempADC], sizeof(PGM_P));
 	strcpy_P(pszDest, temperature);
 	
 	return strlen(pszDest);

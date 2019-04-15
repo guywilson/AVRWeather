@@ -48,7 +48,7 @@ ISR(ADC_vect, ISR_BLOCK)
 	*/
 	ADMUX++;
 	
-	if ((ADMUX & 0x07) == ADC_MAX_CHANNEL_NUM) {
+	if ((ADMUX & 0x07) == NUM_ADC_CHANNELS - 1) {
 		ADMUX &= 0xF8;
 	}
 
