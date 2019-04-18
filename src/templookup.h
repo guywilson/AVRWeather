@@ -5,6 +5,8 @@
 
 #define TEMP_LOOKUP_BUFFER_SIZE			 532
 
+#define ADC_TEMP_OFFSET					 51
+
 /******************************************************************************
 **
 ** From an ADC input linked to an Analogue Devices AD22100 temperature sensor

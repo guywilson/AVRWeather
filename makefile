@@ -11,6 +11,9 @@ PROJNAME=avrw
 # Target device
 DEVICE=atmega328p
 
+# Target board
+BOARD=ARDUINO_AVR_NANO
+
 # Target architecture size
 ARCHSIZE=8
 
@@ -25,8 +28,8 @@ BUILD=build
 SRC=src
 
 # Port we use to upload the tearget to the device
-#UPLOADPORT=/dev/cu.wchusbserial1410
-UPLOADPORT=/dev/cu.usbmodem1411
+UPLOADPORT=/dev/cu.wchusbserial1410
+#UPLOADPORT=/dev/cu.usbmodem1411
 
 # C compiler
 CC=avr-gcc
@@ -47,7 +50,7 @@ SIZETOOL=avr-size
 UPLOADTOOL=./upload.sh
 
 # C compiler flags
-CFLAGS=-c -Os -Wall -ffunction-sections -fdata-sections -mmcu=$(DEVICE) -DF_CPU=16000000L -DARDUINO=10804 -DARDUINO_AVR_UNO -DARDUINO_ARCH_AVR -DARCH_SIZE=$(ARCHSIZE)
+CFLAGS=-c -Os -Wall -ffunction-sections -fdata-sections -mmcu=$(DEVICE) -DF_CPU=16000000L -DARDUINO=10804 -D$(BOARD) -DARDUINO_ARCH_AVR -DARCH_SIZE=$(ARCHSIZE)
 
 # Linker flags
 LFLAGS=-fuse-linker-plugin -Wl,--gc-sections -mmcu=$(DEVICE)

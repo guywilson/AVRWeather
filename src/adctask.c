@@ -14,7 +14,7 @@
 
 //#define MOVING_AVG_ENABLE
 
-uint8_t			conversionCount = 0;
+uint32_t		conversionCount = 0;
 
 #ifdef MOVING_AVG_ENABLE
 uint16_t		adcResults[NUM_ADC_CHANNELS][ADC_RESULT_ARRAY_SIZE];
@@ -32,7 +32,7 @@ void ADCTask(PTASKPARM p)
 #ifdef MOVING_AVG_ENABLE
 	uint8_t				ptr;
 	uint8_t				oldestPtr;
-	uint32_t			avgSum;
+	uint32_t			avgSum = 0L;
 	uint8_t				i = 0;
 #endif
 
@@ -51,10 +51,7 @@ void ADCTask(PTASKPARM p)
 	** Recommended that the first conversion result for each channel
 	** is ignored as it is likely to be inaccurate...
 	*/
-	if (conversionCount < NUM_ADC_CHANNELS) {
-		conversionCount++;
-	}
-	else {
+	if (conversionCount >= NUM_ADC_CHANNELS) {
 #ifdef MOVING_AVG_ENABLE
 		adcResults[c][ptr] = r->result;
 
@@ -62,7 +59,7 @@ void ADCTask(PTASKPARM p)
 		 * If the results buffer is full, calculate
 		 * the first average...
 		 */
-		if (conversionCount = ADC_MIN_AVG_CONVERSION_COUNT) {
+		if (conversionCount == ADC_MIN_AVG_CONVERSION_COUNT) {
 			for (i = 0;i < ADC_RESULT_ARRAY_SIZE;i++) {
 				avgSum += adcResults[c][i];
 			}
@@ -90,6 +87,8 @@ void ADCTask(PTASKPARM p)
 #endif
 	}
 
+	conversionCount++;
+
 	/*
 	** Trigger next conversion...
 	*/
@@ -111,7 +110,7 @@ int getPressure(char * pszDest)
 	PGM_P		pressure;
 	uint16_t	avgPressureADC;
 	
-	avgPressureADC = getADCAverage(ADC_BAROMETER_CHANNEL);
+	avgPressureADC = getADCAverage(ADC_BAROMETER_CHANNEL) - ADC_MBAR_OFFSET;
 	
 	memcpy_P(&pressure, &mbarLookup[avgPressureADC], sizeof(PGM_P));
 	strcpy_P(pszDest, pressure);
@@ -137,7 +136,7 @@ int getTemperature(char * pszDest)
 	PGM_P			temperature;
 	int16_t			avgTempADC;
 	
-	avgTempADC = getADCAverage(ADC_THERMO_CHANNEL);
+	avgTempADC = getADCAverage(ADC_THERMO_CHANNEL) - ADC_TEMP_OFFSET;
 	
 	memcpy_P(&temperature, &tempLookup[avgTempADC], sizeof(PGM_P));
 	strcpy_P(pszDest, temperature);
