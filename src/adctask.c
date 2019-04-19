@@ -12,38 +12,39 @@
 #include "humiditylookup.h"
 #include "templookup.h"
 
-//#define MOVING_AVG_ENABLE
+#define MOVING_AVG_ENABLE
 
 uint32_t		conversionCount = 0;
 
 #ifdef MOVING_AVG_ENABLE
 uint16_t		adcResults[NUM_ADC_CHANNELS][ADC_RESULT_ARRAY_SIZE];
-uint8_t			resultPtr[NUM_ADC_CHANNELS] = {0, 0, 0, 0, 0, 0, 0, 0};
-uint16_t		MAV[NUM_ADC_CHANNELS] = {0, 0, 0, 0, 0, 0, 0, 0};
+uint8_t			resultPtr[ADC_RESULT_ARRAY_SIZE];
+uint16_t		MAV[NUM_ADC_CHANNELS];
 #else
 uint16_t		adcResults[NUM_ADC_CHANNELS];
 #endif
 
-void ADCTask(PTASKPARM p)
-{
-	PADCRESULT			r =		(PADCRESULT)p;
-	uint8_t				c;
-
 #ifdef MOVING_AVG_ENABLE
-	uint8_t				ptr;
-	uint8_t				oldestPtr;
-	uint32_t			avgSum = 0L;
-	uint8_t				i = 0;
+void setupADCMAV()
+{
+	memset(adcResults, 0, (NUM_ADC_CHANNELS * ADC_RESULT_ARRAY_SIZE * sizeof(uint16_t)));
+
+	memset(resultPtr, 0, (ADC_RESULT_ARRAY_SIZE * sizeof(uint8_t)));
+	memset(MAV, 0, (NUM_ADC_CHANNELS * sizeof(uint16_t)));
+}
 #endif
 
-	c	= r->channel;
+void ADCTask(PTASKPARM p)
+{
+	PADCRESULT			r =	(PADCRESULT)p;
+	uint8_t				channel = r->channel;
 
 #ifdef MOVING_AVG_ENABLE
-	ptr = resultPtr[c];
-	oldestPtr = ptr + 1;
+	uint32_t			avgSum = 0L;
+	uint8_t				i = 0;
 
-	if (oldestPtr == ADC_RESULT_ARRAY_SIZE) {
-		oldestPtr = 0;
+	if (conversionCount == 0) {
+		setupADCMAV();
 	}
 #endif
 	
@@ -53,37 +54,27 @@ void ADCTask(PTASKPARM p)
 	*/
 	if (conversionCount >= NUM_ADC_CHANNELS) {
 #ifdef MOVING_AVG_ENABLE
-		adcResults[c][ptr] = r->result;
+		adcResults[channel][resultPtr[channel]] = r->result;
 
 		/*
-		 * If the results buffer is full, calculate
-		 * the first average...
+		 * If the results buffer is full, start calculating
+		 * the average...
 		 */
-		if (conversionCount == ADC_MIN_AVG_CONVERSION_COUNT) {
+		if (conversionCount >= ADC_MIN_AVG_CONVERSION_COUNT) {
 			for (i = 0;i < ADC_RESULT_ARRAY_SIZE;i++) {
-				avgSum += adcResults[c][i];
+				avgSum += adcResults[channel][i];
 			}
 
-			MAV[c] = (uint16_t)((avgSum >> ADC_RESULT_AVG_SHIFT) & 0xFFFF);
-		}
-		/*
-		 * Calculate the moving average, the most efficient way to do this
-		 * is to add the latest reading to the previous moving average and
-		 * subtract the oldest reading:
-		 *
-		 * MAV[n+1] = MAV[n] + result[new] - result[oldest]
-		 */
-		else if (conversionCount > ADC_MIN_AVG_CONVERSION_COUNT) {
-			MAV[c] = MAV[c] + r->result - adcResults[c][oldestPtr];
+			MAV[channel] = (uint16_t)((avgSum >> ADC_RESULT_AVG_SHIFT) & 0xFFFF);
 		}
 
-		resultPtr[c]++;
-		
-		if (resultPtr[c] == ADC_RESULT_ARRAY_SIZE) {
-			resultPtr[c] = 0;
+		resultPtr[channel]++;
+
+		if (resultPtr[channel] == ADC_RESULT_ARRAY_SIZE) {
+			resultPtr[channel] = 0;
 		}
 #else
-		adcResults[c] = r->result;
+		adcResults[channel] = r->result;
 #endif
 	}
 
