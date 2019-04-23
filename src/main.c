@@ -3,7 +3,8 @@
 #include <avr/interrupt.h>
 #include <avr/pgmspace.h>
 
-#include "scheduler.h"
+#include "sched/scheduler.h"
+#include "sched/schederr.h"
 #include "taskdef.h"
 #include "heartbeat.h"
 #include "adctask.h"
@@ -16,7 +17,6 @@
 #include "adc_atmega328p.h"
 #include "serial_atmega328p.h"
 #include "extint_atmega328p.h"
-#include "error.h"
 
 void main(void) __attribute__ ((noreturn));
 

@@ -4,7 +4,7 @@
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 
-#include "scheduler.h"
+#include "sched/scheduler.h"
 #include "adctask.h"
 #include "taskdef.h"
 #include "adc_atmega328p.h"

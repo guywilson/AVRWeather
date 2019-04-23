@@ -2,7 +2,7 @@
 #include <avr/io.h>
 
 #include "rtc_atmega328p.h"
-#include "scheduler.h"
+#include "sched/scheduler.h"
 #include "heartbeat.h"
 #include "led_utils.h"
 #include "taskdef.h"

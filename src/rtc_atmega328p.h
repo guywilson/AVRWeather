@@ -45,6 +45,4 @@ void		setupRTC();
 uint32_t	getCurrentTime();
 void 		registerTickTask(void (* tickTask)());
 
-extern volatile uint32_t _realTimeClock;
-
 #endif

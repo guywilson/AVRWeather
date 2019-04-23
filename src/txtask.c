@@ -2,7 +2,7 @@
 #include <stddef.h>
 #include <string.h>
 
-#include "scheduler.h"
+#include "sched/scheduler.h"
 #include "serial_atmega328p.h"
 #include "taskdef.h"
 #include "adctask.h"

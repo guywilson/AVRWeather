@@ -8,7 +8,7 @@
 #include <avr/interrupt.h>
 #include <util/setbaud.h>
 
-#include "scheduler.h"
+#include "sched/scheduler.h"
 #include "taskdef.h"
 #include "rxtxmsgdef.h"
 #include "serial_atmega328p.h"

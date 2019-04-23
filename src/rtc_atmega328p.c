@@ -3,9 +3,7 @@
 
 #include "rtc_atmega328p.h"
 
-volatile uint32_t _realTimeClock;
-
-
+volatile uint32_t 			_realTimeClock;
 static volatile uint16_t	_tickCount = 0;
 
 static void (* _tickTask)();

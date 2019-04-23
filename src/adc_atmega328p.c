@@ -2,7 +2,7 @@
 #include <avr/interrupt.h>
 
 #include "rtc_atmega328p.h"
-#include "scheduler.h"
+#include "sched/scheduler.h"
 #include "adctask.h"
 #include "taskdef.h"
 #include "adc_atmega328p.h"
