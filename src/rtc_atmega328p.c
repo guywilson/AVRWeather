@@ -41,14 +41,7 @@ void setupRTC()
 
     _realTimeClock = 0L;
 
-#ifdef TRACK_CPU_PCT
-	/*
-	** Set Port B - Pin 5 as output
-	** On the Arduino Nano/Uno, this is connected to the
-	** onboard LED...
-	*/
-    DDRB |= _BV(DDB5);
-#endif
+    initialiseCPUTracking();
 }
 
 uint32_t getCurrentTime()
@@ -76,12 +69,7 @@ ISR(TIMER1_COMPA_vect, ISR_BLOCK)
 		_tickCount = 0;
 	}
 
-#ifdef TRACK_CPU_PCT
-	/*
-	 * Turn on
-	 */
-	PORTB |= _BV(PORTB5);
-#endif
+	signalCPUTrackingStart();
 
 	/*
 	 * Run the tick task, defaults to the nullTick() function.
@@ -91,10 +79,5 @@ ISR(TIMER1_COMPA_vect, ISR_BLOCK)
 	 */
 	_tickTask();
 
-#ifdef TRACK_CPU_PCT
-	/*
-	 * Turn off
-	 */
-	PORTB &= ~(_BV(PORTB5));
-#endif
+	signalCPUTrackingEnd();
 }

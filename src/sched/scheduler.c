@@ -13,7 +13,6 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
-#include <avr/io.h>
 
 #include "scheduler.h"
 #include "schederr.h"
@@ -350,23 +349,14 @@ void schedule()
 				*/
 				td->isScheduled = 0;
 				
-#ifdef TRACK_CPU_PCT
-				/*
-				 * Turn on
-				 */
-				PORTB |= _BV(PORTB5);
-#endif
+				signalCPUTrackingStart();
+
 				/*
 				** Run the task...
 				*/
 				td->run(td->pParameter);
 
-#ifdef TRACK_CPU_PCT
-				/*
-				 * Turn off
-				 */
-				PORTB &= ~(_BV(PORTB5));
-#endif
+				signalCPUTrackingEnd();
 			}
 		}
 		
