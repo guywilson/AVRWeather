@@ -11,6 +11,10 @@ typedef void *					PTASKPARM;
 ** Define timer type for bit-depth of timer, change this
 ** if your timer is 64-bit for example...
 */
+#ifndef ARCH_SIZE
+#define ARCH_SIZE		16
+#endif
+
 #if ARCH_SIZE <= 16
 typedef uint32_t				timer_t;
 #else
