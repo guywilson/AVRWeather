@@ -41,7 +41,7 @@ void TxTask(PTASKPARM p)
 	szBuffer[i++] = '<';
 	szBuffer[i++] = 'w';
 	szBuffer[i++] = ':';
-	len = getAvgWindSpeed(&szBuffer[i]);
+	len = getMaxWindSpeed(&szBuffer[i]);
 	szBuffer[i + len] = '>';
 	i += len + 1;
 	

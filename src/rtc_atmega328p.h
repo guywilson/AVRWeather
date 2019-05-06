@@ -16,9 +16,9 @@
 #define initialiseCPUTracking()			// Do nothing
 #else
 #include <avr/io.h>
-#define signalCPUTrackingStart()		PORTB |= _BV(PORTB5)
-#define signalCPUTrackingEnd()			PORTB &= ~(_BV(PORTB5))
-#define initialiseCPUTracking()			DDRB |= _BV(DDB5)			// Set pin B5 as an output
+#define signalCPUTrackingStart()		PORTB &= ~(_BV(PORTB5))		// Turn off
+#define signalCPUTrackingEnd()			PORTB |= _BV(PORTB5)		// Turn on
+#define initialiseCPUTracking()			DDRB |= _BV(DDB5); 	PORTB |= _BV(PORTB5)		// Set pin B5 as an output
 #endif
 
 /*

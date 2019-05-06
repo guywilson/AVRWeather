@@ -3,6 +3,8 @@
 #ifndef _INCL_SCHEDULER
 #define _INCL_SCHEDULER
 
+//#define TRACK_CPU_PCT
+
 #define MAX_TASKS           	16
 
 typedef void *					PTASKPARM;
@@ -36,8 +38,8 @@ typedef uint64_t				timer_t;
 #define signalCPUTrackingEnd()			// Do nothing
 #else
 #include <avr/io.h>
-#define signalCPUTrackingStart()		PORTB |= _BV(PORTB5)
-#define signalCPUTrackingEnd()			PORTB &= ~(_BV(PORTB5))
+#define signalCPUTrackingStart()		PORTB &= ~(_BV(PORTB5))		// Turn off
+#define signalCPUTrackingEnd()			PORTB |= _BV(PORTB5)		// Turn on
 #endif
 
 

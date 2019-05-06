@@ -96,6 +96,71 @@ void txstr(char * pszData, uint8_t dataLength)
 }
 
 /*
+** Rx Complete Interrupt Handler
+*/
+ISR(USART_RX_vect, ISR_BLOCK)
+{
+	static RXMSGSTRUCT	msgStruct;
+
+	static uint8_t		state = RX_STATE_START;
+	static uint8_t		i = 0;
+
+	uint8_t	b = UDR0;
+
+	switch (state) {
+		case RX_STATE_START:
+			msgStruct.frame.start = b;
+			state = RX_STATE_LENGTH;
+			break;
+
+		case RX_STATE_LENGTH:
+			msgStruct.frame.cmdFrameLength = b;
+
+			if (msgStruct.frame.cmdFrameLength > MAX_CMD_FRAME_LENGTH) {
+				msgStruct.frame.cmdFrameLength = MAX_CMD_FRAME_LENGTH;
+				msgStruct.rxErrorCode = MSG_NAK_DATA_OVERRUN;
+			}
+			state = RX_STATE_MSGID;
+			break;
+
+		case RX_STATE_MSGID:
+			msgStruct.frame.msgID = b;
+			state = RX_STATE_CMD;
+			break;
+
+		case RX_STATE_CMD:
+			msgStruct.frame.cmd = b;
+			state = RX_STATE_DATA;
+			break;
+
+		case RX_STATE_DATA:
+			msgStruct.frame.data[i++] = b;
+
+			if (i == (msgStruct.frame.cmdFrameLength - 2)) {
+				state = RX_STATE_CHECKSUM;
+				i = 0;
+			}
+			break;
+
+		case RX_STATE_CHECKSUM:
+			msgStruct.frame.checksum = b;
+			state = RX_STATE_END;
+			break;
+
+		case RX_STATE_END:
+			if (b == MSG_CHAR_END) {
+				state = RX_STATE_START;
+			}
+			else {
+				msgStruct.rxErrorCode = MSG_NAK_DATA_OVERRUN;
+			}
+
+			scheduleTask(TASK_RXCMD, 10, &msgStruct);
+			break;
+	}
+}
+
+/*
 ** Tx Complete (Data Register Empty) Interrupt Handler
 */
 ISR(USART_UDRE_vect, ISR_BLOCK)

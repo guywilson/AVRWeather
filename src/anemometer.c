@@ -11,6 +11,7 @@
 #include "serial_atmega328p.h"
 
 uint16_t	rpsBuffer[WIND_SPEED_AVG_COUNT];
+uint16_t	maxRPS = 0;
 
 void anemometerTask(PTASKPARM p)
 {
@@ -25,11 +26,16 @@ void anemometerTask(PTASKPARM p)
 	** average every 64 seconds...
 	*/
 	revolutionsPerSecond = getExtIntPin0Count();
+	resetExtIntPin0Count();
 
 	rpsBuffer[i++] = revolutionsPerSecond;
 
-	if (i == WIND_SPEED_AVG_COUNT) {
+	if (i == 5) {
 		i = 0;
+	}
+
+	if (revolutionsPerSecond > maxRPS) {
+		maxRPS = revolutionsPerSecond;
 	}
 
 	rescheduleTask(TASK_ANEMOMETER, NULL);
@@ -39,13 +45,13 @@ uint16_t getAvgRPS(void)
 {
 	int			i;
 	uint16_t	avgRPS = 0;
-	
-	for (i = 0;i < WIND_SPEED_AVG_COUNT;i++) {
+
+	for (i = 0;i < 5;i++) {
 		avgRPS += rpsBuffer[i];
 	}
-	
-	avgRPS = avgRPS >> WIND_SPEED_AVG_SHIFT;
-	
+
+	avgRPS = avgRPS / 5;
+
 	return avgRPS;
 }
 
@@ -63,5 +69,19 @@ int getAvgWindSpeed(char * pszDest)
 	memcpy_P(&avgSpeed, &kphLookup[avgRPS], sizeof(PGM_P));
 	strcpy_P(pszDest, avgSpeed);
 	
+	return strlen(pszDest);
+}
+
+int getMaxWindSpeed(char * pszDest)
+{
+	PGM_P			maxSpeed;
+
+	if (maxRPS >= KPH_LOOKUP_BUFFER_SIZE) {
+		maxRPS = KPH_LOOKUP_BUFFER_SIZE - 1;
+	}
+
+	memcpy_P(&maxSpeed, &kphLookup[maxRPS], sizeof(PGM_P));
+	strcpy_P(pszDest, maxSpeed);
+
 	return strlen(pszDest);
 }

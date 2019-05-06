@@ -18,6 +18,8 @@
 #include "serial_atmega328p.h"
 #include "extint_atmega328p.h"
 
+#include "pwm_atmega328p.h"
+
 void main(void) __attribute__ ((noreturn));
 
 void setup(void)
@@ -27,6 +29,9 @@ void setup(void)
 	setupSerial();
 	setupADC();
 	setupExtIntInputs();
+
+	// For testing...
+	setupPWM();
 }
 
 #pragma GCC diagnostic ignored  "-Wmain"
