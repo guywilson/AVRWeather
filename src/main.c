@@ -10,7 +10,7 @@
 #include "adctask.h"
 #include "anemometer.h"
 #include "rainguage.h"
-#include "txtask.h"
+#include "rxtxtask.h"
 
 #include "led_utils.h"
 #include "rtc_atmega328p.h"
@@ -61,6 +61,7 @@ void main(void)
 	registerTask(TASK_ANEMOMETER, &anemometerTask);
 	registerTask(TASK_RAINGUAGE, &rainGuageTask);
 	registerTask(TASK_TX, &TxTask);
+	registerTask(TASK_RXCMD, &RxTask);
 
 	scheduleTask(
 			TASK_HEARTBEAT,

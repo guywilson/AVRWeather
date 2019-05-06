@@ -20,6 +20,14 @@
 uint8_t			txBuffer[64];
 uint8_t			txLength = 0;
 
+uint8_t nakFrame[5] = {
+	MSG_CHAR_START,
+	0x00,				// Message ID
+	MSG_CHAR_NAK,
+	0x00,				// NAK error code
+	MSG_CHAR_END
+};
+
 RXMSGSTRUCT		rxMsgStore[MSG_STORE_SIZE];
 
 void setupSerial()
@@ -103,6 +111,32 @@ void txstr(char * pszData, uint8_t dataLength)
 	enableTxInterrupt();
 }
 
+void txmsg(uint8_t * pMsg, uint8_t dataLength)
+{
+	int			i;
+
+	if (dataLength > MAX_REQUEST_MESSAGE_LENGTH) {
+		dataLength = MAX_REQUEST_MESSAGE_LENGTH;
+	}
+
+	for (i = 0;i < dataLength;i++) {
+		txBuffer[i] = pMsg[i];
+	}
+
+	txLength = dataLength;
+
+	UDR0 = getNextTxByte(1);
+
+	enableTxInterrupt();
+}
+
+uint8_t * getNakFrame(uint8_t messageID, uint8_t nakCode)
+{
+	nakFrame[1] = messageID;
+	nakFrame[3] = nakCode;
+
+	return nakFrame;
+}
 /*
 ** Tx Complete (Data Register Empty) Interrupt Handler
 */
@@ -135,11 +169,15 @@ PRXMSGSTRUCT allocateRxMsgStruct()
 
 void freeRxMsgStruct(PRXMSGSTRUCT m)
 {
-	m->isAllocated = 0;
+	memset(m, 0, sizeof(RXMSGSTRUCT));
 }
 
 /*
 ** Rx Complete Interrupt Handler
+**
+** This function uses a state machine to read the
+** message byte by byte. The checksum is calculated
+** as we receive each byte...
 */
 ISR(USART_RX_vect, ISR_BLOCK)
 {
@@ -172,16 +210,19 @@ ISR(USART_RX_vect, ISR_BLOCK)
 
 		case RX_STATE_MSGID:
 			pMsgStruct->frame.msgID = b;
+			pMsgStruct->frameChecksumTotal += b;
 			state = RX_STATE_CMD;
 			break;
 
 		case RX_STATE_CMD:
 			pMsgStruct->frame.cmd = b;
+			pMsgStruct->frameChecksumTotal += b;
 			state = RX_STATE_DATA;
 			break;
 
 		case RX_STATE_DATA:
 			pMsgStruct->frame.data[i++] = b;
+			pMsgStruct->frameChecksumTotal += b;
 
 			if (i == (pMsgStruct->frame.cmdFrameLength - 2)) {
 				state = RX_STATE_CHECKSUM;
@@ -191,6 +232,14 @@ ISR(USART_RX_vect, ISR_BLOCK)
 
 		case RX_STATE_CHECKSUM:
 			pMsgStruct->frame.checksum = b;
+			pMsgStruct->frameChecksumTotal += b;
+
+			/*
+			 * Validate the checksum...
+			 */
+			if ((pMsgStruct->frameChecksumTotal & 0x00FF) != 0x00FF) {
+				pMsgStruct->rxErrorCode = MSG_NAK_INVALID_CHECKSUM;
+			}
 			state = RX_STATE_END;
 			break;
 

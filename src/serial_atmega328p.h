@@ -14,11 +14,21 @@
 **
 ** NAK response frame
 ** <START><MSG_ID><NAK><ERR_CODE><END>
+**
+**
+** The checksum is calculated as follows:
+**
+** The sender adds all the data bytes plus the cmd and msg id, taking
+** just the least significant byte and subtracting that from 0xFF gives
+** the checksum.
+**
+** The receiver adds all the data bytes plus the cmd, msg id and checksum,
+** the least significant byte should equal 0xFF if the checksum is valid.
 */
 
 #define NUM_REQUEST_FRAME_BYTES		  6
 #define MAX_DATA_LENGTH				 74
-#define MAX_REQUEST_MESSAGE_LENGTH	(NUM_FRAME_BYTES + MAX_DATA_LENGTH)
+#define MAX_REQUEST_MESSAGE_LENGTH	(NUM_REQUEST_FRAME_BYTES + MAX_DATA_LENGTH)
 
 #define MAX_CMD_FRAME_LENGTH		 76		// Data + msgID + cmd
 
@@ -45,7 +55,6 @@
 #define RX_CMD_ANEMOMETER			0x02
 #define RX_CMD_RAINGUAGE			0x04
 
-
 typedef struct {
 	uint8_t			start;
 	uint8_t			cmdFrameLength;
@@ -64,6 +73,7 @@ typedef RXMSGFRAME *	PRXMSGFRAME;
 typedef struct {
 	RXMSGFRAME		frame;
 
+	uint16_t		frameChecksumTotal;
 	uint8_t			rxErrorCode;
 	uint8_t			isAllocated;
 }
@@ -78,8 +88,12 @@ void enableTxInterrupt();
 void disableTxInterrupt();
 
 void txstr(char * pszData, uint8_t dataLength);
+void txmsg(uint8_t * pMsg, uint8_t dataLength);
+
+uint8_t * getNakFrame(uint8_t messageID, uint8_t nakCode);
 
 PRXMSGSTRUCT allocateRxMsgStruct();
 void freeRxMsgStruct(PRXMSGSTRUCT m);
+int validateChecksum(PRXMSGSTRUCT pMsgStruct);
 
 #endif

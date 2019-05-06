@@ -8,8 +8,45 @@
 #include "adctask.h"
 #include "anemometer.h"
 #include "rainguage.h"
-#include "txtask.h"
+#include "rxtxtask.h"
 
+void txNAK(uint8_t messageID, uint8_t nakCode)
+{
+	uint8_t	*	pNakFrame;
+
+	pNakFrame = getNakFrame(messageID, nakCode);
+
+	txmsg(pNakFrame, 5);
+}
+
+void RxTask(PTASKPARM p)
+{
+	PRXMSGSTRUCT		pMsgStruct;
+
+	pMsgStruct = (PRXMSGSTRUCT)p;
+
+	if (pMsgStruct->rxErrorCode != 0) {
+		txNAK(pMsgStruct->frame.msgID, pMsgStruct->rxErrorCode);
+	}
+	else {
+		switch (pMsgStruct->frame.cmd) {
+			case RX_CMD_TPH:
+				break;
+
+			case RX_CMD_ANEMOMETER:
+				break;
+
+			case RX_CMD_RAINGUAGE:
+				break;
+
+			default:
+				txNAK(pMsgStruct->frame.msgID, MSG_NAK_UNKNOWN_CMD);
+				break;
+		}
+	}
+
+	freeRxMsgStruct(pMsgStruct);
+}
 
 void TxTask(PTASKPARM p)
 {
