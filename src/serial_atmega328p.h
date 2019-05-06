@@ -79,4 +79,7 @@ void disableTxInterrupt();
 
 void txstr(char * pszData, uint8_t dataLength);
 
+PRXMSGSTRUCT allocateRxMsgStruct();
+void freeRxMsgStruct(PRXMSGSTRUCT m);
+
 #endif

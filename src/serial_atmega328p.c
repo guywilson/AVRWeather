@@ -9,15 +9,23 @@
 #include <util/setbaud.h>
 
 #include "sched/scheduler.h"
+#include "rtc_atmega328p.h"
 #include "taskdef.h"
 #include "rxtxmsgdef.h"
 #include "serial_atmega328p.h"
 
+#define MSG_STORE_SIZE				4
+
+
 uint8_t			txBuffer[64];
 uint8_t			txLength = 0;
 
+RXMSGSTRUCT		rxMsgStore[MSG_STORE_SIZE];
+
 void setupSerial()
 {
+	memset(rxMsgStore, 0, sizeof(RXMSGSTRUCT) * MSG_STORE_SIZE);
+
 	UBRR0H = UBRRH_VALUE;
 	UBRR0L = UBRRL_VALUE;
 
@@ -96,54 +104,93 @@ void txstr(char * pszData, uint8_t dataLength)
 }
 
 /*
+** Tx Complete (Data Register Empty) Interrupt Handler
+*/
+ISR(USART_UDRE_vect, ISR_BLOCK)
+{
+	uint8_t		b;
+
+	b = getNextTxByte(0);
+
+	if (b != 0) {
+		UDR0 = b;
+	}
+}
+
+PRXMSGSTRUCT allocateRxMsgStruct()
+{
+	PRXMSGSTRUCT	m = NULL;
+	int				i = 0;
+
+	for (i = 0;i < MSG_STORE_SIZE;i++) {
+		if (!rxMsgStore[i].isAllocated) {
+			m = &rxMsgStore[i];
+			m->isAllocated = 1;
+			break;
+		}
+	}
+
+	return m;
+}
+
+void freeRxMsgStruct(PRXMSGSTRUCT m)
+{
+	m->isAllocated = 0;
+}
+
+/*
 ** Rx Complete Interrupt Handler
 */
 ISR(USART_RX_vect, ISR_BLOCK)
 {
-	static RXMSGSTRUCT	msgStruct;
-
 	static uint8_t		state = RX_STATE_START;
 	static uint8_t		i = 0;
+	static PRXMSGSTRUCT	pMsgStruct = NULL;
 
 	uint8_t	b = UDR0;
 
 	switch (state) {
 		case RX_STATE_START:
-			msgStruct.frame.start = b;
+			/*
+			 * Allocate the msg structure for this message...
+			 */
+			pMsgStruct = allocateRxMsgStruct();
+
+			pMsgStruct->frame.start = b;
 			state = RX_STATE_LENGTH;
 			break;
 
 		case RX_STATE_LENGTH:
-			msgStruct.frame.cmdFrameLength = b;
+			pMsgStruct->frame.cmdFrameLength = b;
 
-			if (msgStruct.frame.cmdFrameLength > MAX_CMD_FRAME_LENGTH) {
-				msgStruct.frame.cmdFrameLength = MAX_CMD_FRAME_LENGTH;
-				msgStruct.rxErrorCode = MSG_NAK_DATA_OVERRUN;
+			if (pMsgStruct->frame.cmdFrameLength > MAX_CMD_FRAME_LENGTH) {
+				pMsgStruct->frame.cmdFrameLength = MAX_CMD_FRAME_LENGTH;
+				pMsgStruct->rxErrorCode = MSG_NAK_DATA_OVERRUN;
 			}
 			state = RX_STATE_MSGID;
 			break;
 
 		case RX_STATE_MSGID:
-			msgStruct.frame.msgID = b;
+			pMsgStruct->frame.msgID = b;
 			state = RX_STATE_CMD;
 			break;
 
 		case RX_STATE_CMD:
-			msgStruct.frame.cmd = b;
+			pMsgStruct->frame.cmd = b;
 			state = RX_STATE_DATA;
 			break;
 
 		case RX_STATE_DATA:
-			msgStruct.frame.data[i++] = b;
+			pMsgStruct->frame.data[i++] = b;
 
-			if (i == (msgStruct.frame.cmdFrameLength - 2)) {
+			if (i == (pMsgStruct->frame.cmdFrameLength - 2)) {
 				state = RX_STATE_CHECKSUM;
 				i = 0;
 			}
 			break;
 
 		case RX_STATE_CHECKSUM:
-			msgStruct.frame.checksum = b;
+			pMsgStruct->frame.checksum = b;
 			state = RX_STATE_END;
 			break;
 
@@ -152,24 +199,10 @@ ISR(USART_RX_vect, ISR_BLOCK)
 				state = RX_STATE_START;
 			}
 			else {
-				msgStruct.rxErrorCode = MSG_NAK_DATA_OVERRUN;
+				pMsgStruct->rxErrorCode = MSG_NAK_DATA_OVERRUN;
 			}
 
-			scheduleTask(TASK_RXCMD, 10, &msgStruct);
+			scheduleTask(TASK_RXCMD, rtc_val_ms(2), pMsgStruct);
 			break;
-	}
-}
-
-/*
-** Tx Complete (Data Register Empty) Interrupt Handler
-*/
-ISR(USART_UDRE_vect, ISR_BLOCK)
-{
-	uint8_t		b;
-	
-	b = getNextTxByte(0);
-	
-	if (b != 0) {
-		UDR0 = b;
 	}
 }
