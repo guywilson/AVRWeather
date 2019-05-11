@@ -12,7 +12,7 @@ PROJNAME=avrw
 DEVICE=atmega328p
 
 # Target board
-BOARD=ARDUINO_AVR_NANO
+BOARD=ARDUINO_AVR_UNO
 
 # Target architecture size
 ARCHSIZE=8
@@ -29,10 +29,6 @@ SRC=src
 
 # Scheduler source directory
 SCHEDSRC=src/sched
-
-# Port we use to upload the tearget to the device
-UPLOADPORT=/dev/cu.wchusbserial1410
-#UPLOADPORT=/dev/cu.usbmodem1411
 
 # C compiler
 CC=avr-gcc
@@ -152,7 +148,7 @@ $(TARGET): $(BUILD)/$(ELF)
 #
 ###############################################################################
 install: $(TARGET)
-	$(UPLOADTOOL) $(DEVICE) $(TARGET) $(UPLOADPORT)
+	$(UPLOADTOOL) $(DEVICE) $(TARGET)
 	
 clean: 
 	rm $(BUILD)/*
