@@ -11,6 +11,7 @@
 /*
 ** Vector Num	Interrupt Definition					Vector Name
 ** ==========	====================================	==================
+**  1			Reset									RESET_vect
 **  2			External Interrupt Request 0			INT0_vect
 **  3			External Interrupt Request 1			INT1_vect
 **  4			Pin Change Interrupt Request 0			PCINT0_vect
@@ -175,7 +176,7 @@ ISR(USART_RX_vect, ISR_BLOCK) {
  * USART Data Register Empty
  */
 ISR(USART_UDRE_vect, ISR_BLOCK) {
-	UDR0 = handleDRE();
+	handleDRE();
 }
 
 /*

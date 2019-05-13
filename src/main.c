@@ -24,6 +24,13 @@ void main(void) __attribute__ ((noreturn));
 
 void setup(void)
 {
+	/*
+	 * Disable the watchdog timer...
+	 */
+    MCUSR &= ~_BV(WDRF);
+    WDTCSR |= _BV(WDE);
+    WDTCSR = 0x00;
+
 	setupLEDPin();
 	setupRTC();
 	setupSerial();

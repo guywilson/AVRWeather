@@ -254,7 +254,7 @@ void handleRxComplete(uint8_t b)
 /*
 ** Tx Complete (Data Register Empty) Interrupt Handler
 */
-uint8_t handleDRE()
+void handleDRE()
 {
-	return getNextTxByte(0);
+	UDR0 = getNextTxByte(0);
 }
