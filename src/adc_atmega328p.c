@@ -24,9 +24,9 @@ void triggerADC(void)
 }
 
 /*
-** ADC Conversion complete interrupt...
+** ADC Conversion complete interrupt handler
 */
-ISR(ADC_vect, ISR_BLOCK)
+void handleADConversionComplete()
 {
 	uint8_t				channel;
 	uint16_t			low;

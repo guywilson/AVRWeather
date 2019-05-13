@@ -65,7 +65,7 @@ uint16_t getCounterValue(int c)
 	return v;
 }
 
-ISR(SPI_STC_vect, ISR_BLOCK)
+void handleSPITransferComplete()
 {
 	static uint8_t		lo;
 	static uint8_t		hi;

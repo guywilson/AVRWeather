@@ -42,7 +42,7 @@ void startTWI()
 	TWCR = _BV(TWINT) | _BV(TWSTA) | _BV(TWEN) | _BV(TWIE);
 }
 
-ISR(TWI_vect)
+void handleTWI()
 {
 	uint8_t status = TWSR & 0xF8;
 
@@ -50,6 +50,7 @@ ISR(TWI_vect)
 		case 0x08:
 			break;
 
-		case
+		default:
+			break;
 	}
 }

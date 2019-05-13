@@ -54,7 +54,7 @@ void registerTickTask(void (* tickTask)())
 	_tickTask = tickTask;
 }
 
-ISR(TIMER1_COMPA_vect, ISR_BLOCK)
+void handleTimer1Compare()
 {
 	_tickCount++;
 

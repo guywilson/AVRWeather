@@ -62,5 +62,6 @@
 void		setupRTC();
 uint32_t	getCurrentTime();
 void 		registerTickTask(void (* tickTask)());
+void 		handleTimer1Compare();
 
 #endif

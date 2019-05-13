@@ -60,7 +60,7 @@ void main(void)
 	registerTask(TASK_ADC, &ADCTask);
 	registerTask(TASK_ANEMOMETER, &anemometerTask);
 	registerTask(TASK_RAINGUAGE, &rainGuageTask);
-	registerTask(TASK_TX, &TxTask);
+//	registerTask(TASK_TX, &TxTask);
 	registerTask(TASK_RXCMD, &RxTask);
 
 	scheduleTask(
@@ -78,10 +78,10 @@ void main(void)
 			RTC_ONE_HOUR,
 			NULL);
 
-	scheduleTask(
-			TASK_TX,
-			rtc_val_sec(5),
-			NULL);
+//	scheduleTask(
+//			TASK_TX,
+//			rtc_val_sec(5),
+//			NULL);
 
     /*
      * Trigger the first ADC conversion...

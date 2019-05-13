@@ -31,5 +31,6 @@
 
 void setupADC(void);
 void triggerADC(void);
+void handleADConversionComplete();
 
 #endif

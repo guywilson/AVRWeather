@@ -4,5 +4,6 @@
 void		setupSPI();
 void		SpiTask(PTASKPARM p);
 uint16_t	getCounterValue(int c);
+void 		handleSPITransferComplete();
 
 #endif

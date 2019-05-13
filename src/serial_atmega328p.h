@@ -96,4 +96,7 @@ PRXMSGSTRUCT allocateRxMsgStruct();
 void freeRxMsgStruct(PRXMSGSTRUCT m);
 int validateChecksum(PRXMSGSTRUCT pMsgStruct);
 
+void handleRxComplete(uint8_t b);
+uint8_t handleDRE();
+
 #endif

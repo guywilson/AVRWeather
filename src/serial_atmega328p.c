@@ -12,6 +12,7 @@
 #include "rtc_atmega328p.h"
 #include "taskdef.h"
 #include "rxtxmsgdef.h"
+#include "sched/schederr.h"
 #include "serial_atmega328p.h"
 
 #define MSG_STORE_SIZE				4
@@ -49,10 +50,10 @@ void setupSerial()
 	UCSR0C = _BV(UCSZ01) | _BV(UCSZ00) | _BV(USBS0);
 	
 	/*
-	** Enable Tx
-	** Enable Tx interrupts
+	** Enable Tx & Rx
+	** Enable Tx & Rx interrupts
 	*/
-	UCSR0B = _BV(TXEN0) | _BV(TXCIE0);
+	UCSR0B = _BV(RXEN0) | _BV(TXEN0) | _BV(RXCIE0) | _BV(TXCIE0);
 }
 
 void enableTxInterrupt()
@@ -137,19 +138,6 @@ uint8_t * getNakFrame(uint8_t messageID, uint8_t nakCode)
 
 	return nakFrame;
 }
-/*
-** Tx Complete (Data Register Empty) Interrupt Handler
-*/
-ISR(USART_UDRE_vect, ISR_BLOCK)
-{
-	uint8_t		b;
-
-	b = getNextTxByte(0);
-
-	if (b != 0) {
-		UDR0 = b;
-	}
-}
 
 PRXMSGSTRUCT allocateRxMsgStruct()
 {
@@ -179,23 +167,23 @@ void freeRxMsgStruct(PRXMSGSTRUCT m)
 ** message byte by byte. The checksum is calculated
 ** as we receive each byte...
 */
-ISR(USART_RX_vect, ISR_BLOCK)
+void handleRxComplete(uint8_t b)
 {
 	static uint8_t		state = RX_STATE_START;
 	static uint8_t		i = 0;
 	static PRXMSGSTRUCT	pMsgStruct = NULL;
 
-	uint8_t	b = UDR0;
-
 	switch (state) {
 		case RX_STATE_START:
-			/*
-			 * Allocate the msg structure for this message...
-			 */
-			pMsgStruct = allocateRxMsgStruct();
+			if (b == MSG_CHAR_START) {
+				/*
+				 * Allocate the msg structure for this message...
+				 */
+				pMsgStruct = allocateRxMsgStruct();
 
-			pMsgStruct->frame.start = b;
-			state = RX_STATE_LENGTH;
+				pMsgStruct->frame.start = b;
+				state = RX_STATE_LENGTH;
+			}
 			break;
 
 		case RX_STATE_LENGTH:
@@ -217,7 +205,14 @@ ISR(USART_RX_vect, ISR_BLOCK)
 		case RX_STATE_CMD:
 			pMsgStruct->frame.cmd = b;
 			pMsgStruct->frameChecksumTotal += b;
-			state = RX_STATE_DATA;
+
+			if (pMsgStruct->frame.cmdFrameLength == 2) {
+				state = RX_STATE_CHECKSUM;
+			}
+			else {
+				state = RX_STATE_DATA;
+				i = 0;
+			}
 			break;
 
 		case RX_STATE_DATA:
@@ -240,18 +235,26 @@ ISR(USART_RX_vect, ISR_BLOCK)
 			if ((pMsgStruct->frameChecksumTotal & 0x00FF) != 0x00FF) {
 				pMsgStruct->rxErrorCode = MSG_NAK_INVALID_CHECKSUM;
 			}
+
 			state = RX_STATE_END;
 			break;
 
 		case RX_STATE_END:
-			if (b == MSG_CHAR_END) {
-				state = RX_STATE_START;
-			}
-			else {
+			if (b != MSG_CHAR_END) {
 				pMsgStruct->rxErrorCode = MSG_NAK_DATA_OVERRUN;
 			}
+
+			state = RX_STATE_START;
 
 			scheduleTask(TASK_RXCMD, rtc_val_ms(2), pMsgStruct);
 			break;
 	}
+}
+
+/*
+** Tx Complete (Data Register Empty) Interrupt Handler
+*/
+uint8_t handleDRE()
+{
+	return getNextTxByte(0);
 }
