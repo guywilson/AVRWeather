@@ -17,6 +17,7 @@
 #include "adc_atmega328p.h"
 #include "serial_atmega328p.h"
 #include "extint_atmega328p.h"
+#include "wdt_atmega328p.h"
 
 #include "pwm_atmega328p.h"
 
@@ -24,18 +25,12 @@ void main(void) __attribute__ ((noreturn));
 
 void setup(void)
 {
-	/*
-	 * Disable the watchdog timer...
-	 */
-    MCUSR &= ~_BV(WDRF);
-    WDTCSR |= _BV(WDE);
-    WDTCSR = 0x00;
-
 	setupLEDPin();
 	setupRTC();
 	setupSerial();
 	setupADC();
 	setupExtIntInputs();
+	setupWDT();
 
 	// For testing...
 	setupPWM();
@@ -69,6 +64,7 @@ void main(void)
 	registerTask(TASK_RAINGUAGE, &rainGuageTask);
 //	registerTask(TASK_TX, &TxTask);
 	registerTask(TASK_RXCMD, &RxTask);
+	registerTask(TASK_WDT, &wdtTask);
 
 	scheduleTask(
 			TASK_HEARTBEAT,
@@ -83,6 +79,11 @@ void main(void)
 	scheduleTask(
 			TASK_RAINGUAGE,
 			RTC_ONE_HOUR,
+			NULL);
+
+	scheduleTask(
+			TASK_WDT,
+			rtc_val_ms(250),
 			NULL);
 
 //	scheduleTask(

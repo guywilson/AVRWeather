@@ -67,7 +67,7 @@ SFLAGS=-C --mcu=$(DEVICE)
 SCHEDOBJ=$(BUILD)/scheduler.o
 
 # Object files
-OBJFILES=$(SCHEDOBJ) $(BUILD)/led_utils.o $(BUILD)/heartbeat.o $(BUILD)/adctask.o $(BUILD)/anemometer.o $(BUILD)/rainguage.o $(BUILD)/isr_atmega328p.o $(BUILD)/rtc_atmega328p.o $(BUILD)/serial_atmega328p.o $(BUILD)/adc_atmega328p.o $(BUILD)/extint_atmega328p.o $(BUILD)/pwm_atmega328p.o $(BUILD)/error_atmega328p.o $(BUILD)/rxtxtask.o $(BUILD)/main.o
+OBJFILES=$(SCHEDOBJ) $(BUILD)/led_utils.o $(BUILD)/heartbeat.o $(BUILD)/adctask.o $(BUILD)/anemometer.o $(BUILD)/rainguage.o $(BUILD)/wdt_atmega328p.o $(BUILD)/isr_atmega328p.o $(BUILD)/rtc_atmega328p.o $(BUILD)/serial_atmega328p.o $(BUILD)/adc_atmega328p.o $(BUILD)/extint_atmega328p.o $(BUILD)/pwm_atmega328p.o $(BUILD)/error_atmega328p.o $(BUILD)/rxtxtask.o $(BUILD)/main.o
 
 # Target
 all: $(TARGET)
@@ -99,6 +99,9 @@ $(BUILD)/anemometer.o: $(SRC)/anemometer.c $(SRC)/anemometer.h $(SRC)/spi_atmega
 
 $(BUILD)/rainguage.o: $(SRC)/rainguage.c $(SRC)/rainguage.h $(SRC)/rainfall.h $(SRC)/spi_atmega328p.h $(SRC)/taskdef.h $(SCHEDSRC)/scheduler.h
 	$(CC) $(CFLAGS) -o $(BUILD)/rainguage.o $(SRC)/rainguage.c
+
+$(BUILD)/wdt_atmega328p.o: $(SRC)/wdt_atmega328p.c $(SRC)/wdt_atmega328p.h
+	$(CC) $(CFLAGS) -o $(BUILD)/wdt_atmega328p.o $(SRC)/wdt_atmega328p.c
 
 $(BUILD)/isr_atmega328p.o: $(SRC)/isr_atmega328p.c $(SRC)/rtc_atmega328p.h $(SRC)/adc_atmega328p.h $(SRC)/serial_atmega328p.h
 	$(CC) $(CFLAGS) -o $(BUILD)/isr_atmega328p.o $(SRC)/isr_atmega328p.c

@@ -8,6 +8,7 @@
 #define TASK_RAINGUAGE			0x0A00
 #define TASK_TX					0x0B00
 #define TASK_SPI				0x0C00
+#define TASK_WDT				0x0D00
 
 #define TASK_PWM				0xFF00
 
