@@ -42,7 +42,7 @@
 /*
  * The 'do nothing' handler...
  */
-void defaultHandler() {
+void __defaultHandler() {
 	// Do nowt...
 }
 
@@ -50,70 +50,70 @@ void defaultHandler() {
  * External Interrupt Request 0
  */
 ISR(INT0_vect, ISR_BLOCK) {
-	defaultHandler();
+	__defaultHandler();
 }
 
 /*
  * External Interrupt Request 1
  */
 ISR(INT1_vect, ISR_BLOCK) {
-	defaultHandler();
+	__defaultHandler();
 }
 
 /*
  * Pin Change Interrupt Request 0
  */
 ISR(PCINT0_vect, ISR_BLOCK) {
-	defaultHandler();
+	__defaultHandler();
 }
 
 /*
  * Pin Change Interrupt Request 1
  */
 ISR(PCINT1_vect, ISR_BLOCK) {
-	defaultHandler();
+	__defaultHandler();
 }
 
 /*
  * Pin Change Interrupt Request 2
  */
 ISR(PCINT2_vect, ISR_BLOCK) {
-	defaultHandler();
+	__defaultHandler();
 }
 
 /*
  * Watchdog Time-out Interrupt
  */
 ISR(WDT_vect, ISR_BLOCK) {
-	defaultHandler();
+	__defaultHandler();
 }
 
 /*
  * Timer/Counter2 Compare Match A
  */
 ISR(TIMER2_COMPA_vect, ISR_BLOCK) {
-	defaultHandler();
+	__defaultHandler();
 }
 
 /*
  * Timer/Counter2 Compare Match B
  */
 ISR(TIMER2_COMPB_vect, ISR_BLOCK) {
-	defaultHandler();
+	__defaultHandler();
 }
 
 /*
  * Timer/Counter2 Overflow
  */
 ISR(TIMER2_OVF_vect, ISR_BLOCK) {
-	defaultHandler();
+	__defaultHandler();
 }
 
 /*
  * Timer/Counter1 Capture Event
  */
 ISR(TIMER1_CAPT_vect, ISR_BLOCK) {
-	defaultHandler();
+	__defaultHandler();
 }
 
 /*
@@ -127,42 +127,42 @@ ISR(TIMER1_COMPA_vect, ISR_BLOCK) {
  * Timer/Counter1 Compare Match B
  */
 ISR(TIMER1_COMPB_vect, ISR_BLOCK) {
-	defaultHandler();
+	__defaultHandler();
 }
 
 /*
  * Timer/Counter1 Overflow
  */
 ISR(TIMER1_OVF_vect, ISR_BLOCK) {
-	defaultHandler();
+	__defaultHandler();
 }
 
 /*
  * Timer/Counter0 Compare Match A
  */
 ISR(TIMER0_COMPA_vect, ISR_BLOCK) {
-	defaultHandler();
+	__defaultHandler();
 }
 
 /*
  * Timer/Counter0 Compare Match B
  */
 ISR(TIMER0_COMPB_vect, ISR_BLOCK) {
-	defaultHandler();
+	__defaultHandler();
 }
 
 /*
  * Timer/Counter0 Overflow
  */
 ISR(TIMER0_OVF_vect, ISR_BLOCK) {
-	defaultHandler();
+	__defaultHandler();
 }
 
 /*
  * SPI Serial Transfer Complete
  */
 ISR(SPI_STC_vect, ISR_BLOCK) {
-	defaultHandler();
+	__defaultHandler();
 }
 
 /*
@@ -183,7 +183,7 @@ ISR(USART_UDRE_vect, ISR_BLOCK) {
  * USART Tx Complete
  */
 ISR(USART_TX_vect, ISR_BLOCK) {
-	defaultHandler();
+	__defaultHandler();
 }
 
 /*
@@ -197,26 +197,26 @@ ISR(ADC_vect, ISR_BLOCK) {
  * EEPROM Ready
  */
 ISR(EE_READY_vect, ISR_BLOCK) {
-	defaultHandler();
+	__defaultHandler();
 }
 
 /*
  * Analog Comparator
  */
 ISR(ANALOG_COMP_vect, ISR_BLOCK) {
-	defaultHandler();
+	__defaultHandler();
 }
 
 /*
  * Two-wire Serial Interface
  */
 ISR(TWI_vect, ISR_BLOCK) {
-	defaultHandler();
+	__defaultHandler();
 }
 
 /*
  * Store Program Memory Read
  */
 ISR(SPM_READY_vect, ISR_BLOCK) {
-	defaultHandler();
+	__defaultHandler();
 }
