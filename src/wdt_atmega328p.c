@@ -4,19 +4,16 @@
 #include <avr/interrupt.h>
 #include <avr/wdt.h>
 
-#include "sched/scheduler.h"
-#include "taskdef.h"
-#include "rtc_atmega328p.h"
 #include "wdt_atmega328p.h"
 
-void __wdtInit(void) __attribute__((naked)) __attribute__((section(".init3")));
+void __wdtInit(void) __attribute__ ((naked, used, section(".init3")));
 
 void __wdtInit()
 {
 	/*
 	 * Clear reset flags...
 	 */
-	MCUSR = 0;
+	MCUSR &= ~_BV(WDRF);
 	wdt_disable();
 }
 
@@ -26,20 +23,20 @@ void __wdtInit()
  */
 void setupWDT()
 {
-	MCUSR = 0;
+	/*
+	 * Clear reset flags...
+	 */
+	MCUSR &= ~_BV(WDRF);
+	wdt_disable();
 
 	/*
-	 * Clear watchdog interrupt
-	 * Watchdog change enable
-	 * Watchdog enable
-	 * Set 2s timeout
+	 * Set the Watchdog change enable bit,
+	 * and enable the Watchdog system reset mode...
 	 */
-	WDTCSR = _BV(WDIF) | _BV(WDCE) | _BV(WDE) | _BV(WDP2) | _BV(WDP1) | _BV(WDP0);
-}
+	WDTCSR = _BV(WDCE) | _BV(WDE);
 
-void wdtTask(PTASKPARM p)
-{
-	wdt_reset();
-
-	rescheduleTask(TASK_WDT, NULL);
+	/*
+	 * Enable the Watchdog and set prescaler for a 2 sec timeout...
+	 */
+	WDTCSR = _BV(WDE) | _BV(WDP2) | _BV(WDP1) | _BV(WDP0);
 }

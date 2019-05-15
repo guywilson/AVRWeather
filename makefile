@@ -49,7 +49,7 @@ SIZETOOL=avr-size
 UPLOADTOOL=./upload.sh
 
 # C compiler flags
-CFLAGS=-c -Os -Wall -ffunction-sections -fdata-sections -mmcu=$(DEVICE) -DF_CPU=16000000L -DARDUINO=10804 -D$(BOARD) -DARDUINO_ARCH_AVR -DARCH_SIZE=$(ARCHSIZE)
+CFLAGS=-c -O1 -Wall -ffunction-sections -fdata-sections -mmcu=$(DEVICE) -DF_CPU=16000000L -DARDUINO=10804 -D$(BOARD) -DARDUINO_ARCH_AVR -DARCH_SIZE=$(ARCHSIZE)
 
 # Linker flags
 LFLAGS=-fuse-linker-plugin -Wl,--gc-sections -mmcu=$(DEVICE)
@@ -67,7 +67,7 @@ SFLAGS=-C --mcu=$(DEVICE)
 SCHEDOBJ=$(BUILD)/scheduler.o
 
 # Object files
-OBJFILES=$(SCHEDOBJ) $(BUILD)/led_utils.o $(BUILD)/heartbeat.o $(BUILD)/adctask.o $(BUILD)/anemometer.o $(BUILD)/rainguage.o $(BUILD)/wdt_atmega328p.o $(BUILD)/isr_atmega328p.o $(BUILD)/rtc_atmega328p.o $(BUILD)/serial_atmega328p.o $(BUILD)/adc_atmega328p.o $(BUILD)/extint_atmega328p.o $(BUILD)/pwm_atmega328p.o $(BUILD)/error_atmega328p.o $(BUILD)/rxtxtask.o $(BUILD)/main.o
+OBJFILES=$(SCHEDOBJ) $(BUILD)/led_utils.o $(BUILD)/heartbeat.o $(BUILD)/wdttask.o $(BUILD)/adctask.o $(BUILD)/anemometer.o $(BUILD)/rainguage.o $(BUILD)/wdt_atmega328p.o $(BUILD)/isr_atmega328p.o $(BUILD)/rtc_atmega328p.o $(BUILD)/serial_atmega328p.o $(BUILD)/adc_atmega328p.o $(BUILD)/extint_atmega328p.o $(BUILD)/pwm_atmega328p.o $(BUILD)/error_atmega328p.o $(BUILD)/rxtxtask.o $(BUILD)/main.o
 
 # Target
 all: $(TARGET)
@@ -90,6 +90,9 @@ $(BUILD)/led_utils.o: $(SRC)/led_utils.c $(SRC)/led_utils.h
 
 $(BUILD)/heartbeat.o: $(SRC)/heartbeat.c $(SRC)/heartbeat.h $(SRC)/led_utils.h $(SCHEDSRC)/scheduler.h $(SRC)/taskdef.h
 	$(CC) $(CFLAGS) -o $(BUILD)/heartbeat.o $(SRC)/heartbeat.c
+
+$(BUILD)/wdttask.o: $(SRC)/wdttask.c $(SRC)/wdttask.h $(SCHEDSRC)/scheduler.h $(SRC)/taskdef.h
+	$(CC) $(CFLAGS) -o $(BUILD)/wdttask.o $(SRC)/wdttask.c
 
 $(BUILD)/adctask.o: $(SRC)/adctask.c $(SRC)/adctask.h $(SCHEDSRC)/scheduler.h $(SRC)/taskdef.h $(SRC)/adc_atmega328p.h $(SRC)/templookup.h $(SRC)/mbarlookup.h $(SRC)/humiditylookup.h
 	$(CC) $(CFLAGS) -o $(BUILD)/adctask.o $(SRC)/adctask.c
@@ -127,7 +130,7 @@ $(BUILD)/error_atmega328p.o: $(SRC)/error_atmega328p.c $(SCHEDSRC)/schederr.h $(
 $(BUILD)/rxtxtask.o: $(SRC)/rxtxtask.c $(SRC)/rxtxtask.h $(SRC)/taskdef.h $(SRC)/serial_atmega328p.h $(SRC)/adctask.h $(SRC)/anemometer.h $(SRC)/rainguage.h $(SCHEDSRC)/scheduler.h
 	$(CC) $(CFLAGS) -o $(BUILD)/rxtxtask.o $(SRC)/rxtxtask.c
 
-$(BUILD)/main.o: $(SRC)/main.c $(SCHEDSRC)/scheduler.h $(SRC)/heartbeat.h $(SRC)/adctask.h $(SRC)/anemometer.h $(SRC)/rainguage.h $(SRC)/taskdef.h $(SRC)/led_utils.h $(SRC)/rtc_atmega328p.h $(SRC)/adc_atmega328p.h $(SRC)/extint_atmega328p.h $(SRC)/pwm_atmega328p.h $(SRC)/spi_atmega328p.h $(SCHEDSRC)/schederr.h
+$(BUILD)/main.o: $(SRC)/main.c $(SCHEDSRC)/scheduler.h $(SRC)/heartbeat.h $(SRC)/wdttask.h $(SRC)/adctask.h $(SRC)/anemometer.h $(SRC)/rainguage.h $(SRC)/taskdef.h $(SRC)/led_utils.h $(SRC)/wdt_atmega328p.h $(SRC)/rtc_atmega328p.h $(SRC)/adc_atmega328p.h $(SRC)/extint_atmega328p.h $(SRC)/pwm_atmega328p.h $(SRC)/spi_atmega328p.h $(SCHEDSRC)/schederr.h
 	$(CC) $(CFLAGS) -o $(BUILD)/main.o $(SRC)/main.c
 
 ###############################################################################

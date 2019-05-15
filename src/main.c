@@ -11,6 +11,7 @@
 #include "anemometer.h"
 #include "rainguage.h"
 #include "rxtxtask.h"
+#include "wdttask.h"
 
 #include "led_utils.h"
 #include "rtc_atmega328p.h"
@@ -21,54 +22,66 @@
 
 #include "pwm_atmega328p.h"
 
-void main(void) __attribute__ ((noreturn));
+//#define TEST_EXTINT
 
 void setup(void)
-{
-	setupLEDPin();
-	setupRTC();
-	setupSerial();
-	setupADC();
-	setupExtIntInputs();
-	setupWDT();
-
-	// For testing...
-	setupPWM();
-}
-
-#pragma GCC diagnostic ignored  "-Wmain"
-void main(void)
 {
 	/*
 	 * Disable interrupts...
 	 */
 	cli();
 
+	setupWDT();
+
+	setupLEDPin();
+	setupRTC();
+	setupSerial();
+	setupADC();
+	setupExtIntInputs();
+
+#ifdef TEST_EXTINT
+	// For testing...
+	setupPWM();
+#endif
+
+	/*
+	 * Enable interrupts...
+	 */
+    sei();
+}
+
+int main(void)
+{
 	setup();
 
 	/*
 	 * Register RTC tick task...
 	 */
 	registerTickTask(&readExtIntTask);
-
-	/*
-	 * Enable interrupts...
-	 */
-    sei();
 	
+	/*
+	 * Switch on the LED so we know when the board has reset...
+	 */
+	turnOn(LED_ONBOARD);
+
 	initScheduler();
 
+	registerTask(TASK_WDT, &wdtTask);
 	registerTask(TASK_HEARTBEAT, &HeartbeatTask);
 	registerTask(TASK_ADC, &ADCTask);
 	registerTask(TASK_ANEMOMETER, &anemometerTask);
 	registerTask(TASK_RAINGUAGE, &rainGuageTask);
-//	registerTask(TASK_TX, &TxTask);
 	registerTask(TASK_RXCMD, &RxTask);
-	registerTask(TASK_WDT, &wdtTask);
+	//	registerTask(TASK_TX, &TxTask);
+
+	scheduleTask(
+			TASK_WDT,
+			rtc_val_ms(250),
+			NULL);
 
 	scheduleTask(
 			TASK_HEARTBEAT,
-			rtc_val_ms(950),
+			rtc_val_sec(3),
 			NULL);
 
 	scheduleTask(
@@ -79,11 +92,6 @@ void main(void)
 	scheduleTask(
 			TASK_RAINGUAGE,
 			RTC_ONE_HOUR,
-			NULL);
-
-	scheduleTask(
-			TASK_WDT,
-			rtc_val_ms(250),
 			NULL);
 
 //	scheduleTask(
@@ -100,4 +108,9 @@ void main(void)
 	** Start the scheduler...
 	*/
 	schedule();
+
+	/*
+	 * It should never get here...
+	 */
+	return -1;
 }
