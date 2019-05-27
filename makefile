@@ -14,6 +14,12 @@ DEVICE=atmega328p
 # Target board
 BOARD=ARDUINO_AVR_UNO
 
+# Baud rate for serial comms
+BAUD=115200
+
+# Baud rate tolerance for serial comms
+BAUD_TOL=0
+
 # Target architecture size
 ARCHSIZE=8
 
@@ -122,7 +128,7 @@ $(BUILD)/pwm_atmega328p.o: $(SRC)/pwm_atmega328p.c $(SRC)/pwm_atmega328p.h
 	$(CC) $(CFLAGS) -o $(BUILD)/pwm_atmega328p.o $(SRC)/pwm_atmega328p.c
 
 $(BUILD)/serial_atmega328p.o: $(SRC)/serial_atmega328p.c $(SRC)/serial_atmega328p.h $(SRC)/rtc_atmega328p.h $(SRC)/rxtxmsgdef.h $(SCHEDSRC)/scheduler.h $(SRC)/taskdef.h
-	$(CC) $(CFLAGS) -o $(BUILD)/serial_atmega328p.o $(SRC)/serial_atmega328p.c
+	$(CC) $(CFLAGS) -DBAUD=$(BAUD) -DBAUD_TOL=$(BAUD_TOL) -o $(BUILD)/serial_atmega328p.o $(SRC)/serial_atmega328p.c
 
 $(BUILD)/error_atmega328p.o: $(SRC)/error_atmega328p.c $(SCHEDSRC)/schederr.h $(SRC)/led_utils.h
 	$(CC) $(CFLAGS) -o $(BUILD)/error_atmega328p.o $(SRC)/error_atmega328p.c
