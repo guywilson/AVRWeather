@@ -95,16 +95,25 @@ uint16_t getADCAverage(uint8_t channel)
 #endif
 }
 
-
 int getPressure(char * pszDest)
 {
 	PGM_P		pressure;
-	uint16_t	avgPressureADC;
+	uint16_t	avgADC;
 	
-	avgPressureADC = getADCAverage(ADC_BAROMETER_CHANNEL) - ADC_MBAR_OFFSET;
-	
-	memcpy_P(&pressure, &mbarLookup[avgPressureADC], sizeof(PGM_P));
-	strcpy_P(pszDest, pressure);
+	avgADC = getADCAverage(ADC_BAROMETER_CHANNEL);
+
+	if (avgADC < ADC_MBAR_OFFSET) {
+		strcpy(pszDest, "-ERR");
+	}
+	else if (avgADC > (ADC_MBAR_MAX + ADC_MBAR_OFFSET)) {
+		strcpy(pszDest, "+ERR");
+	}
+	else {
+		avgADC -= ADC_MBAR_OFFSET;
+
+		memcpy_P(&pressure, &mbarLookup[avgADC], sizeof(PGM_P));
+		strcpy_P(pszDest, pressure);
+	}
 	
 	return strlen(pszDest);
 }
@@ -112,12 +121,22 @@ int getPressure(char * pszDest)
 int getHumidity(char * pszDest)
 {
 	PGM_P		humidity;
-	uint16_t	avgHumidityADC;
+	uint16_t	avgADC;
 
-	avgHumidityADC = getADCAverage(ADC_HUMIDITY_CHANNEL) - ADC_HUMIDITY_OFFSET;
+	avgADC = getADCAverage(ADC_HUMIDITY_CHANNEL);
 
-	memcpy_P(&humidity, &humidityLookup[avgHumidityADC], sizeof(PGM_P));
-	strcpy_P(pszDest, humidity);
+	if (avgADC < ADC_HUMIDITY_OFFSET) {
+		strcpy(pszDest, "-ERR");
+	}
+	else if (avgADC > (ADC_HUMIDITY_MAX + ADC_HUMIDITY_OFFSET)) {
+		strcpy(pszDest, "+ERR");
+	}
+	else {
+		avgADC -= ADC_HUMIDITY_OFFSET;
+
+		memcpy_P(&humidity, &humidityLookup[avgADC], sizeof(PGM_P));
+		strcpy_P(pszDest, humidity);
+	}
 
 	return strlen(pszDest);
 }
@@ -125,12 +144,22 @@ int getHumidity(char * pszDest)
 int getTemperature(char * pszDest)
 {
 	PGM_P			temperature;
-	int16_t			avgTempADC;
+	int16_t			avgADC;
 	
-	avgTempADC = getADCAverage(ADC_THERMO_CHANNEL) - ADC_TEMP_OFFSET;
-	
-	memcpy_P(&temperature, &tempLookup[avgTempADC], sizeof(PGM_P));
-	strcpy_P(pszDest, temperature);
+	avgADC = getADCAverage(ADC_THERMO_CHANNEL);
+
+	if (avgADC < ADC_TEMP_OFFSET) {
+		strcpy(pszDest, "-ERR");
+	}
+	else if (avgADC > (ADC_TEMP_MAX + ADC_TEMP_OFFSET)) {
+		strcpy(pszDest, "+ERR");
+	}
+	else {
+		avgADC -= ADC_TEMP_OFFSET;
+
+		memcpy_P(&temperature, &tempLookup[avgADC], sizeof(PGM_P));
+		strcpy_P(pszDest, temperature);
+	}
 	
 	return strlen(pszDest);
 }

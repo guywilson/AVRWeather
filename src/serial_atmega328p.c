@@ -1,5 +1,5 @@
 #ifndef BAUD
-#define BAUD		57600
+#define BAUD		9600
 #endif
 
 #include <stdint.h>
@@ -9,32 +9,33 @@
 #include <util/setbaud.h>
 
 #include "sched/scheduler.h"
+#include "sched/schederr.h"
 #include "rtc_atmega328p.h"
 #include "taskdef.h"
 #include "rxtxmsgdef.h"
 #include "sched/schederr.h"
 #include "serial_atmega328p.h"
 
-#define MSG_STORE_SIZE				4
-
-
-uint8_t			txBuffer[64];
+uint8_t			txBuffer[80];
 uint8_t			txLength = 0;
 
-uint8_t nakFrame[5] = {
+uint8_t 		ackFrame[80];
+
+uint8_t 		nakFrame[NAK_FRAME_LEN] = {
 	MSG_CHAR_START,
+	0x00,				// Length
 	0x00,				// Message ID
 	MSG_CHAR_NAK,
 	0x00,				// NAK error code
+	0x00,				// Checksum
 	MSG_CHAR_END
 };
 
-RXMSGSTRUCT		rxMsgStore[MSG_STORE_SIZE];
+RXMSGSTRUCT		msgStruct;
+PRXMSGSTRUCT	pMsgStruct = &msgStruct;
 
 void setupSerial()
 {
-	memset(rxMsgStore, 0, sizeof(RXMSGSTRUCT) * MSG_STORE_SIZE);
-
 	UBRR0H = UBRRH_VALUE;
 	UBRR0L = UBRRL_VALUE;
 
@@ -82,8 +83,7 @@ uint8_t getNextTxByte(uint8_t isInit)
 	}
 	
 	if (i < txLength) {
-		rtn = txBuffer[i];
-		i++;
+		rtn = txBuffer[i++];
 	}
 	else {
 		rtn = 0;
@@ -133,31 +133,53 @@ void txmsg(uint8_t * pMsg, uint8_t dataLength)
 
 uint8_t * getNakFrame(uint8_t messageID, uint8_t nakCode)
 {
-	nakFrame[1] = messageID;
-	nakFrame[3] = nakCode;
+	uint16_t		checksum = 0;
+
+	nakFrame[1] = 3;
+	nakFrame[2] = messageID;
+	nakFrame[4] = nakCode;
+
+	checksum = nakFrame[2] + nakFrame[3] + nakFrame[4];
+
+	nakFrame[5] = (uint8_t)(0x00FF - (checksum & 0x00FF));
 
 	return nakFrame;
 }
 
-PRXMSGSTRUCT allocateRxMsgStruct()
+void txNAK(uint8_t messageID, uint8_t nakCode)
 {
-	PRXMSGSTRUCT	m = NULL;
-	int				i = 0;
+	uint8_t	*	pNakFrame;
 
-	for (i = 0;i < MSG_STORE_SIZE;i++) {
-		if (!rxMsgStore[i].isAllocated) {
-			m = &rxMsgStore[i];
-			m->isAllocated = 1;
-			break;
-		}
-	}
+	pNakFrame = getNakFrame(messageID, nakCode);
 
-	return m;
+	txmsg(pNakFrame, NAK_FRAME_LEN);
 }
 
-void freeRxMsgStruct(PRXMSGSTRUCT m)
+void txACK(uint8_t messageID, char * pData, int dataLength)
 {
-	memset(m, 0, sizeof(RXMSGSTRUCT));
+	int				i;
+	uint16_t		checksum = 0;
+
+	memset(ackFrame, 0, 80);
+
+	ackFrame[0] = MSG_CHAR_START;
+	ackFrame[1] = (uint8_t)((dataLength + 2) & 0x00FF);
+	ackFrame[2] = messageID;
+	ackFrame[3] = MSG_CHAR_ACK;
+
+	checksum = ackFrame[2] + ackFrame[3];
+
+	for (i = 0;i < dataLength;i++) {
+		ackFrame[i + 4] = pData[i];
+		checksum += pData[i];
+	}
+
+	i += 4;
+
+	ackFrame[i++] = (uint8_t)(0x00FF - (checksum & 0x00FF));
+	ackFrame[i] = MSG_CHAR_END;
+
+	txmsg(ackFrame, dataLength + 6);
 }
 
 /*
@@ -171,16 +193,10 @@ void handleRxComplete(uint8_t b)
 {
 	static uint8_t		state = RX_STATE_START;
 	static uint8_t		i = 0;
-	static PRXMSGSTRUCT	pMsgStruct = NULL;
 
 	switch (state) {
 		case RX_STATE_START:
 			if (b == MSG_CHAR_START) {
-				/*
-				 * Allocate the msg structure for this message...
-				 */
-				pMsgStruct = allocateRxMsgStruct();
-
 				pMsgStruct->frame.start = b;
 				state = RX_STATE_LENGTH;
 			}
@@ -198,7 +214,7 @@ void handleRxComplete(uint8_t b)
 
 		case RX_STATE_MSGID:
 			pMsgStruct->frame.msgID = b;
-			pMsgStruct->frameChecksumTotal += b;
+			pMsgStruct->frameChecksumTotal = b;
 			state = RX_STATE_CMD;
 			break;
 
@@ -241,12 +257,12 @@ void handleRxComplete(uint8_t b)
 
 		case RX_STATE_END:
 			if (b != MSG_CHAR_END) {
-				pMsgStruct->rxErrorCode = MSG_NAK_DATA_OVERRUN;
+				pMsgStruct->rxErrorCode = MSG_NAK_NO_END_CHAR;
 			}
 
 			state = RX_STATE_START;
 
-			scheduleTask(TASK_RXCMD, rtc_val_ms(2), pMsgStruct);
+			scheduleTask(TASK_RXCMD, rtc_val_ms(10), pMsgStruct);
 			break;
 	}
 }
@@ -256,5 +272,12 @@ void handleRxComplete(uint8_t b)
 */
 void handleDRE()
 {
-	UDR0 = getNextTxByte(0);
+	uint8_t		b;
+
+	b = getNextTxByte(0);
+	UDR0 = b;
+
+	if (b == MSG_CHAR_END) {
+		disableTxInterrupt();
+	}
 }

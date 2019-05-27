@@ -5,7 +5,10 @@
 
 #define TEMP_LOOKUP_BUFFER_SIZE			 532
 
-#define ADC_TEMP_OFFSET					 51
+#define ADC_TEMP_OFFSET					  51
+
+#define ADC_TEMP_MIN					   0
+#define ADC_TEMP_MAX					 531
 
 /******************************************************************************
 **

@@ -7,6 +7,9 @@
 
 #define ADC_MBAR_OFFSET							 686
 
+#define ADC_MBAR_MIN							   0
+#define ADC_MBAR_MAX							 275
+
 /******************************************************************************
 **
 ** From an ADC input linked to an NXP MPX4115A barometric pressure sensor

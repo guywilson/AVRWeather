@@ -13,7 +13,7 @@
 ** <START><LENGTH><MSG_ID><ACK><DATA><CHECKSUM><END>
 **
 ** NAK response frame
-** <START><MSG_ID><NAK><ERR_CODE><END>
+** <START><LENGTH><MSG_ID><NAK><ERR_CODE><CHECKSUM><END>
 **
 **
 ** The checksum is calculated as follows:
@@ -32,6 +32,8 @@
 
 #define MAX_CMD_FRAME_LENGTH		 76		// Data + msgID + cmd
 
+#define NAK_FRAME_LEN				   7
+
 #define MSG_CHAR_START				0x7E
 #define MSG_CHAR_END				0x81
 
@@ -42,6 +44,7 @@
 #define MSG_NAK_INVALID_CHECKSUM	0x02
 #define MSG_NAK_DATA_ERROR			0x04
 #define MSG_NAK_DATA_OVERRUN		0x08
+#define MSG_NAK_NO_END_CHAR			0x10
 
 #define RX_STATE_START				0x01
 #define RX_STATE_LENGTH				0x02
@@ -91,6 +94,8 @@ void txstr(char * pszData, uint8_t dataLength);
 void txmsg(uint8_t * pMsg, uint8_t dataLength);
 
 uint8_t * getNakFrame(uint8_t messageID, uint8_t nakCode);
+void txNAK(uint8_t messageID, uint8_t nakCode);
+void txACK(uint8_t messageID, char * pData, int dataLength);
 
 PRXMSGSTRUCT allocateRxMsgStruct();
 void freeRxMsgStruct(PRXMSGSTRUCT m);

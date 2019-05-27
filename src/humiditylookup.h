@@ -12,6 +12,9 @@
 */
 #define ADC_HUMIDITY_OFFSET				163
 
+#define ADC_HUMIDITY_MIN					  0
+#define ADC_HUMIDITY_MAX					635
+
 /******************************************************************************
 **
 ** From an ADC input linked to a Honeywell HIH-4000 humidity sensor
