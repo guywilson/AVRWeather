@@ -86,4 +86,8 @@ RXMSGSTRUCT;
 
 typedef RXMSGSTRUCT *	PRXMSGSTRUCT;
 
+int openSerialPort(char * pszPort, int speed);
+int processFrame(uint8_t * buffer, int bufferLength);
+int mapBaudRate(int baud);
+
 #endif

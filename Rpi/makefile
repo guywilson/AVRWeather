@@ -25,15 +25,18 @@ LINKER=gcc
 CPPFLAGS=-c -Wall
 
 # Object files 
-OBJFILES=$(BUILD)/main.o
+OBJFILES=$(BUILD)/main.o $(BUILD)/serial.o
 
 # Target
 all: $(TARGET)
 
 # Compile C source files
 #
-$(BUILD)/main.o: $(SOURCE)/main.c $(SOURCE)/rxtxmsgdef.h
+$(BUILD)/main.o: $(SOURCE)/main.c $(SOURCE)/serial.h
 	$(CPP) $(CPPFLAGS) -o $(BUILD)/main.o $(SOURCE)/main.c
+
+$(BUILD)/serial.o: $(SOURCE)/serial.c $(SOURCE)/serial.h
+	$(CPP) $(CPPFLAGS) -o $(BUILD)/serial.o $(SOURCE)/serial.c
 
 $(TARGET): $(OBJFILES)
 	$(LINKER) -lpthread -lstdc++ -o $(TARGET) $(OBJFILES)
