@@ -88,15 +88,17 @@ PRXMSGSTRUCT processFrame(uint8_t * buffer, int bufferLength)
 	static int			i;
 
 	PRXMSGSTRUCT		pMsg;
+	static RXMSGSTRUCT	msg;
 	int					count = 0;
 	uint8_t				b;
 
-	pMsg = (PRXMSGSTRUCT)malloc(sizeof(PRXMSGSTRUCT));
-
-	if (pMsg == NULL) {
-		printf("Failed to allocate message structure\n");
-		return NULL;
-	}
+//	pMsg = (PRXMSGSTRUCT)malloc(sizeof(PRXMSGSTRUCT));
+//
+//	if (pMsg == NULL) {
+//		printf("Failed to allocate message structure\n");
+//		return NULL;
+//	}
+	pMsg = &msg;
 
 	pMsg->timeStamp = time(0);
 
