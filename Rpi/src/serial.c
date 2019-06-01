@@ -82,23 +82,13 @@ int openSerialPort(char * pszPort, int speed)
 	return fd;
 }
 
-PRXMSGSTRUCT processFrame(uint8_t * buffer, int bufferLength)
+int processFrame(PRXMSGSTRUCT pMsg, uint8_t * buffer, int bufferLength)
 {
-	static int 			state = RX_STATE_START;
-	static int			i;
-
-	PRXMSGSTRUCT		pMsg;
-	static RXMSGSTRUCT	msg;
+	int 				state = RX_STATE_START;
+	int					i;
+	int					rtn = 0;
 	int					count = 0;
 	uint8_t				b;
-
-//	pMsg = (PRXMSGSTRUCT)malloc(sizeof(PRXMSGSTRUCT));
-//
-//	if (pMsg == NULL) {
-//		printf("Failed to allocate message structure\n");
-//		return NULL;
-//	}
-	pMsg = &msg;
 
 	pMsg->timeStamp = time(0);
 
@@ -178,6 +168,7 @@ PRXMSGSTRUCT processFrame(uint8_t * buffer, int bufferLength)
 				printf("[0x%02X]", b);
 				if (b == MSG_CHAR_END) {
 					pMsg->frame.end = b;
+					rtn = 0;
 				}
 
 				state = RX_STATE_START;
@@ -185,7 +176,7 @@ PRXMSGSTRUCT processFrame(uint8_t * buffer, int bufferLength)
 		}
 	}
 
-	return pMsg;
+	return rtn;
 }
 
 int mapBaudRate(int baud)

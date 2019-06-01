@@ -12,6 +12,7 @@
 void * queryTPHThread(void * pArgs)
 {
 	PRXMSGSTRUCT	pMsg;
+	RXMSGSTRUCT		msg;
 	uint8_t			msgID = 0x00;
 	int				go = 1;
 	int				frameLength = 0;
@@ -19,11 +20,12 @@ void * queryTPHThread(void * pArgs)
 	int				bytesRead = 0;
 	int				i;
 	int				errCount = 0;
+	int				rtn;
 	uint8_t			frame[80];
 	char			szTPH[80];
-	char *			pszTemperature;
-	char *			pszPressure;
-	char *			pszHumidity;
+	char 			szTemperature[20];
+	char 			szPressure[20];
+	char 			szHumidity[20];
 	FILE *			fptr;
 	struct tm *		time;
 	int	*			fd;
@@ -38,6 +40,8 @@ void * queryTPHThread(void * pArgs)
 	}
 
 	fprintf(fptr, "TIME,TEMPERATURE,PRESSURE,HUMIDITY\n");
+
+	pMsg = &msg;
 
 	while (go) {
 		frame[0] = MSG_CHAR_START;
@@ -86,15 +90,17 @@ void * queryTPHThread(void * pArgs)
 		printf("RX[%d]: ", bytesRead);
 
 		if (bytesRead > 0) {
-			pMsg = processFrame(frame, bytesRead);
+			memset(&msg, 0, sizeof(msg));
+
+			rtn = processFrame(pMsg, frame, bytesRead);
 
 			time = localtime(&pMsg->timeStamp);
 
 			memcpy(szTPH, pMsg->frame.data, pMsg->frame.frameLength - 2);
 
-			pszTemperature = strtok(szTPH, ";");
-			pszPressure = strtok(NULL, ";");
-			pszHumidity = strtok(NULL, ";");
+			strcpy(szTemperature, strtok(szTPH, ";"));
+			strcpy(szPressure, strtok(NULL, ";"));
+			strcpy(szHumidity, strtok(NULL, ";"));
 
 			fprintf(
 				fptr,
@@ -105,13 +111,11 @@ void * queryTPHThread(void * pArgs)
 				time->tm_hour,
 				time->tm_min,
 				time->tm_sec,
-				pszTemperature,
-				pszPressure,
-				pszHumidity);
+				&szTemperature[2],
+				&szPressure[2],
+				&szHumidity[2]);
 
 			fflush(fptr);
-
-			//free(pMsg);
 		}
 		else if (bytesRead < 0) {
 			if (errno) {
