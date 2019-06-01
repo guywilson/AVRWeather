@@ -70,7 +70,7 @@ int getNextTxByte(uint8_t isInit)
 		i = 0;
 	}
 	
-	if (i < txLength) {
+	if (i < (txLength - 1)) {
 		rtn = txBuffer[i++];
 	}
 	else {
