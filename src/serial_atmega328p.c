@@ -16,6 +16,10 @@
 #include "sched/schederr.h"
 #include "serial_atmega328p.h"
 
+#define enableTxInterrupt()			UCSR0B |= _BV(UDRIE0)
+#define disableTxInterrupt()		UCSR0B &= ~_BV(UDRIE0)
+
+
 uint8_t			txBuffer[80];
 uint8_t			txLength = 0;
 
@@ -57,23 +61,7 @@ void setupSerial()
 	UCSR0B = _BV(RXEN0) | _BV(TXEN0) | _BV(RXCIE0) | _BV(TXCIE0);
 }
 
-void enableTxInterrupt()
-{
-	/*
-	** Enable the data register empty interrupt...
-	*/
-	UCSR0B |= _BV(UDRIE0);
-}
-
-void disableTxInterrupt()
-{
-	/*
-	** Mask the data register empty interrupt...
-	*/
-	UCSR0B &= ~_BV(UDRIE0);
-}
-
-uint8_t getNextTxByte(uint8_t isInit)
+int getNextTxByte(uint8_t isInit)
 {
 	static uint8_t		i = 0;
 	uint8_t				rtn;
@@ -86,7 +74,7 @@ uint8_t getNextTxByte(uint8_t isInit)
 		rtn = txBuffer[i++];
 	}
 	else {
-		rtn = 0;
+		rtn = -1;
 		disableTxInterrupt();
 	}
 	
@@ -272,12 +260,11 @@ void handleRxComplete(uint8_t b)
 */
 void handleDRE()
 {
-	uint8_t		b;
+	int b;
 
 	b = getNextTxByte(0);
-	UDR0 = b;
 
-	if (b == MSG_CHAR_END) {
-		disableTxInterrupt();
+	if (b != -1) {
+		UDR0 = (uint8_t)b;
 	}
 }

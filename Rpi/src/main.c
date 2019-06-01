@@ -10,7 +10,7 @@
 
 void * queryTPHThread(void * pArgs)
 {
-	uint8_t		msgID = 0x82;
+	uint8_t		msgID = 0x00;
 	int			go = 1;
 	int			frameLength = 0;
 	int			writeLen;
