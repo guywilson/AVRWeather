@@ -10,7 +10,7 @@
 
 void * queryTPHThread(void * pArgs)
 {
-	uint8_t		msgID = 1;
+	uint8_t		msgID = 0;
 	int			go = 1;
 	int			frameLength = 0;
 	int			writeLen;
@@ -124,6 +124,7 @@ int main(int argc, char *argv[])
 
     if (err != 0) {
     	printf("\nCan't create thread :[%s]", strerror(err));
+    	return -1;
     }
     else {
     	printf("\nThread created successfully\n");
