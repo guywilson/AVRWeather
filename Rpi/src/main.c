@@ -111,7 +111,7 @@ void * queryTPHThread(void * pArgs)
 
 			fflush(fptr);
 
-			free(pMsg);
+			//free(pMsg);
 		}
 		else if (bytesRead < 0) {
 			if (errno) {
