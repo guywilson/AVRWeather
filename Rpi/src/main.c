@@ -105,9 +105,9 @@ void * queryTPHThread(void * pArgs)
 				time->tm_hour,
 				time->tm_min,
 				time->tm_sec,
-				&pszTemperature[0],
-				&pszPressure[0],
-				&pszHumidity[0]);
+				pszTemperature,
+				pszPressure,
+				pszHumidity);
 
 			fflush(fptr);
 
