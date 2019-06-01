@@ -5,22 +5,39 @@
 #include <string.h>
 #include <unistd.h>
 #include <pthread.h>
+#include <time.h>
 
 #include "serial.h"
 
 void * queryTPHThread(void * pArgs)
 {
-	uint8_t		msgID = 0x00;
-	int			go = 1;
-	int			frameLength = 0;
-	int			writeLen;
-	int			bytesRead = 0;
-	int			i;
-	int			errCount = 0;
-	uint8_t		frame[80];
-	int	*		fd;
+	PRXMSGSTRUCT	pMsg;
+	uint8_t			msgID = 0x00;
+	int				go = 1;
+	int				frameLength = 0;
+	int				writeLen;
+	int				bytesRead = 0;
+	int				i;
+	int				errCount = 0;
+	uint8_t			frame[80];
+	char			szTPH[80];
+	char *			pszTemperature;
+	char *			pszPressure;
+	char *			pszHumidity;
+	FILE *			fptr;
+	struct tm *		time;
+	int	*			fd;
 
 	fd = (int *)pArgs;
+
+	fptr = fopen("./data.csv", "at");
+
+	if (fptr == NULL) {
+		printf("Failed to open CSV file");
+		return NULL;
+	}
+
+	fprintf(fptr, "TIME,TEMPERATURE,PRESSURE,HUMIDITY\n");
 
 	while (go) {
 		frame[0] = MSG_CHAR_START;
@@ -69,7 +86,32 @@ void * queryTPHThread(void * pArgs)
 		printf("RX[%d]: ", bytesRead);
 
 		if (bytesRead > 0) {
-			processFrame(frame, bytesRead);
+			pMsg = processFrame(frame, bytesRead);
+
+			time = localtime(&pMsg->timeStamp);
+
+			memcpy(szTPH, pMsg->frame.data, pMsg->frame.frameLength - 2);
+
+			pszTemperature = strtok(szTPH, ";");
+			pszPressure = strtok(NULL, ";");
+			pszHumidity = strtok(NULL, ";");
+
+			fprintf(
+				fptr,
+				"%d-%02d-%02d %02d:%02d:%02d,%s,%s,%s\n",
+				time->tm_year + 1900,
+				time->tm_mon + 1,
+				time->tm_mday,
+				time->tm_hour,
+				time->tm_min,
+				time->tm_sec,
+				&pszTemperature[0],
+				&pszPressure[0],
+				&pszHumidity[0]);
+
+			fflush(fptr);
+
+			free(pMsg);
 		}
 		else if (bytesRead < 0) {
 			if (errno) {
@@ -81,6 +123,8 @@ void * queryTPHThread(void * pArgs)
 
 		sleep(2);
 	}
+
+	fclose(fptr);
 
 	return NULL;
 }

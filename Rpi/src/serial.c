@@ -8,6 +8,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/ioctl.h>
+#include <time.h>
 
 #include "serial.h"
 
@@ -81,15 +82,23 @@ int openSerialPort(char * pszPort, int speed)
 	return fd;
 }
 
-int processFrame(uint8_t * buffer, int bufferLength)
+PRXMSGSTRUCT processFrame(uint8_t * buffer, int bufferLength)
 {
 	static int 			state = RX_STATE_START;
 	static int			i;
-	static RXMSGFRAME	frame;
 
+	PRXMSGSTRUCT		pMsg;
 	int					count = 0;
-	int 				rtn = 1;
 	uint8_t				b;
+
+	pMsg = (PRXMSGSTRUCT)malloc(sizeof(PRXMSGSTRUCT));
+
+	if (pMsg == NULL) {
+		printf("Failed to allocate message structure\n");
+		return NULL;
+	}
+
+	pMsg->timeStamp = time(0);
 
 	while (count < bufferLength) {
 		b = buffer[count++];
@@ -99,7 +108,7 @@ int processFrame(uint8_t * buffer, int bufferLength)
 				printf("[S]");
 				printf("[0x%02X]", b);
 				if (b == MSG_CHAR_START) {
-					frame.start = b;
+					pMsg->frame.start = b;
 					state = RX_STATE_LENGTH;
 				}
 				break;
@@ -107,23 +116,23 @@ int processFrame(uint8_t * buffer, int bufferLength)
 			case RX_STATE_LENGTH:
 				printf("[L]");
 				printf("[%d]", b);
-				frame.frameLength = b;
+				pMsg->frame.frameLength = b;
 				state = RX_STATE_MSGID;
 				break;
 
 			case RX_STATE_MSGID:
 				printf("[M]");
 				printf("[0x%02X]", b);
-				frame.msgID = b;
+				pMsg->frame.msgID = b;
 				state = RX_STATE_RESPTYPE;
 				break;
 
 			case RX_STATE_RESPTYPE:
 				if (b == MSG_CHAR_ACK) {
 					printf("[ACK]");
-					frame.responseType = MSG_CHAR_ACK;
+					pMsg->frame.responseType = MSG_CHAR_ACK;
 
-					if (frame.frameLength > 2) {
+					if (pMsg->frame.frameLength > 2) {
 						state = RX_STATE_DATA;
 						i = 0;
 					}
@@ -133,7 +142,7 @@ int processFrame(uint8_t * buffer, int bufferLength)
 				}
 				else if (b == MSG_CHAR_NAK) {
 					printf("[NAK]");
-					frame.responseType = MSG_CHAR_NAK;
+					pMsg->frame.responseType = MSG_CHAR_NAK;
 
 					state = RX_STATE_ERRCODE;
 				}
@@ -141,9 +150,9 @@ int processFrame(uint8_t * buffer, int bufferLength)
 
 			case RX_STATE_DATA:
 				printf("%c", b);
-				frame.data[i++] = b;
+				pMsg->frame.data[i++] = b;
 
-				if (i == frame.frameLength - 2) {
+				if (i == pMsg->frame.frameLength - 2) {
 					state = RX_STATE_CHECKSUM;
 				}
 				break;
@@ -151,14 +160,14 @@ int processFrame(uint8_t * buffer, int bufferLength)
 			case RX_STATE_ERRCODE:
 				printf("[E]");
 				printf("[0x%02X]", b);
-				frame.errorCode = b;
+				pMsg->frame.errorCode = b;
 				state = RX_STATE_CHECKSUM;
 				break;
 
 			case RX_STATE_CHECKSUM:
 				printf("[C]");
 				printf("[0x%02X]", b);
-				frame.checksum = b;
+				pMsg->frame.checksum = b;
 				state = RX_STATE_END;
 				break;
 
@@ -166,8 +175,7 @@ int processFrame(uint8_t * buffer, int bufferLength)
 				printf("[N]");
 				printf("[0x%02X]", b);
 				if (b == MSG_CHAR_END) {
-					frame.end = b;
-					rtn = 0;
+					pMsg->frame.end = b;
 				}
 
 				state = RX_STATE_START;
@@ -175,7 +183,7 @@ int processFrame(uint8_t * buffer, int bufferLength)
 		}
 	}
 
-	return rtn;
+	return pMsg;
 }
 
 int mapBaudRate(int baud)

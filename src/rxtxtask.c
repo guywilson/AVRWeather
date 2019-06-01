@@ -50,6 +50,9 @@ void RxTask(PTASKPARM p)
 				szBuffer[i + valueLen] = ';';
 				i += valueLen + 1;
 
+				// Null terminate string...
+				szBuffer[i++] = 0;
+
 				txACK(pMsgStruct->frame.msgID, szBuffer, i);
 				break;
 

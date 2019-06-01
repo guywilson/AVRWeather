@@ -80,14 +80,15 @@ typedef struct {
 
 	uint16_t		frameChecksumTotal;
 	uint8_t			rxErrorCode;
-	uint8_t			isAllocated;
+
+	time_t			timeStamp;
 }
 RXMSGSTRUCT;
 
 typedef RXMSGSTRUCT *	PRXMSGSTRUCT;
 
 int openSerialPort(char * pszPort, int speed);
-int processFrame(uint8_t * buffer, int bufferLength);
+PRXMSGSTRUCT processFrame(uint8_t * buffer, int bufferLength);
 int mapBaudRate(int baud);
 
 #endif
