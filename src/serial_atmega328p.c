@@ -64,20 +64,20 @@ void setupSerial()
 int getNextTxByte(uint8_t isInit)
 {
 	static uint8_t		i = 0;
-	uint8_t				rtn;
+	int					rtn;
 	
 	if (isInit) {
 		i = 0;
 	}
-	
-	if (i < (txLength - 1)) {
-		rtn = txBuffer[i++];
+
+	if (i == txLength) {
+		disableTxInterrupt();
+		rtn = -1;
 	}
 	else {
-		rtn = -1;
-		disableTxInterrupt();
+		rtn = (int)txBuffer[i++];
 	}
-	
+
 	return rtn;
 }
 
