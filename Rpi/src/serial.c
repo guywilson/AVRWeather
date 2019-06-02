@@ -116,6 +116,7 @@ int processFrame(PRXMSGSTRUCT pMsg, uint8_t * buffer, int bufferLength)
 				printf("[M]");
 				printf("[0x%02X]", b);
 				pMsg->frame.msgID = b;
+				pMsg->frameChecksumTotal = b;
 				state = RX_STATE_RESPTYPE;
 				break;
 
@@ -138,11 +139,14 @@ int processFrame(PRXMSGSTRUCT pMsg, uint8_t * buffer, int bufferLength)
 
 					state = RX_STATE_ERRCODE;
 				}
+
+				pMsg->frameChecksumTotal += b;
 				break;
 
 			case RX_STATE_DATA:
 				printf("%c", b);
 				pMsg->frame.data[i++] = b;
+				pMsg->frameChecksumTotal += b;
 
 				if (i == pMsg->frame.frameLength - 2) {
 					state = RX_STATE_CHECKSUM;
@@ -153,6 +157,7 @@ int processFrame(PRXMSGSTRUCT pMsg, uint8_t * buffer, int bufferLength)
 				printf("[E]");
 				printf("[0x%02X]", b);
 				pMsg->frame.errorCode = b;
+				pMsg->frameChecksumTotal += b;
 				state = RX_STATE_CHECKSUM;
 				break;
 
@@ -160,6 +165,15 @@ int processFrame(PRXMSGSTRUCT pMsg, uint8_t * buffer, int bufferLength)
 				printf("[C]");
 				printf("[0x%02X]", b);
 				pMsg->frame.checksum = b;
+				pMsg->frameChecksumTotal += b;
+
+				/*
+				 * Validate the checksum...
+				 */
+				if ((pMsg->frameChecksumTotal & 0x00FF) != 0x00FF) {
+					printf("ERROR: Invalid checksum [0x%02X]\n", pMsg->frame.checksum);
+				}
+
 				state = RX_STATE_END;
 				break;
 

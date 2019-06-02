@@ -20,7 +20,6 @@ void * queryTPHThread(void * pArgs)
 	int				bytesRead = 0;
 	int				i;
 	int				errCount = 0;
-	int				rtn;
 	uint8_t			frame[80];
 	char			szTPH[80];
 	char 			szTemperature[20];
@@ -92,7 +91,7 @@ void * queryTPHThread(void * pArgs)
 		if (bytesRead > 0) {
 			memset(&msg, 0, sizeof(msg));
 
-			rtn = processFrame(pMsg, frame, bytesRead);
+			processFrame(pMsg, frame, bytesRead);
 
 			time = localtime(&pMsg->timeStamp);
 
