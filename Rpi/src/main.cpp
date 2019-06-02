@@ -1,3 +1,7 @@
+#include <iostream>
+#include <cstring>
+#include <string>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -8,6 +12,7 @@
 #include <time.h>
 
 #include "serial.h"
+#include "exception.h"
 #include "avrweather.h"
 
 void * 	queryTPHThread(void * pArgs);
@@ -31,9 +36,9 @@ void * queryTPHThread(void * pArgs)
 	char 			szHumidity[20];
 	FILE *			fptr;
 	struct tm *		time;
-	int	*			fd;
+	SerialPort * 	port;
 
-	fd = (int *)pArgs;
+	port = (SerialPort *)pArgs;
 
 	fptr = fopen("./data.csv", "at");
 
@@ -59,7 +64,13 @@ void * queryTPHThread(void * pArgs)
 		/*
 		 * Write cmd frame...
 		 */
-		writeLen = write(*fd, frame, frameLength);
+		try {
+			writeLen = port->send(frame, frameLength);
+		}
+		catch (Exception * e) {
+			cout << "Error writing to port: " << e->getMessage() << endl;
+			continue;
+		}
 
 		printf("TX[%d]: ", writeLen);
 		for (i = 0;i < writeLen;i++) {
@@ -82,12 +93,12 @@ void * queryTPHThread(void * pArgs)
 		/*
 		 * Read response frame...
 		 */
-		bytesRead = read(*fd, frame, 80);
-
-		while (bytesRead < 0 && errCount < 10) {
-			bytesRead = read(*fd, frame, 80);
-			usleep(100000L);
-			errCount++;
+		try {
+			bytesRead = port->receive(frame, 80);
+		}
+		catch (Exception * e) {
+			cout << "Error reading port: " << e->getMessage() << endl;
+			continue;
 		}
 
 		printf("RX[%d]: ", bytesRead);
@@ -120,11 +131,6 @@ void * queryTPHThread(void * pArgs)
 
 			fflush(fptr);
 		}
-		else if (bytesRead < 0) {
-			if (errno) {
-				printf("E[%s]", strerror(errno));
-			}
-		}
 
 		printf("\n");
 
@@ -138,13 +144,13 @@ void * queryTPHThread(void * pArgs)
 
 int main(int argc, char *argv[])
 {
-	int			err;
-	pthread_t	tid;
-	char		szPort[128];
-	char		szBaud[8];
-	int			baud;
-	int			fd;
-	int			i;
+	int				err;
+	pthread_t		tid;
+	SerialPort *	port;
+	char			szPort[128];
+	char			szBaud[8];
+	int				baud;
+	int				i;
 
 	if (argc > 1) {
 		for (i = 1;i < argc;i++) {
@@ -154,7 +160,7 @@ int main(int argc, char *argv[])
 				}
 				else if (strcmp(&argv[i][1], "baud") == 0) {
 					strcpy(szBaud, &argv[++i][0]);
-					baud = mapBaudRate(atoi(szBaud));
+					baud = SerialPort::mapBaudRate(atoi(szBaud));
 				}
 			}
 		}
@@ -165,13 +171,12 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
-	fd = openSerialPort(szPort, baud);
+	/*
+	 * Open the serial port...
+	 */
+	port = new SerialPort(szPort, baud);
 
-	if (fd < 0) {
-		return -1;
-	}
-
-	err = pthread_create(&tid, NULL, &queryTPHThread, &fd);
+	err = pthread_create(&tid, NULL, &queryTPHThread, port);
 
     if (err != 0) {
     	printf("\nCan't create thread :[%s]", strerror(err));
@@ -185,7 +190,7 @@ int main(int argc, char *argv[])
     	usleep(1000L);
     }
 
-	close(fd);
+	delete port;
 
 	return 0;
 }

@@ -10,12 +10,12 @@
 #include <sys/ioctl.h>
 
 #include "serial.h"
+#include "exception.h"
 
-int openSerialPort(char * pszPort, int speed)
+SerialPort::SerialPort(char * pszPort, int baudRate)
 {
-	int				fd;
-	int				rc;
-	struct termios 	t;
+	int			rc;
+	char		szExceptionText[1024];
 
 	/*
 	 * Open the serial port...
@@ -23,8 +23,8 @@ int openSerialPort(char * pszPort, int speed)
 	fd = open(pszPort, O_RDWR | O_NOCTTY | O_NONBLOCK);
 
 	if (fd < 0) {
-        printf("Error opening %s: %s\n", pszPort, strerror(errno));
-        return -1;
+		sprintf(szExceptionText, "Error opening %s: %s", pszPort, strerror(errno));
+        throw new Exception(szExceptionText);
     }
 
 	/*
@@ -57,16 +57,17 @@ int openSerialPort(char * pszPort, int speed)
 	/*
 	 * Set the baud rate...
 	 */
-	cfsetispeed(&t, speed);
-	cfsetospeed(&t, speed);
+	cfsetispeed(&t, baudRate);
+	cfsetospeed(&t, baudRate);
 
 	/*
 	 * Set the new port parameters...
 	 */
 	if ((tcsetattr(fd, TCSANOW, &t)) != 0) {
-		printf("\n  ERROR ! in Setting attributes\n");
 		close(fd);
-		return -1;
+
+		sprintf(szExceptionText, "Error setting attributes");
+        throw new Exception(szExceptionText);
 	}
 
 	/*
@@ -77,11 +78,53 @@ int openSerialPort(char * pszPort, int speed)
 	if (rc != -1) {
 		fcntl(fd, F_SETFL, rc & ~O_NONBLOCK);
 	}
-
-	return fd;
 }
 
-int mapBaudRate(int baud)
+SerialPort::~SerialPort()
+{
+	close(fd);
+}
+
+int SerialPort::send(uint8_t * pBuffer, int writeLength)
+{
+	int		bytesWritten;
+
+	bytesWritten = write(fd, pBuffer, writeLength);
+
+	if (bytesWritten < 0) {
+		throw new Exception("Error writing to port");
+	}
+
+	return bytesWritten;
+}
+
+int SerialPort::receive(uint8_t * pBuffer, int requestedBytes)
+{
+	char	szExceptionText[256];
+	int		bytesRead;
+	int		errCount = 0;
+
+	bytesRead = read(fd, pBuffer, requestedBytes);
+
+	while (bytesRead < 0 && errCount < 10) {
+		bytesRead = read(fd, pBuffer, requestedBytes);
+
+		if (bytesRead < 0) {
+			errCount++;
+		}
+
+		usleep(100000L);
+	}
+
+	if (errCount) {
+		sprintf(szExceptionText, "Error reading from port: %s", strerror(errno));
+        throw new Exception(szExceptionText);
+	}
+
+	return bytesRead;
+}
+
+int SerialPort::mapBaudRate(int baud)
 {
 	int		baudConst = B9600;
 
