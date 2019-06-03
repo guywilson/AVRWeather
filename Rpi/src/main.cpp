@@ -13,10 +13,111 @@
 
 #include "serial.h"
 #include "exception.h"
+#include "stack.h"
 #include "avrweather.h"
 
-void * 	queryTPHThread(void * pArgs);
+#define FRAME_MEM_SIZE				10
 
+
+FRAME				_frameMem[FRAME_MEM_SIZE];
+
+Queue *				txQueue;
+Queue *				rxQueue;
+pthread_mutex_t 	txLock;
+pthread_mutex_t 	rxLock;
+
+FRAME * allocFrame()
+{
+	PFRAME 		frame = NULL;
+	int			i;
+
+	for (i = 0;i < FRAME_MEM_SIZE;i++) {
+		if (!_frameMem[i].isAllocated) {
+			frame = &_frameMem[i];
+			frame->isAllocated = 1;
+			break;
+		}
+	}
+
+	return frame;
+}
+
+void freeFrame(PFRAME frame)
+{
+	memset(frame, 0, sizeof(FRAME));
+}
+
+void * txrxDeamon(void * pArgs)
+{
+	int				go = 1;
+	int				i;
+	int				errCount = 0;
+	int				writeLen;
+	int				bytesRead = 0;
+
+	PFRAME			pTxFrame;
+	PFRAME			pRxFrame;
+	SerialPort * 	port;
+
+	port = (SerialPort *)pArgs;
+
+	while (go) {
+		pthread_mutex_lock(&txLock);
+
+		if (txQueue->getItemCount()) {
+			pTxFrame = (PFRAME)txQueue->getItem();
+		}
+
+		pthread_mutex_unlock(&txLock);
+
+		/*
+		 * Write cmd frame...
+		 */
+		try {
+			writeLen = port->send(pTxFrame->data, pTxFrame->dataLength);
+		}
+		catch (Exception * e) {
+			cout << "Error writing to port: " << e->getMessage() << endl;
+			continue;
+		}
+
+		printf("TX[%d]: ", writeLen);
+		for (i = 0;i < writeLen;i++) {
+			printf("[0x%02X]", pTxFrame->data[i]);
+		}
+		printf("\n");
+
+		freeFrame(pTxFrame);
+
+		errCount = 0;
+
+		pRxFrame = allocFrame();
+
+		if (pRxFrame == NULL) {
+			cout << "ERROR: Cannot allocate frame buffer" << endl;
+			continue;
+		}
+
+		/*
+		 * Read response frame...
+		 */
+		try {
+			bytesRead = port->receive(pRxFrame->data, MAX_REQUEST_MESSAGE_LENGTH);
+		}
+		catch (Exception * e) {
+			cout << "Error reading port: " << e->getMessage() << endl;
+			continue;
+		}
+
+		pthread_mutex_lock(&rxLock);
+
+		rxQueue->addItem(pRxFrame);
+
+		pthread_mutex_unlock(&rxLock);
+	}
+
+	return NULL;
+}
 
 void * queryTPHThread(void * pArgs)
 {
@@ -149,7 +250,6 @@ int main(int argc, char *argv[])
 	SerialPort *	port;
 	char			szPort[128];
 	char			szBaud[8];
-	int				baud;
 	int				i;
 
 	if (argc > 1) {
@@ -160,7 +260,6 @@ int main(int argc, char *argv[])
 				}
 				else if (strcmp(&argv[i][1], "baud") == 0) {
 					strcpy(szBaud, &argv[++i][0]);
-					baud = SerialPort::mapBaudRate(atoi(szBaud));
 				}
 			}
 		}
@@ -174,23 +273,40 @@ int main(int argc, char *argv[])
 	/*
 	 * Open the serial port...
 	 */
-	port = new SerialPort(szPort, baud);
+	port = new SerialPort(szPort, SerialPort::mapBaudRate(atoi(szBaud)));
+
+	err = pthread_mutex_init(&txLock, NULL);
+
+	if (err != 0) {
+		printf("\nCan't create Tx mutex :[%s]", strerror(err));
+		return -1;
+	}
+
+	err = pthread_mutex_init(&rxLock, NULL);
+
+	if (err != 0) {
+		printf("\nCan't create Rx mutex :[%s]", strerror(err));
+		return -1;
+	}
 
 	err = pthread_create(&tid, NULL, &queryTPHThread, port);
 
-    if (err != 0) {
-    	printf("\nCan't create thread :[%s]", strerror(err));
-    	return -1;
-    }
-    else {
-    	printf("\nThread created successfully\n");
-    }
+	if (err != 0) {
+		printf("\nCan't create thread :[%s]", strerror(err));
+		return -1;
+	}
+	else {
+		printf("\nThread created successfully\n");
+	}
 
     while (1) {
     	usleep(1000L);
     }
 
-	delete port;
+	pthread_mutex_destroy(&rxLock);
+	pthread_mutex_destroy(&txLock);
+
+    delete port;
 
 	return 0;
 }

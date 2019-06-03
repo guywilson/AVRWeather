@@ -59,6 +59,16 @@
 #define RX_CMD_RAINGUAGE			0x04
 
 typedef struct {
+	uint8_t			data[MAX_REQUEST_MESSAGE_LENGTH];
+	int				dataLength;
+
+	uint8_t			isAllocated = 0;
+}
+FRAME;
+
+typedef FRAME *	PFRAME;
+
+typedef struct {
 	uint8_t			start;
 	uint8_t			frameLength;
 	uint8_t			msgID;
