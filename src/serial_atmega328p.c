@@ -29,6 +29,7 @@ uint8_t 		nakFrame[NAK_FRAME_LEN] = {
 	MSG_CHAR_START,
 	0x00,				// Length
 	0x00,				// Message ID
+	0x00,				// Response code
 	MSG_CHAR_NAK,
 	0x00,				// NAK error code
 	0x00,				// Checksum
@@ -119,31 +120,32 @@ void txmsg(uint8_t * pMsg, uint8_t dataLength)
 	enableTxInterrupt();
 }
 
-uint8_t * getNakFrame(uint8_t messageID, uint8_t nakCode)
+uint8_t * getNakFrame(uint8_t messageID, uint8_t responseCode, uint8_t nakCode)
 {
 	uint16_t		checksum = 0;
 
-	nakFrame[1] = 3;
+	nakFrame[1] = 4;
 	nakFrame[2] = messageID;
-	nakFrame[4] = nakCode;
+	nakFrame[3] = responseCode;
+	nakFrame[5] = nakCode;
 
-	checksum = nakFrame[2] + nakFrame[3] + nakFrame[4];
+	checksum = nakFrame[2] + nakFrame[3] + nakFrame[4] + nakFrame[5];
 
-	nakFrame[5] = (uint8_t)(0x00FF - (checksum & 0x00FF));
+	nakFrame[6] = (uint8_t)(0x00FF - (checksum & 0x00FF));
 
 	return nakFrame;
 }
 
-void txNAK(uint8_t messageID, uint8_t nakCode)
+void txNAK(uint8_t messageID, uint8_t responseCode, uint8_t nakCode)
 {
 	uint8_t	*	pNakFrame;
 
-	pNakFrame = getNakFrame(messageID, nakCode);
+	pNakFrame = getNakFrame(messageID, responseCode, nakCode);
 
 	txmsg(pNakFrame, NAK_FRAME_LEN);
 }
 
-void txACK(uint8_t messageID, char * pData, int dataLength)
+void txACK(uint8_t messageID, uint8_t responseCode, char * pData, int dataLength)
 {
 	int				i;
 	uint16_t		checksum = 0;
@@ -153,21 +155,22 @@ void txACK(uint8_t messageID, char * pData, int dataLength)
 	ackFrame[0] = MSG_CHAR_START;
 	ackFrame[1] = (uint8_t)((dataLength + 2) & 0x00FF);
 	ackFrame[2] = messageID;
-	ackFrame[3] = MSG_CHAR_ACK;
+	ackFrame[3] = responseCode;
+	ackFrame[4] = MSG_CHAR_ACK;
 
-	checksum = ackFrame[2] + ackFrame[3];
+	checksum = ackFrame[2] + ackFrame[3] + ackFrame[4];
 
 	for (i = 0;i < dataLength;i++) {
-		ackFrame[i + 4] = pData[i];
+		ackFrame[i + 5] = pData[i];
 		checksum += pData[i];
 	}
 
-	i += 4;
+	i += 5;
 
 	ackFrame[i++] = (uint8_t)(0x00FF - (checksum & 0x00FF));
 	ackFrame[i] = MSG_CHAR_END;
 
-	txmsg(ackFrame, dataLength + 6);
+	txmsg(ackFrame, dataLength + 7);
 }
 
 /*

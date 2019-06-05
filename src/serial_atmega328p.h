@@ -10,10 +10,10 @@
 **                  --included in checksum--
 **
 ** ACK response frame
-** <START><LENGTH><MSG_ID><ACK><DATA><CHECKSUM><END>
+** <START><LENGTH><MSG_ID><RSP><ACK+DATA  (0 - 73)><CHECKSUM><END>
 **
 ** NAK response frame
-** <START><LENGTH><MSG_ID><NAK><ERR_CODE><CHECKSUM><END>
+** <START><LENGTH><MSG_ID><RSP><NAK+ERR_CODE (2 bytes)><CHECKSUM><END>
 **
 **
 ** The checksum is calculated as follows:
@@ -32,7 +32,7 @@
 
 #define MAX_CMD_FRAME_LENGTH		 76		// Data + msgID + cmd
 
-#define NAK_FRAME_LEN				   7
+#define NAK_FRAME_LEN				   8
 
 #define MSG_CHAR_START				0x7E
 #define MSG_CHAR_END				0x81
@@ -56,7 +56,11 @@
 
 #define RX_CMD_TPH					0x01
 #define RX_CMD_ANEMOMETER			0x02
-#define RX_CMD_RAINGUAGE			0x04
+#define RX_CMD_RAINGUAGE			0x03
+
+#define RX_RSP_TPH					0x10
+#define RX_RSP_ANEMOMETER			0x20
+#define RX_RSP_RAINGUAGE			0x30
 
 typedef struct {
 	uint8_t			start;
@@ -93,9 +97,9 @@ void disableTxInterrupt();
 void txstr(char * pszData, uint8_t dataLength);
 void txmsg(uint8_t * pMsg, uint8_t dataLength);
 
-uint8_t * getNakFrame(uint8_t messageID, uint8_t nakCode);
-void txNAK(uint8_t messageID, uint8_t nakCode);
-void txACK(uint8_t messageID, char * pData, int dataLength);
+uint8_t * getNakFrame(uint8_t messageID, uint8_t responseCode, uint8_t nakCode);
+void txNAK(uint8_t messageID, uint8_t responseCode, uint8_t nakCode);
+void txACK(uint8_t messageID, uint8_t responseCode, char * pData, int dataLength);
 
 PRXMSGSTRUCT allocateRxMsgStruct();
 void freeRxMsgStruct(PRXMSGSTRUCT m);

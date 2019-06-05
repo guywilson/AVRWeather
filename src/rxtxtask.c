@@ -21,7 +21,7 @@ void RxTask(PTASKPARM p)
 	pMsgStruct = (PRXMSGSTRUCT)p;
 
 	if (pMsgStruct->rxErrorCode != 0) {
-		txNAK(pMsgStruct->frame.msgID, pMsgStruct->rxErrorCode);
+		txNAK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), pMsgStruct->rxErrorCode);
 	}
 	else {
 		switch (pMsgStruct->frame.cmd) {
@@ -53,7 +53,7 @@ void RxTask(PTASKPARM p)
 				// Null terminate string...
 				szBuffer[i++] = 0;
 
-				txACK(pMsgStruct->frame.msgID, szBuffer, i);
+				txACK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), szBuffer, i);
 				break;
 
 			case RX_CMD_ANEMOMETER:
@@ -63,7 +63,7 @@ void RxTask(PTASKPARM p)
 				break;
 
 			default:
-				txNAK(pMsgStruct->frame.msgID, MSG_NAK_UNKNOWN_CMD);
+				txNAK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), MSG_NAK_UNKNOWN_CMD);
 				break;
 		}
 	}

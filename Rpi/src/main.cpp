@@ -62,13 +62,13 @@ void * txrxDeamon(void * pArgs)
 	port = (SerialPort *)pArgs;
 
 	while (go) {
-		pthread_mutex_lock(&txLock);
+		while (!txQueue->getItemCount()) {
+			pthread_mutex_lock(&txLock);
 
-		if (txQueue->getItemCount()) {
 			pTxFrame = (PFRAME)txQueue->getItem();
-		}
 
-		pthread_mutex_unlock(&txLock);
+			pthread_mutex_unlock(&txLock);
+		}
 
 		/*
 		 * Write cmd frame...
@@ -109,11 +109,22 @@ void * txrxDeamon(void * pArgs)
 			continue;
 		}
 
+		printf("RX[%d]: ", bytesRead);
+		for (i = 0;i < bytesRead;i++) {
+			printf("[0x%02X]", pRxFrame->data[i]);
+		}
+		printf("\n");
+
 		pthread_mutex_lock(&rxLock);
 
 		rxQueue->addItem(pRxFrame);
 
 		pthread_mutex_unlock(&rxLock);
+
+		/*
+		 * Sleep for 50ms...
+		 */
+		usleep(50000L);
 	}
 
 	return NULL;
@@ -121,25 +132,18 @@ void * txrxDeamon(void * pArgs)
 
 void * queryTPHThread(void * pArgs)
 {
+	PFRAME			pTxFrame;
+	PFRAME			pRxFrame;
 	PRXMSGSTRUCT	pMsg;
 	RXMSGSTRUCT		msg;
 	uint8_t			msgID = 0x00;
 	int				go = 1;
-	int				frameLength = 0;
-	int				writeLen;
-	int				bytesRead = 0;
-	int				i;
-	int				errCount = 0;
-	uint8_t			frame[80];
 	char			szTPH[80];
 	char 			szTemperature[20];
 	char 			szPressure[20];
 	char 			szHumidity[20];
 	FILE *			fptr;
 	struct tm *		time;
-	SerialPort * 	port;
-
-	port = (SerialPort *)pArgs;
 
 	fptr = fopen("./data.csv", "at");
 
@@ -153,61 +157,42 @@ void * queryTPHThread(void * pArgs)
 	pMsg = &msg;
 
 	while (go) {
-		frame[0] = MSG_CHAR_START;
-		frame[1] = 2;
-		frame[2] = msgID++;
-		frame[3] = RX_CMD_TPH;
-		frame[4] = 0x00FF - ((frame[2] + frame[3]) & 0x00FF);
-		frame[5] = MSG_CHAR_END;
+		pTxFrame = allocFrame();
 
-		frameLength = 6;
+		pTxFrame->data[0] = MSG_CHAR_START;
+		pTxFrame->data[1] = 2;
+		pTxFrame->data[2] = msgID++;
+		pTxFrame->data[3] = RX_CMD_TPH;
+		pTxFrame->data[4] = 0x00FF - ((pTxFrame->data[2] + pTxFrame->data[3]) & 0x00FF);
+		pTxFrame->data[5] = MSG_CHAR_END;
+
+		pTxFrame->dataLength = 6;
 
 		/*
 		 * Write cmd frame...
 		 */
-		try {
-			writeLen = port->send(frame, frameLength);
-		}
-		catch (Exception * e) {
-			cout << "Error writing to port: " << e->getMessage() << endl;
-			continue;
-		}
-
-		printf("TX[%d]: ", writeLen);
-		for (i = 0;i < writeLen;i++) {
-			printf("[0x%02X]", frame[i]);
-		}
-		printf("\n");
+		pthread_mutex_lock(&txLock);
+		txQueue->addItem(pTxFrame);
+		pthread_mutex_unlock(&txLock);
 
 		/*
-		 * Clear frame...
+		 * Wait 100ms for response...
 		 */
-		memset(frame, 0, 80);
-
-		/*
-		 * Wait 50ms for response...
-		 */
-		usleep(50000L);
-
-		errCount = 0;
+		usleep(100000L);
 
 		/*
 		 * Read response frame...
 		 */
-		try {
-			bytesRead = port->receive(frame, 80);
-		}
-		catch (Exception * e) {
-			cout << "Error reading port: " << e->getMessage() << endl;
-			continue;
+		while (!rxQueue->getItemCount()) {
+			pthread_mutex_lock(&rxLock);
+			pRxFrame = (PFRAME)rxQueue->getItem();
+			pthread_mutex_unlock(&rxLock);
 		}
 
-		printf("RX[%d]: ", bytesRead);
+		printf("RX[%d]: ", pRxFrame->dataLength);
 
-		if (bytesRead > 0) {
-			memset(&msg, 0, sizeof(msg));
-
-			processFrame(pMsg, frame, bytesRead);
+		if (pRxFrame->dataLength > 0) {
+			processFrame(pMsg, pRxFrame->data, pRxFrame->dataLength);
 
 			time = localtime(&pMsg->timeStamp);
 
@@ -289,14 +274,27 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
-	err = pthread_create(&tid, NULL, &queryTPHThread, port);
+	txQueue = new Queue();
+	rxQueue = new Queue();
+
+	err = pthread_create(&tid, NULL, &txrxDeamon, port);
 
 	if (err != 0) {
-		printf("\nCan't create thread :[%s]", strerror(err));
+		printf("\nCan't create txrxDeamon thread :[%s]", strerror(err));
 		return -1;
 	}
 	else {
-		printf("\nThread created successfully\n");
+		printf("\nThread txrxDeamon created successfully\n");
+	}
+
+	err = pthread_create(&tid, NULL, &queryTPHThread, NULL);
+
+	if (err != 0) {
+		printf("\nCan't create queryTPHThread thread :[%s]", strerror(err));
+		return -1;
+	}
+	else {
+		printf("\nThread queryTPHThread created successfully\n");
 	}
 
     while (1) {
@@ -306,6 +304,8 @@ int main(int argc, char *argv[])
 	pthread_mutex_destroy(&rxLock);
 	pthread_mutex_destroy(&txLock);
 
+	delete rxQueue;
+	delete txQueue;
     delete port;
 
 	return 0;
