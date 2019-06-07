@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
 #include <time.h>
 
 #include "avrweather.h"
@@ -39,6 +41,14 @@ int processFrame(PRXMSGSTRUCT pMsg, uint8_t * buffer, int bufferLength)
 				printf("[0x%02X]", b);
 				pMsg->frame.msgID = b;
 				pMsg->frameChecksumTotal = b;
+				state = RX_STATE_RESPONSE;
+				break;
+
+			case RX_STATE_RESPONSE:
+				printf("[R]");
+				printf("[0x%02X]", b);
+				pMsg->frame.response = b;
+				pMsg->frameChecksumTotal += b;
 				state = RX_STATE_RESPTYPE;
 				break;
 
@@ -105,6 +115,7 @@ int processFrame(PRXMSGSTRUCT pMsg, uint8_t * buffer, int bufferLength)
 				if (b == MSG_CHAR_END) {
 					pMsg->frame.end = b;
 					rtn = 0;
+					printf("\n");
 				}
 
 				state = RX_STATE_START;
@@ -113,4 +124,49 @@ int processFrame(PRXMSGSTRUCT pMsg, uint8_t * buffer, int bufferLength)
 	}
 
 	return rtn;
+}
+
+void processResponse(FILE * fptr, uint8_t * response, int responseLength)
+{
+	RXMSGSTRUCT			msg;
+	char				szTPH[80];
+	char 				szTemperature[20];
+	char 				szPressure[20];
+	char 				szHumidity[20];
+	struct tm *			time;
+
+	processFrame(&msg, response, responseLength);
+
+	switch (msg.frame.response) {
+		case RX_RSP_TPH:
+			time = localtime(&(msg.timeStamp));
+
+			memcpy(szTPH, &msg.frame.data[1], msg.frame.frameLength - 3);
+
+			strcpy(szTemperature, strtok(szTPH, ";"));
+			strcpy(szPressure, strtok(NULL, ";"));
+			strcpy(szHumidity, strtok(NULL, ";"));
+
+			fprintf(
+				fptr,
+				"%d-%02d-%02d %02d:%02d:%02d,%s,%s,%s\n",
+				time->tm_year + 1900,
+				time->tm_mon + 1,
+				time->tm_mday,
+				time->tm_hour,
+				time->tm_min,
+				time->tm_sec,
+				&szTemperature[2],
+				&szPressure[2],
+				&szHumidity[2]);
+
+			fflush(fptr);
+			break;
+
+		case RX_RSP_ANEMOMETER:
+			break;
+
+		case RX_RSP_RAINGUAGE:
+			break;
+	}
 }

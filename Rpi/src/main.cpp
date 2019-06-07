@@ -26,7 +26,6 @@ FRAME				_frameMem[FRAME_MEM_SIZE];
 queue<PFRAME>		txQueue;
 queue<PFRAME>		rxQueue;
 pthread_mutex_t 	txLock;
-pthread_mutex_t 	rxLock;
 
 FRAME * allocFrame()
 {
@@ -59,89 +58,9 @@ void * txrxDeamon(void * pArgs)
 	PFRAME			pTxFrame;
 	PFRAME			pRxFrame;
 	SerialPort * 	port;
+	FILE *			fptr;
 
 	port = (SerialPort *)pArgs;
-
-	while (go) {
-		while (txQueue.empty()) {
-			usleep(1000L);
-		}
-
-		pthread_mutex_lock(&txLock);
-
-		pTxFrame = txQueue.front();
-
-		pthread_mutex_unlock(&txLock);
-
-		/*
-		 * Write cmd frame...
-		 */
-		try {
-			writeLen = port->send(pTxFrame->data, pTxFrame->dataLength);
-		}
-		catch (Exception * e) {
-			cout << "Error writing to port: " << e->getMessage() << endl;
-			continue;
-		}
-
-		printf("TX[%d]: ", writeLen);
-		for (i = 0;i < writeLen;i++) {
-			printf("[0x%02X]", pTxFrame->data[i]);
-		}
-		printf("\n");
-
-		freeFrame(pTxFrame);
-
-		pRxFrame = allocFrame();
-
-		if (pRxFrame == NULL) {
-			cout << "ERROR: Cannot allocate frame buffer" << endl;
-			continue;
-		}
-
-		usleep(100000L);
-
-		/*
-		 * Read response frame...
-		 */
-		try {
-			bytesRead = port->receive(pRxFrame->data, MAX_REQUEST_MESSAGE_LENGTH);
-		}
-		catch (Exception * e) {
-			cout << "Error reading port: " << e->getMessage() << endl;
-			continue;
-		}
-
-		printf("RX[%d]: ", bytesRead);
-		for (i = 0;i < bytesRead;i++) {
-			printf("[0x%02X]", pRxFrame->data[i]);
-		}
-		printf("\n");
-
-		pthread_mutex_lock(&rxLock);
-
-		rxQueue.push(pRxFrame);
-
-		pthread_mutex_unlock(&rxLock);
-	}
-
-	return NULL;
-}
-
-void * queryTPHThread(void * pArgs)
-{
-	PFRAME			pTxFrame;
-	PFRAME			pRxFrame;
-	PRXMSGSTRUCT	pMsg;
-	RXMSGSTRUCT		msg;
-	uint8_t			msgID = 0x00;
-	int				go = 1;
-	char			szTPH[80];
-	char 			szTemperature[20];
-	char 			szPressure[20];
-	char 			szHumidity[20];
-	FILE *			fptr;
-	struct tm *		time;
 
 	fptr = fopen("./data.csv", "at");
 
@@ -152,7 +71,75 @@ void * queryTPHThread(void * pArgs)
 
 	fprintf(fptr, "TIME,TEMPERATURE,PRESSURE,HUMIDITY\n");
 
-	pMsg = &msg;
+	while (go) {
+		while (!txQueue.empty()) {
+			pthread_mutex_lock(&txLock);
+
+			pTxFrame = txQueue.front();
+
+			pthread_mutex_unlock(&txLock);
+
+			/*
+			 * Write cmd frame...
+			 */
+			try {
+				writeLen = port->send(pTxFrame->data, pTxFrame->dataLength);
+			}
+			catch (Exception * e) {
+				cout << "Error writing to port: " << e->getMessage() << endl;
+				continue;
+			}
+
+			printf("TX[%d]: ", writeLen);
+			for (i = 0;i < writeLen;i++) {
+				printf("[0x%02X]", pTxFrame->data[i]);
+			}
+			printf("\n");
+
+			freeFrame(pTxFrame);
+
+			pRxFrame = allocFrame();
+
+			if (pRxFrame == NULL) {
+				cout << "ERROR: Cannot allocate frame buffer" << endl;
+				continue;
+			}
+
+			usleep(100000L);
+
+			/*
+			 * Read response frame...
+			 */
+			try {
+				bytesRead = port->receive(pRxFrame->data, MAX_REQUEST_MESSAGE_LENGTH);
+			}
+			catch (Exception * e) {
+				cout << "Error reading port: " << e->getMessage() << endl;
+				continue;
+			}
+
+			/*
+			 * Process response...
+			 */
+			printf("RX[%d]: ", bytesRead);
+			if (bytesRead) {
+				processResponse(fptr, pRxFrame->data, bytesRead);
+			}
+		}
+
+		usleep(1000L);
+	}
+
+	fclose(fptr);
+
+	return NULL;
+}
+
+void * queryTPHThread(void * pArgs)
+{
+	PFRAME			pTxFrame;
+	uint8_t			msgID = 0x00;
+	int				go = 1;
 
 	while (go) {
 		pTxFrame = allocFrame();
@@ -175,54 +162,8 @@ void * queryTPHThread(void * pArgs)
 
 		pthread_mutex_unlock(&txLock);
 
-		/*
-		 * Read response frame...
-		 */
-		while (rxQueue.empty()) {
-			usleep(1000L);
-		}
-
-		pthread_mutex_lock(&rxLock);
-
-		pRxFrame = rxQueue.front();
-
-		pthread_mutex_unlock(&rxLock);
-
-		printf("RX[%d]: ", pRxFrame->dataLength);
-
-		if (pRxFrame->dataLength > 0) {
-			processFrame(pMsg, pRxFrame->data, pRxFrame->dataLength);
-
-			time = localtime(&pMsg->timeStamp);
-
-			memcpy(szTPH, pMsg->frame.data, pMsg->frame.frameLength - 2);
-
-			strcpy(szTemperature, strtok(szTPH, ";"));
-			strcpy(szPressure, strtok(NULL, ";"));
-			strcpy(szHumidity, strtok(NULL, ";"));
-
-			fprintf(
-				fptr,
-				"%d-%02d-%02d %02d:%02d:%02d,%s,%s,%s\n",
-				time->tm_year + 1900,
-				time->tm_mon + 1,
-				time->tm_mday,
-				time->tm_hour,
-				time->tm_min,
-				time->tm_sec,
-				&szTemperature[2],
-				&szPressure[2],
-				&szHumidity[2]);
-
-			fflush(fptr);
-		}
-
-		printf("\n");
-
 		sleep(2);
 	}
-
-	fclose(fptr);
 
 	return NULL;
 }
@@ -266,13 +207,6 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
-	err = pthread_mutex_init(&rxLock, NULL);
-
-	if (err != 0) {
-		printf("\nCan't create Rx mutex :[%s]", strerror(err));
-		return -1;
-	}
-
 	err = pthread_create(&tid, NULL, &txrxDeamon, port);
 
 	if (err != 0) {
@@ -297,7 +231,6 @@ int main(int argc, char *argv[])
     	usleep(1000L);
     }
 
-	pthread_mutex_destroy(&rxLock);
 	pthread_mutex_destroy(&txLock);
 
     delete port;

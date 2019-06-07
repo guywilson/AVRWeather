@@ -51,10 +51,11 @@
 #define RX_STATE_CHECKSUM			0x06
 #define RX_STATE_END				0x07
 
-#define RX_STATE_RESPTYPE			0x10
-#define RX_STATE_ACK				0x11
-#define RX_STATE_NAK				0x12
-#define RX_STATE_ERRCODE			0x13
+#define RX_STATE_RESPONSE			0x10
+#define RX_STATE_RESPTYPE			0x11
+#define RX_STATE_ACK				0x12
+#define RX_STATE_NAK				0x13
+#define RX_STATE_ERRCODE			0x14
 
 #define RX_CMD_TPH					0x01
 #define RX_CMD_ANEMOMETER			0x02
@@ -78,6 +79,7 @@ typedef struct {
 	uint8_t			start;
 	uint8_t			frameLength;
 	uint8_t			msgID;
+	uint8_t			response;
 	uint8_t			responseType;
 
 	uint8_t			errorCode;
@@ -104,5 +106,6 @@ RXMSGSTRUCT;
 typedef RXMSGSTRUCT *	PRXMSGSTRUCT;
 
 int 	processFrame(PRXMSGSTRUCT pMsg, uint8_t * buffer, int bufferLength);
+void	processResponse(FILE * fptr, uint8_t * response, int responseLength);
 
 #endif
