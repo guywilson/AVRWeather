@@ -146,6 +146,11 @@ void * queryTPHThread(void * pArgs)
 	while (go) {
 		pTxFrame = allocFrame();
 
+		if (pTxFrame == NULL) {
+			printf("Error allocating frame\n");
+			break;
+		}
+
 		pTxFrame->data[0] = MSG_CHAR_START;
 		pTxFrame->data[1] = 2;
 		pTxFrame->data[2] = msgID++;
