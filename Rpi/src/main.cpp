@@ -72,9 +72,9 @@ void * txrxDeamon(void * pArgs)
 	fprintf(fptr, "TIME,TEMPERATURE,PRESSURE,HUMIDITY\n");
 
 	while (go) {
-		while (!txQueue.empty()) {
-			pthread_mutex_lock(&txLock);
+		pthread_mutex_lock(&txLock);
 
+		while (!txQueue.empty()) {
 			pTxFrame = txQueue.front();
 
 			pthread_mutex_unlock(&txLock);
@@ -126,6 +126,8 @@ void * txrxDeamon(void * pArgs)
 				processResponse(fptr, pRxFrame->data, bytesRead);
 			}
 		}
+
+		pthread_mutex_unlock(&txLock);
 
 		usleep(1000L);
 	}
