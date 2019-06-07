@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstring>
 #include <string>
+#include <queue>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,16 +14,17 @@
 
 #include "serial.h"
 #include "exception.h"
-#include "stack.h"
 #include "avrweather.h"
+
+using namespace std;
 
 #define FRAME_MEM_SIZE				10
 
 
 FRAME				_frameMem[FRAME_MEM_SIZE];
 
-Queue *				txQueue;
-Queue *				rxQueue;
+queue<PFRAME>		txQueue;
+queue<PFRAME>		rxQueue;
 pthread_mutex_t 	txLock;
 pthread_mutex_t 	rxLock;
 
@@ -51,7 +53,6 @@ void * txrxDeamon(void * pArgs)
 {
 	int				go = 1;
 	int				i;
-	int				errCount = 0;
 	int				writeLen;
 	int				bytesRead = 0;
 
@@ -62,13 +63,15 @@ void * txrxDeamon(void * pArgs)
 	port = (SerialPort *)pArgs;
 
 	while (go) {
-		while (!txQueue->getItemCount()) {
-			pthread_mutex_lock(&txLock);
-
-			pTxFrame = (PFRAME)txQueue->getItem();
-
-			pthread_mutex_unlock(&txLock);
+		while (txQueue.empty()) {
+			usleep(1000L);
 		}
+
+		pthread_mutex_lock(&txLock);
+
+		pTxFrame = txQueue.front();
+
+		pthread_mutex_unlock(&txLock);
 
 		/*
 		 * Write cmd frame...
@@ -89,14 +92,14 @@ void * txrxDeamon(void * pArgs)
 
 		freeFrame(pTxFrame);
 
-		errCount = 0;
-
 		pRxFrame = allocFrame();
 
 		if (pRxFrame == NULL) {
 			cout << "ERROR: Cannot allocate frame buffer" << endl;
 			continue;
 		}
+
+		usleep(100000L);
 
 		/*
 		 * Read response frame...
@@ -117,14 +120,9 @@ void * txrxDeamon(void * pArgs)
 
 		pthread_mutex_lock(&rxLock);
 
-		rxQueue->addItem(pRxFrame);
+		rxQueue.push(pRxFrame);
 
 		pthread_mutex_unlock(&rxLock);
-
-		/*
-		 * Sleep for 50ms...
-		 */
-		usleep(50000L);
 	}
 
 	return NULL;
@@ -172,22 +170,23 @@ void * queryTPHThread(void * pArgs)
 		 * Write cmd frame...
 		 */
 		pthread_mutex_lock(&txLock);
-		txQueue->addItem(pTxFrame);
-		pthread_mutex_unlock(&txLock);
 
-		/*
-		 * Wait 100ms for response...
-		 */
-		usleep(100000L);
+		txQueue.push(pTxFrame);
+
+		pthread_mutex_unlock(&txLock);
 
 		/*
 		 * Read response frame...
 		 */
-		while (!rxQueue->getItemCount()) {
-			pthread_mutex_lock(&rxLock);
-			pRxFrame = (PFRAME)rxQueue->getItem();
-			pthread_mutex_unlock(&rxLock);
+		while (rxQueue.empty()) {
+			usleep(1000L);
 		}
+
+		pthread_mutex_lock(&rxLock);
+
+		pRxFrame = rxQueue.front();
+
+		pthread_mutex_unlock(&rxLock);
 
 		printf("RX[%d]: ", pRxFrame->dataLength);
 
@@ -274,9 +273,6 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
-	txQueue = new Queue();
-	rxQueue = new Queue();
-
 	err = pthread_create(&tid, NULL, &txrxDeamon, port);
 
 	if (err != 0) {
@@ -304,8 +300,6 @@ int main(int argc, char *argv[])
 	pthread_mutex_destroy(&rxLock);
 	pthread_mutex_destroy(&txLock);
 
-	delete rxQueue;
-	delete txQueue;
     delete port;
 
 	return 0;

@@ -25,7 +25,7 @@ LINKER=g++
 CPPFLAGS=-c -O3 -fpermissive -fPIC -Wall -std=c++11
 
 # Object files 
-OBJFILES=$(BUILD)/main.o $(BUILD)/serial.o $(BUILD)/avrweather.o $(BUILD)/exception.o $(BUILD)/stack.o
+OBJFILES=$(BUILD)/main.o $(BUILD)/serial.o $(BUILD)/avrweather.o $(BUILD)/exception.o
 
 # Target
 all: $(TARGET)
@@ -43,9 +43,6 @@ $(BUILD)/avrweather.o: $(SOURCE)/avrweather.cpp $(SOURCE)/avrweather.h
 
 $(BUILD)/exception.o: $(SOURCE)/exception.cpp $(SOURCE)/exception.h $(SOURCE)/types.h
 	$(CPP) $(CPPFLAGS) -o $(BUILD)/exception.o $(SOURCE)/exception.cpp
-
-$(BUILD)/stack.o: $(SOURCE)/stack.cpp $(SOURCE)/stack.h $(SOURCE)/exception.h
-	$(CPP) $(CPPFLAGS) -o $(BUILD)/stack.o $(SOURCE)/stack.cpp
 
 $(TARGET): $(OBJFILES)
 	$(LINKER) -lpthread -lstdc++ -o $(TARGET) $(OBJFILES)
