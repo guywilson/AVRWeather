@@ -57,7 +57,7 @@ int processFrame(PRXMSGSTRUCT pMsg, uint8_t * buffer, int bufferLength)
 					printf("[ACK]");
 					pMsg->frame.responseType = MSG_CHAR_ACK;
 
-					if (pMsg->frame.frameLength > 2) {
+					if (pMsg->frame.frameLength > 3) {
 						state = RX_STATE_DATA;
 						i = 0;
 					}
@@ -80,7 +80,7 @@ int processFrame(PRXMSGSTRUCT pMsg, uint8_t * buffer, int bufferLength)
 				pMsg->frame.data[i++] = b;
 				pMsg->frameChecksumTotal += b;
 
-				if (i == pMsg->frame.frameLength - 2) {
+				if (i == pMsg->frame.frameLength - 3) {
 					state = RX_STATE_CHECKSUM;
 				}
 				break;
@@ -141,7 +141,7 @@ void processResponse(FILE * fptr, uint8_t * response, int responseLength)
 		case RX_RSP_TPH:
 			time = localtime(&(msg.timeStamp));
 
-			memcpy(szTPH, &msg.frame.data[1], msg.frame.frameLength - 3);
+			memcpy(szTPH, msg.frame.data, msg.frame.frameLength - 3);
 
 			strcpy(szTemperature, strtok(szTPH, ";"));
 			strcpy(szPressure, strtok(NULL, ";"));
