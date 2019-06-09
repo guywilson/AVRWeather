@@ -74,9 +74,8 @@ void * txrxDeamon(void * pArgs)
 	while (go) {
 		pthread_mutex_lock(&txLock);
 
-		while (!txQueue.empty()) {
+		if (!txQueue.empty()) {
 			pTxFrame = txQueue.front();
-
 			pthread_mutex_unlock(&txLock);
 
 			/*
@@ -126,8 +125,9 @@ void * txrxDeamon(void * pArgs)
 				processResponse(fptr, pRxFrame->data, bytesRead);
 			}
 		}
-
-		pthread_mutex_unlock(&txLock);
+		else {
+			pthread_mutex_unlock(&txLock);
+		}
 
 		usleep(1000L);
 	}
