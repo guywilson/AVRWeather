@@ -76,6 +76,7 @@ void * txrxDeamon(void * pArgs)
 
 		if (!txQueue.empty()) {
 			pTxFrame = txQueue.front();
+			txQueue.pop();
 			pthread_mutex_unlock(&txLock);
 
 			/*
