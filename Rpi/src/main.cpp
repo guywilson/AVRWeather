@@ -18,23 +18,23 @@
 
 using namespace std;
 
-#define FRAME_MEM_SIZE				10
+#define FRAME_MEM_SIZE				16
 
 
-FRAME				_frameMem[FRAME_MEM_SIZE];
+PFRAME				_pFrameMem;
 
 queue<PFRAME>		txQueue;
 queue<PFRAME>		rxQueue;
 pthread_mutex_t 	txLock;
 
-FRAME * allocFrame()
+PFRAME allocFrame()
 {
 	PFRAME 		frame = NULL;
 	int			i;
 
 	for (i = 0;i < FRAME_MEM_SIZE;i++) {
-		if (!_frameMem[i].isAllocated) {
-			frame = &_frameMem[i];
+		if (!_pFrameMem[i].isAllocated) {
+			frame = &_pFrameMem[i];
 			frame->isAllocated = 1;
 			break;
 		}
@@ -205,6 +205,15 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
+	_pFrameMem = (PFRAME)malloc(sizeof(FRAME) * FRAME_MEM_SIZE);
+
+	if (_pFrameMem == NULL) {
+		printf("Failed to allocate frame memory.\n");
+		return -1;
+	}
+
+	memset(_pFrameMem, 0, sizeof(FRAME) * FRAME_MEM_SIZE);
+
 	/*
 	 * Open the serial port...
 	 */
@@ -217,16 +226,6 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
-	err = pthread_create(&tid, NULL, &txrxDeamon, port);
-
-	if (err != 0) {
-		printf("\nCan't create txrxDeamon thread :[%s]", strerror(err));
-		return -1;
-	}
-	else {
-		printf("\nThread txrxDeamon created successfully\n");
-	}
-
 	err = pthread_create(&tid, NULL, &queryTPHThread, NULL);
 
 	if (err != 0) {
@@ -237,6 +236,16 @@ int main(int argc, char *argv[])
 		printf("\nThread queryTPHThread created successfully\n");
 	}
 
+	err = pthread_create(&tid, NULL, &txrxDeamon, port);
+
+	if (err != 0) {
+		printf("\nCan't create txrxDeamon thread :[%s]", strerror(err));
+		return -1;
+	}
+	else {
+		printf("\nThread txrxDeamon created successfully\n");
+	}
+
     while (1) {
     	usleep(1000L);
     }
@@ -244,6 +253,8 @@ int main(int argc, char *argv[])
 	pthread_mutex_destroy(&txLock);
 
     delete port;
+
+    free(_pFrameMem);
 
 	return 0;
 }

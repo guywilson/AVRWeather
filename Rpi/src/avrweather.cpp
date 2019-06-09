@@ -9,7 +9,7 @@
 int processFrame(PRXMSGSTRUCT pMsg, uint8_t * buffer, int bufferLength)
 {
 	int 				state = RX_STATE_START;
-	int					i;
+	int					i = 0;
 	int					rtn = 0;
 	int					count = 0;
 	uint8_t				b;
