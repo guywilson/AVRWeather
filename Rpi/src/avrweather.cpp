@@ -80,7 +80,7 @@ int processFrame(PRXMSGSTRUCT pMsg, uint8_t * buffer, int bufferLength)
 				pMsg->frame.data[i++] = b;
 				pMsg->frameChecksumTotal += b;
 
-				if (i == pMsg->frame.frameLength - 3) {
+				if (i == pMsg->frame.frameLength - 2) {
 					state = RX_STATE_CHECKSUM;
 				}
 				break;
