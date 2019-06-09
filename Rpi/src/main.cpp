@@ -125,6 +125,8 @@ void * txrxDeamon(void * pArgs)
 			if (bytesRead) {
 				processResponse(fptr, pRxFrame->data, bytesRead);
 			}
+
+			freeFrame(pRxFrame);
 		}
 		else {
 			pthread_mutex_unlock(&txLock);
