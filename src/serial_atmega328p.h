@@ -57,10 +57,12 @@
 #define RX_CMD_TPH					0x01
 #define RX_CMD_ANEMOMETER			0x02
 #define RX_CMD_RAINGUAGE			0x03
+#define RX_CMD_PING					0x0F
 
 #define RX_RSP_TPH					0x10
 #define RX_RSP_ANEMOMETER			0x20
 #define RX_RSP_RAINGUAGE			0x30
+#define RX_RSP_PING					0xF0
 
 typedef struct {
 	uint8_t			start;

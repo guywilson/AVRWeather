@@ -16,37 +16,16 @@
 #include "exception.h"
 #include "avrweather.h"
 
-using namespace std;
-
 #define FRAME_MEM_SIZE				16
 
+using namespace std;
 
-PFRAME				_pFrameMem;
+FrameManager *		fm;
 
 queue<PFRAME>		txQueue;
-queue<PFRAME>		rxQueue;
 pthread_mutex_t 	txLock;
 
-PFRAME allocFrame()
-{
-	PFRAME 		frame = NULL;
-	int			i;
-
-	for (i = 0;i < FRAME_MEM_SIZE;i++) {
-		if (!_pFrameMem[i].isAllocated) {
-			frame = &_pFrameMem[i];
-			frame->isAllocated = 1;
-			break;
-		}
-	}
-
-	return frame;
-}
-
-void freeFrame(PFRAME frame)
-{
-	memset(frame, 0, sizeof(FRAME));
-}
+FILE *				fptrCSV;
 
 void * txrxDeamon(void * pArgs)
 {
@@ -58,18 +37,8 @@ void * txrxDeamon(void * pArgs)
 	PFRAME			pTxFrame;
 	PFRAME			pRxFrame;
 	SerialPort * 	port;
-	FILE *			fptr;
 
 	port = (SerialPort *)pArgs;
-
-	fptr = fopen("./data.csv", "at");
-
-	if (fptr == NULL) {
-		printf("Failed to open CSV file");
-		return NULL;
-	}
-
-	fprintf(fptr, "TIME,TEMPERATURE,PRESSURE,HUMIDITY\n");
 
 	while (go) {
 		pthread_mutex_lock(&txLock);
@@ -96,9 +65,9 @@ void * txrxDeamon(void * pArgs)
 			}
 			printf("\n");
 
-			freeFrame(pTxFrame);
+			fm->freeFrame(pTxFrame);
 
-			pRxFrame = allocFrame();
+			pRxFrame = fm->allocFrame();
 
 			if (pRxFrame == NULL) {
 				cout << "ERROR: Cannot allocate frame buffer" << endl;
@@ -123,10 +92,10 @@ void * txrxDeamon(void * pArgs)
 			 */
 			printf("RX[%d]: ", bytesRead);
 			if (bytesRead) {
-				processResponse(fptr, pRxFrame->data, bytesRead);
+				processResponse(fptrCSV, pRxFrame->data, bytesRead);
 			}
 
-			freeFrame(pRxFrame);
+			fm->freeFrame(pRxFrame);
 		}
 		else {
 			pthread_mutex_unlock(&txLock);
@@ -135,19 +104,16 @@ void * txrxDeamon(void * pArgs)
 		usleep(1000L);
 	}
 
-	fclose(fptr);
-
 	return NULL;
 }
 
 void * queryTPHThread(void * pArgs)
 {
 	PFRAME			pTxFrame;
-	uint8_t			msgID = 0x00;
 	int				go = 1;
 
 	while (go) {
-		pTxFrame = allocFrame();
+		pTxFrame = fm->allocFrame();
 
 		if (pTxFrame == NULL) {
 			printf("Error allocating frame\n");
@@ -156,7 +122,7 @@ void * queryTPHThread(void * pArgs)
 
 		pTxFrame->data[0] = MSG_CHAR_START;
 		pTxFrame->data[1] = 2;
-		pTxFrame->data[2] = msgID++;
+		pTxFrame->data[2] = getMsgID();
 		pTxFrame->data[3] = RX_CMD_TPH;
 		pTxFrame->data[4] = 0x00FF - ((pTxFrame->data[2] + pTxFrame->data[3]) & 0x00FF);
 		pTxFrame->data[5] = MSG_CHAR_END;
@@ -164,15 +130,48 @@ void * queryTPHThread(void * pArgs)
 		pTxFrame->dataLength = 6;
 
 		/*
-		 * Write cmd frame...
+		 * Send TPH frame...
 		 */
 		pthread_mutex_lock(&txLock);
-
 		txQueue.push(pTxFrame);
-
 		pthread_mutex_unlock(&txLock);
 
-		sleep(2);
+		sleep(20);
+	}
+
+	return NULL;
+}
+
+void * pingThread(void * pArgs)
+{
+	PFRAME			pTxFrame;
+	int				go = 1;
+
+	while (go) {
+		pTxFrame = fm->allocFrame();
+
+		if (pTxFrame == NULL) {
+			printf("Error allocating frame\n");
+			break;
+		}
+
+		pTxFrame->data[0] = MSG_CHAR_START;
+		pTxFrame->data[1] = 2;
+		pTxFrame->data[2] = getMsgID();
+		pTxFrame->data[3] = RX_CMD_PING;
+		pTxFrame->data[4] = 0x00FF - ((pTxFrame->data[2] + pTxFrame->data[3]) & 0x00FF);
+		pTxFrame->data[5] = MSG_CHAR_END;
+
+		pTxFrame->dataLength = 6;
+
+		/*
+		 * Send TPH frame...
+		 */
+		pthread_mutex_lock(&txLock);
+		txQueue.push(pTxFrame);
+		pthread_mutex_unlock(&txLock);
+
+		sleep(1);
 	}
 
 	return NULL;
@@ -205,25 +204,55 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
-	_pFrameMem = (PFRAME)malloc(sizeof(FRAME) * FRAME_MEM_SIZE);
-
-	if (_pFrameMem == NULL) {
-		printf("Failed to allocate frame memory.\n");
+	/*
+	 * Allocate frame memory...
+	 */
+	try {
+		fm = new FrameManager(FRAME_MEM_SIZE);
+	}
+	catch(Exception * e) {
+		cout << "Failed to initialise frame memory " << e->getMessage() << endl;
 		return -1;
 	}
-
-	memset(_pFrameMem, 0, sizeof(FRAME) * FRAME_MEM_SIZE);
 
 	/*
 	 * Open the serial port...
 	 */
-	port = new SerialPort(szPort, SerialPort::mapBaudRate(atoi(szBaud)));
+	try {
+		port = new SerialPort(szPort, SerialPort::mapBaudRate(atoi(szBaud)));
+	}
+	catch (Exception * e) {
+		cout << "Failed to open serial port " << e->getMessage() << endl;
+		return -1;
+	}
+
+	/*
+	 * Open the CSV file...
+	 */
+	fptrCSV = fopen("./data.csv", "at");
+
+	if (fptrCSV == NULL) {
+		printf("Failed to open CSV file");
+		return -1;
+	}
+
+	fprintf(fptrCSV, "TIME,TEMPERATURE,PRESSURE,HUMIDITY\n");
 
 	err = pthread_mutex_init(&txLock, NULL);
 
 	if (err != 0) {
 		printf("\nCan't create Tx mutex :[%s]", strerror(err));
 		return -1;
+	}
+
+	err = pthread_create(&tid, NULL, &pingThread, NULL);
+
+	if (err != 0) {
+		printf("\nCan't create pingThread thread :[%s]", strerror(err));
+		return -1;
+	}
+	else {
+		printf("\nThread pingThread created successfully\n");
 	}
 
 	err = pthread_create(&tid, NULL, &queryTPHThread, NULL);
@@ -252,9 +281,10 @@ int main(int argc, char *argv[])
 
 	pthread_mutex_destroy(&txLock);
 
-    delete port;
+	fclose(fptrCSV);
 
-    free(_pFrameMem);
+    delete port;
+    delete fm;
 
 	return 0;
 }

@@ -62,6 +62,10 @@ void RxTask(PTASKPARM p)
 			case RX_CMD_RAINGUAGE:
 				break;
 
+			case RX_CMD_PING:
+				txACK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), NULL, 0);
+				break;
+
 			default:
 				txNAK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), MSG_NAK_UNKNOWN_CMD);
 				break;

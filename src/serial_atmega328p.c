@@ -147,7 +147,7 @@ void txNAK(uint8_t messageID, uint8_t responseCode, uint8_t nakCode)
 
 void txACK(uint8_t messageID, uint8_t responseCode, char * pData, int dataLength)
 {
-	int				i;
+	int				i = 0;
 	uint16_t		checksum = 0;
 
 	memset(ackFrame, 0, 80);
@@ -160,9 +160,11 @@ void txACK(uint8_t messageID, uint8_t responseCode, char * pData, int dataLength
 
 	checksum = ackFrame[2] + ackFrame[3] + ackFrame[4];
 
-	for (i = 0;i < dataLength;i++) {
-		ackFrame[i + 5] = pData[i];
-		checksum += pData[i];
+	if (dataLength > 0) {
+		for (i = 0;i < dataLength;i++) {
+			ackFrame[i + 5] = pData[i];
+			checksum += pData[i];
+		}
 	}
 
 	i += 5;

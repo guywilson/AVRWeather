@@ -60,10 +60,12 @@
 #define RX_CMD_TPH					0x01
 #define RX_CMD_ANEMOMETER			0x02
 #define RX_CMD_RAINGUAGE			0x03
+#define RX_CMD_PING					0x0F
 
 #define RX_RSP_TPH					0x10
 #define RX_RSP_ANEMOMETER			0x20
 #define RX_RSP_RAINGUAGE			0x30
+#define RX_RSP_PING					0xF0
 
 typedef struct {
 	uint8_t			data[MAX_REQUEST_MESSAGE_LENGTH];
@@ -105,6 +107,24 @@ RXMSGSTRUCT;
 
 typedef RXMSGSTRUCT *	PRXMSGSTRUCT;
 
+class FrameManager
+{
+private:
+	PFRAME			_pFrameMem = NULL;
+	int				_size;
+
+public:
+	FrameManager();
+	FrameManager(int size);
+	~FrameManager();
+
+	PFRAME			allocFrame();
+	void			freeFrame(PFRAME pFrame);
+
+	int				getSize();
+};
+
+uint8_t	getMsgID();
 int 	processFrame(PRXMSGSTRUCT pMsg, uint8_t * buffer, int bufferLength);
 void	processResponse(FILE * fptr, uint8_t * response, int responseLength);
 
