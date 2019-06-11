@@ -57,15 +57,21 @@
 #define RX_STATE_NAK				0x13
 #define RX_STATE_ERRCODE			0x14
 
-#define RX_CMD_TPH					0x01
+#define RX_CMD_AVG_TPH				0x01
 #define RX_CMD_ANEMOMETER			0x02
 #define RX_CMD_RAINGUAGE			0x03
+#define RX_CMD_MAX_TPH				0x04
+#define RX_CMD_MIN_TPH				0x05
+#define RX_CMD_RESET_MINMAX_TPH		0x06
 #define RX_CMD_PING					0x0F
 
-#define RX_RSP_TPH					0x10
-#define RX_RSP_ANEMOMETER			0x20
-#define RX_RSP_RAINGUAGE			0x30
-#define RX_RSP_PING					0xF0
+#define RX_RSP_AVG_TPH				(RX_CMD_AVG_TPH << 4)
+#define RX_RSP_ANEMOMETER			(RX_CMD_ANEMOMETER << 4)
+#define RX_RSP_RAINGUAGE			(RX_CMD_RAINGUAGE << 4)
+#define RX_RSP_MAX_TPH				(RX_CMD_MAX_TPH << 4)
+#define RX_RSP_MIN_TPH				(RX_CMD_MIN_TPH << 4)
+#define RX_RSP_RESET_MINMAX_TPH		(RX_CMD_RESET_MINMAX_TPH << 4)
+#define RX_RSP_PING					(RX_CMD_PING << 4)
 
 typedef struct {
 	uint8_t			data[MAX_REQUEST_MESSAGE_LENGTH];

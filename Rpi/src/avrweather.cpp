@@ -203,7 +203,7 @@ void processResponse(FILE * fptr, uint8_t * response, int responseLength)
 	processFrame(&msg, response, responseLength);
 
 	switch (msg.frame.response) {
-		case RX_RSP_TPH:
+		case RX_RSP_AVG_TPH:
 			time = localtime(&(msg.timeStamp));
 
 			memcpy(szTPH, msg.frame.data, msg.frame.frameLength - 3);
@@ -226,6 +226,15 @@ void processResponse(FILE * fptr, uint8_t * response, int responseLength)
 				&szHumidity[2]);
 
 			fflush(fptr);
+			break;
+
+		case RX_RSP_MAX_TPH:
+			break;
+
+		case RX_RSP_MIN_TPH:
+			break;
+
+		case RX_RSP_RESET_MINMAX_TPH:
 			break;
 
 		case RX_RSP_ANEMOMETER:

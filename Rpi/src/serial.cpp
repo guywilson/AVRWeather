@@ -11,6 +11,7 @@
 
 #include "serial.h"
 #include "exception.h"
+#include "avrweather.h"
 
 SerialPort::SerialPort(char * pszPort, int baudRate)
 {

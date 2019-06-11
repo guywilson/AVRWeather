@@ -23,6 +23,14 @@ uint16_t		MAV[NUM_ADC_CHANNELS];
 #else
 uint16_t		adcResults[NUM_ADC_CHANNELS];
 #endif
+uint16_t		adcMax[NUM_ADC_CHANNELS];
+uint16_t		adcMin[NUM_ADC_CHANNELS];
+
+void resetMinMax()
+{
+	memset(adcMin, 0, (NUM_ADC_CHANNELS * sizeof(uint16_t)));
+	memset(adcMax, 0, (NUM_ADC_CHANNELS * sizeof(uint16_t)));
+}
 
 #ifdef MOVING_AVG_ENABLE
 void setupADCMAV()
@@ -66,6 +74,13 @@ void ADCTask(PTASKPARM p)
 			}
 
 			MAV[channel] = (uint16_t)((avgSum >> ADC_RESULT_AVG_SHIFT) & 0xFFFF);
+
+			if (MAV[channel] > adcMax[channel]) {
+				adcMax[channel] = MAV[channel];
+			}
+			if (MAV[channel] < adcMin[channel]) {
+				adcMin[channel] = MAV[channel];
+			}
 		}
 
 		resultPtr[channel]++;
@@ -75,6 +90,13 @@ void ADCTask(PTASKPARM p)
 		}
 #else
 		adcResults[channel] = r->result;
+
+		if (adcResults[channel] > adcMax[channel]) {
+			adcMax[channel] = adcResults[channel];
+		}
+		if (adcResults[channel] < adcMin[channel]) {
+			adcMin[channel] = adcResults[channel];
+		}
 #endif
 	}
 
@@ -95,69 +117,130 @@ uint16_t getADCAverage(uint8_t channel)
 #endif
 }
 
-int getPressure(char * pszDest)
+uint16_t getADCMax(uint8_t channel)
 {
-	PGM_P		pressure;
-	uint16_t	avgADC;
-	
-	avgADC = getADCAverage(ADC_BAROMETER_CHANNEL);
-
-	if (avgADC < ADC_MBAR_OFFSET) {
-		strcpy(pszDest, "-ERR");
-	}
-	else if (avgADC > (ADC_MBAR_MAX + ADC_MBAR_OFFSET)) {
-		strcpy(pszDest, "+ERR");
-	}
-	else {
-		avgADC -= ADC_MBAR_OFFSET;
-
-		memcpy_P(&pressure, &mbarLookup[avgADC], sizeof(PGM_P));
-		strcpy_P(pszDest, pressure);
-	}
-	
-	return strlen(pszDest);
+	return adcMax[channel];
 }
 
-int getHumidity(char * pszDest)
+uint16_t getADCMin(uint8_t channel)
+{
+	return adcMin[channel];
+}
+
+int getHumidity(int queryType, char * pszDest)
 {
 	PGM_P		humidity;
-	uint16_t	avgADC;
+	uint16_t	adcValue;
+	uint8_t		channel = ADC_CHANNEL0;
 
-	avgADC = getADCAverage(ADC_HUMIDITY_CHANNEL);
+	switch (queryType) {
+		case QUERY_TYPE_AVG:
+			adcValue = getADCAverage(channel);
+			break;
 
-	if (avgADC < ADC_HUMIDITY_OFFSET) {
+		case QUERY_TYPE_MIN:
+			adcValue = getADCMin(channel);
+			break;
+
+		case QUERY_TYPE_MAX:
+			adcValue = getADCMax(channel);
+			break;
+
+		default:
+			adcValue = getADCAverage(channel);
+			break;
+	}
+
+	if (adcValue < ADC_HUMIDITY_OFFSET) {
 		strcpy(pszDest, "-ERR");
 	}
-	else if (avgADC > (ADC_HUMIDITY_MAX + ADC_HUMIDITY_OFFSET)) {
+	else if (adcValue > (ADC_HUMIDITY_MAX + ADC_HUMIDITY_OFFSET)) {
 		strcpy(pszDest, "+ERR");
 	}
 	else {
-		avgADC -= ADC_HUMIDITY_OFFSET;
+		adcValue -= ADC_HUMIDITY_OFFSET;
 
-		memcpy_P(&humidity, &humidityLookup[avgADC], sizeof(PGM_P));
+		memcpy_P(&humidity, &humidityLookup[adcValue], sizeof(PGM_P));
 		strcpy_P(pszDest, humidity);
 	}
 
 	return strlen(pszDest);
 }
 
-int getTemperature(char * pszDest)
+int getPressure(int queryType, char * pszDest)
 {
-	PGM_P			temperature;
-	int16_t			avgADC;
-	
-	avgADC = getADCAverage(ADC_THERMO_CHANNEL);
+	PGM_P		pressure;
+	uint16_t	adcValue;
+	uint8_t		channel = ADC_CHANNEL1;
 
-	if (avgADC < ADC_TEMP_OFFSET) {
+	switch (queryType) {
+		case QUERY_TYPE_AVG:
+			adcValue = getADCAverage(channel);
+			break;
+
+		case QUERY_TYPE_MIN:
+			adcValue = getADCMin(channel);
+			break;
+
+		case QUERY_TYPE_MAX:
+			adcValue = getADCMax(channel);
+			break;
+
+		default:
+			adcValue = getADCAverage(channel);
+			break;
+	}
+
+	if (adcValue < ADC_MBAR_OFFSET) {
 		strcpy(pszDest, "-ERR");
 	}
-	else if (avgADC > (ADC_TEMP_MAX + ADC_TEMP_OFFSET)) {
+	else if (adcValue > (ADC_MBAR_MAX + ADC_MBAR_OFFSET)) {
 		strcpy(pszDest, "+ERR");
 	}
 	else {
-		avgADC -= ADC_TEMP_OFFSET;
+		adcValue -= ADC_MBAR_OFFSET;
 
-		memcpy_P(&temperature, &tempLookup[avgADC], sizeof(PGM_P));
+		memcpy_P(&pressure, &mbarLookup[adcValue], sizeof(PGM_P));
+		strcpy_P(pszDest, pressure);
+	}
+
+	return strlen(pszDest);
+}
+
+int getTemperature(int queryType, char * pszDest)
+{
+	PGM_P		temperature;
+	int16_t		adcValue;
+	uint8_t		channel = ADC_CHANNEL2;
+
+	switch (queryType) {
+		case QUERY_TYPE_AVG:
+			adcValue = getADCAverage(channel);
+			break;
+
+		case QUERY_TYPE_MIN:
+			adcValue = getADCMin(channel);
+			break;
+
+		case QUERY_TYPE_MAX:
+			adcValue = getADCMax(channel);
+			break;
+
+		default:
+			adcValue = getADCAverage(channel);
+			break;
+	}
+
+	if (adcValue < ADC_TEMP_OFFSET) {
+		strcpy(pszDest, "-ERR");
+	}
+	else if (adcValue > (ADC_TEMP_MAX + ADC_TEMP_OFFSET)) {
+		strcpy(pszDest, "+ERR");
+	}
+	else {
+		adcValue -= ADC_TEMP_OFFSET;
+
+		memcpy_P(&temperature, &tempLookup[adcValue], sizeof(PGM_P));
 		strcpy_P(pszDest, temperature);
 	}
 	

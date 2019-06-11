@@ -8,6 +8,10 @@
 
 #define ADC_MIN_AVG_CONVERSION_COUNT	(NUM_ADC_CHANNELS * ADC_RESULT_ARRAY_SIZE) + NUM_ADC_CHANNELS
 
+#define QUERY_TYPE_AVG					0
+#define QUERY_TYPE_MIN					1
+#define QUERY_TYPE_MAX					2
+
 /*
  * Define which sensor is attached to which channel
  */
@@ -24,10 +28,13 @@ ADCRESULT;
 
 typedef ADCRESULT *		PADCRESULT;
 
+void		resetMinMax();
 void		ADCTask(PTASKPARM p);
 uint16_t	getADCAverage(uint8_t channel);
-int 		getPressure(char * pszDest);
-int 		getHumidity(char * pszDest);
-int 		getTemperature(char * pszDest);
+uint16_t	getADCMax(uint8_t channel);
+uint16_t	getADCMin(uint8_t channel);
+int 		getPressure(int queryType, char * pszDest);
+int 		getHumidity(int queryType, char * pszDest);
+int 		getTemperature(int queryType, char * pszDest);
 
 #endif

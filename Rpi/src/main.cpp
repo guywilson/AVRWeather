@@ -27,87 +27,8 @@ pthread_mutex_t 	txLock;
 
 FILE *				fptrCSV;
 
-void * txrxDeamon(void * pArgs)
-{
-	int				go = 1;
-	int				i;
-	int				writeLen;
-	int				bytesRead = 0;
 
-	PFRAME			pTxFrame;
-	PFRAME			pRxFrame;
-	SerialPort * 	port;
-
-	port = (SerialPort *)pArgs;
-
-	while (go) {
-		pthread_mutex_lock(&txLock);
-
-		if (!txQueue.empty()) {
-			pTxFrame = txQueue.front();
-			txQueue.pop();
-			pthread_mutex_unlock(&txLock);
-
-			/*
-			 * Write cmd frame...
-			 */
-			try {
-				writeLen = port->send(pTxFrame->data, pTxFrame->dataLength);
-			}
-			catch (Exception * e) {
-				cout << "Error writing to port: " << e->getMessage() << endl;
-				continue;
-			}
-
-			printf("TX[%d]: ", writeLen);
-			for (i = 0;i < writeLen;i++) {
-				printf("[0x%02X]", pTxFrame->data[i]);
-			}
-			printf("\n");
-
-			fm->freeFrame(pTxFrame);
-
-			pRxFrame = fm->allocFrame();
-
-			if (pRxFrame == NULL) {
-				cout << "ERROR: Cannot allocate frame buffer" << endl;
-				continue;
-			}
-
-			usleep(100000L);
-
-			/*
-			 * Read response frame...
-			 */
-			try {
-				bytesRead = port->receive(pRxFrame->data, MAX_REQUEST_MESSAGE_LENGTH);
-			}
-			catch (Exception * e) {
-				cout << "Error reading port: " << e->getMessage() << endl;
-				continue;
-			}
-
-			/*
-			 * Process response...
-			 */
-			printf("RX[%d]: ", bytesRead);
-			if (bytesRead) {
-				processResponse(fptrCSV, pRxFrame->data, bytesRead);
-			}
-
-			fm->freeFrame(pRxFrame);
-		}
-		else {
-			pthread_mutex_unlock(&txLock);
-		}
-
-		usleep(1000L);
-	}
-
-	return NULL;
-}
-
-void * queryTPHThread(void * pArgs)
+void * queryAvgTPHThread(void * pArgs)
 {
 	PFRAME			pTxFrame;
 	int				go = 1;
@@ -123,7 +44,7 @@ void * queryTPHThread(void * pArgs)
 		pTxFrame->data[0] = MSG_CHAR_START;
 		pTxFrame->data[1] = 2;
 		pTxFrame->data[2] = getMsgID();
-		pTxFrame->data[3] = RX_CMD_TPH;
+		pTxFrame->data[3] = RX_CMD_AVG_TPH;
 		pTxFrame->data[4] = 0x00FF - ((pTxFrame->data[2] + pTxFrame->data[3]) & 0x00FF);
 		pTxFrame->data[5] = MSG_CHAR_END;
 
@@ -136,7 +57,110 @@ void * queryTPHThread(void * pArgs)
 		txQueue.push(pTxFrame);
 		pthread_mutex_unlock(&txLock);
 
+		/*
+		 * Sleep for 20 seconds...
+		 */
 		sleep(20);
+	}
+
+	return NULL;
+}
+
+void * queryMinMaxTPHThread(void * pArgs)
+{
+	PFRAME			pTxFrame;
+	int				go = 1;
+	time_t			t;
+	struct tm *		tm;
+
+	t = time(0);
+	tm = localtime(&t);
+
+	while (go) {
+		while (tm->tm_hour != 23 && tm->tm_min != 59 && tm->tm_sec < 57) {
+			t = time(0);
+			tm = localtime(&t);
+
+			sleep(2);
+		}
+
+		/*
+		 * Get MIN TPH for the last period...
+		 */
+		pTxFrame = fm->allocFrame();
+
+		if (pTxFrame == NULL) {
+			printf("Error allocating frame\n");
+			break;
+		}
+
+		pTxFrame->data[0] = MSG_CHAR_START;
+		pTxFrame->data[1] = 2;
+		pTxFrame->data[2] = getMsgID();
+		pTxFrame->data[3] = RX_CMD_MIN_TPH;
+		pTxFrame->data[4] = 0x00FF - ((pTxFrame->data[2] + pTxFrame->data[3]) & 0x00FF);
+		pTxFrame->data[5] = MSG_CHAR_END;
+
+		pTxFrame->dataLength = 6;
+
+		pthread_mutex_lock(&txLock);
+		txQueue.push(pTxFrame);
+		pthread_mutex_unlock(&txLock);
+
+		sleep(1);
+
+		/*
+		 * Get MAX TPH for the last period...
+		 */
+		pTxFrame = fm->allocFrame();
+
+		if (pTxFrame == NULL) {
+			printf("Error allocating frame\n");
+			break;
+		}
+
+		pTxFrame->data[0] = MSG_CHAR_START;
+		pTxFrame->data[1] = 2;
+		pTxFrame->data[2] = getMsgID();
+		pTxFrame->data[3] = RX_CMD_MAX_TPH;
+		pTxFrame->data[4] = 0x00FF - ((pTxFrame->data[2] + pTxFrame->data[3]) & 0x00FF);
+		pTxFrame->data[5] = MSG_CHAR_END;
+
+		pTxFrame->dataLength = 6;
+
+		pthread_mutex_lock(&txLock);
+		txQueue.push(pTxFrame);
+		pthread_mutex_unlock(&txLock);
+
+		sleep(1);
+
+		/*
+		 * Reset MIN & MAX TPH...
+		 */
+		pTxFrame = fm->allocFrame();
+
+		if (pTxFrame == NULL) {
+			printf("Error allocating frame\n");
+			break;
+		}
+
+		pTxFrame->data[0] = MSG_CHAR_START;
+		pTxFrame->data[1] = 2;
+		pTxFrame->data[2] = getMsgID();
+		pTxFrame->data[3] = RX_CMD_RESET_MINMAX_TPH;
+		pTxFrame->data[4] = 0x00FF - ((pTxFrame->data[2] + pTxFrame->data[3]) & 0x00FF);
+		pTxFrame->data[5] = MSG_CHAR_END;
+
+		pTxFrame->dataLength = 6;
+
+		pthread_mutex_lock(&txLock);
+		txQueue.push(pTxFrame);
+		pthread_mutex_unlock(&txLock);
+
+		/*
+		 * Sleep for 20 hours...
+		 */
+		sleep(72000);
 	}
 
 	return NULL;
@@ -175,6 +199,81 @@ void * pingThread(void * pArgs)
 	}
 
 	return NULL;
+}
+
+void txrxDeamon(SerialPort * port)
+{
+	int				go = 1;
+	int				i;
+	int				writeLen;
+	int				bytesRead = 0;
+
+	PFRAME			pTxFrame;
+	PFRAME			pRxFrame;
+
+	while (go) {
+		pthread_mutex_lock(&txLock);
+
+		if (!txQueue.empty()) {
+			pTxFrame = txQueue.front();
+			txQueue.pop();
+			pthread_mutex_unlock(&txLock);
+
+			/*
+			 * Write cmd frame...
+			 */
+			try {
+				writeLen = port->send(pTxFrame->data, pTxFrame->dataLength);
+			}
+			catch (Exception * e) {
+				cout << "Error writing to port: " << e->getMessage() << endl;
+				continue;
+			}
+
+			printf("TX[%d]: ", writeLen);
+			for (i = 0;i < writeLen;i++) {
+				printf("[0x%02X]", pTxFrame->data[i]);
+			}
+			printf("\n");
+
+			fm->freeFrame(pTxFrame);
+
+			usleep(100000L);
+
+			pRxFrame = fm->allocFrame();
+
+			if (pRxFrame == NULL) {
+				cout << "ERROR: Cannot allocate frame buffer" << endl;
+				continue;
+			}
+
+			/*
+			 * Read response frame...
+			 */
+			try {
+				bytesRead = port->receive(pRxFrame->data, MAX_REQUEST_MESSAGE_LENGTH);
+			}
+			catch (Exception * e) {
+				cout << "Error reading port: " << e->getMessage() << endl;
+				continue;
+			}
+
+			/*
+			 * Process response...
+			 */
+			printf("RX[%d]: ", bytesRead);
+			if (bytesRead) {
+				processResponse(fptrCSV, pRxFrame->data, bytesRead);
+			}
+
+			fm->freeFrame(pRxFrame);
+		}
+		else {
+			pthread_mutex_unlock(&txLock);
+		}
+
+		usleep(1000L);
+	}
 }
 
 int main(int argc, char *argv[])
@@ -245,6 +344,13 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
+	/**************************************************************************
+	** Create threads...
+	**************************************************************************/
+
+	/*
+	 * Ping every second...
+	 */
 	err = pthread_create(&tid, NULL, &pingThread, NULL);
 
 	if (err != 0) {
@@ -255,7 +361,10 @@ int main(int argc, char *argv[])
 		printf("\nThread pingThread created successfully\n");
 	}
 
-	err = pthread_create(&tid, NULL, &queryTPHThread, NULL);
+	/*
+	 * Get average temperature, pressure & humidity every 20 seconds...
+	 */
+	err = pthread_create(&tid, NULL, &queryAvgTPHThread, NULL);
 
 	if (err != 0) {
 		printf("\nCan't create queryTPHThread thread :[%s]", strerror(err));
@@ -265,19 +374,26 @@ int main(int argc, char *argv[])
 		printf("\nThread queryTPHThread created successfully\n");
 	}
 
-	err = pthread_create(&tid, NULL, &txrxDeamon, port);
+	/*
+	 * Get minimum & maximum TPH just before midnight...
+	 */
+	err = pthread_create(&tid, NULL, &queryMinMaxTPHThread, NULL);
 
 	if (err != 0) {
-		printf("\nCan't create txrxDeamon thread :[%s]", strerror(err));
+		printf("\nCan't create queryTPHThread thread :[%s]", strerror(err));
 		return -1;
 	}
 	else {
-		printf("\nThread txrxDeamon created successfully\n");
+		printf("\nThread queryTPHThread created successfully\n");
 	}
 
-    while (1) {
-    	usleep(1000L);
-    }
+	/*
+	 * This function actually sends the queued commands over the
+	 * serial port.
+	 *
+	 * NOTE: This must be set up last as it never returns...
+	 */
+	txrxDeamon(port);
 
 	pthread_mutex_destroy(&txLock);
 

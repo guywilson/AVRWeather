@@ -25,11 +25,11 @@ void RxTask(PTASKPARM p)
 	}
 	else {
 		switch (pMsgStruct->frame.cmd) {
-			case RX_CMD_TPH:
+			case RX_CMD_AVG_TPH:
 				szBuffer[i++] = 'T';
 				szBuffer[i++] = ':';
 
-				valueLen = getTemperature(&szBuffer[i]);
+				valueLen = getTemperature(QUERY_TYPE_AVG, &szBuffer[i]);
 
 				szBuffer[i + valueLen] = ';';
 				i += valueLen + 1;
@@ -37,7 +37,7 @@ void RxTask(PTASKPARM p)
 				szBuffer[i++] = 'P';
 				szBuffer[i++] = ':';
 
-				valueLen = getPressure(&szBuffer[i]);
+				valueLen = getPressure(QUERY_TYPE_AVG, &szBuffer[i]);
 
 				szBuffer[i + valueLen] = ';';
 				i += valueLen + 1;
@@ -45,7 +45,7 @@ void RxTask(PTASKPARM p)
 				szBuffer[i++] = 'H';
 				szBuffer[i++] = ':';
 
-				valueLen = getHumidity(&szBuffer[i]);
+				valueLen = getHumidity(QUERY_TYPE_AVG, &szBuffer[i]);
 
 				szBuffer[i + valueLen] = ';';
 				i += valueLen + 1;
@@ -54,6 +54,73 @@ void RxTask(PTASKPARM p)
 				szBuffer[i++] = 0;
 
 				txACK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), szBuffer, i);
+				break;
+
+			case RX_CMD_MAX_TPH:
+				szBuffer[i++] = 'T';
+				szBuffer[i++] = ':';
+
+				valueLen = getTemperature(QUERY_TYPE_MAX, &szBuffer[i]);
+
+				szBuffer[i + valueLen] = ';';
+				i += valueLen + 1;
+
+				szBuffer[i++] = 'P';
+				szBuffer[i++] = ':';
+
+				valueLen = getPressure(QUERY_TYPE_MAX, &szBuffer[i]);
+
+				szBuffer[i + valueLen] = ';';
+				i += valueLen + 1;
+
+				szBuffer[i++] = 'H';
+				szBuffer[i++] = ':';
+
+				valueLen = getHumidity(QUERY_TYPE_MAX, &szBuffer[i]);
+
+				szBuffer[i + valueLen] = ';';
+				i += valueLen + 1;
+
+				// Null terminate string...
+				szBuffer[i++] = 0;
+
+				txACK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), szBuffer, i);
+				break;
+
+			case RX_CMD_MIN_TPH:
+				szBuffer[i++] = 'T';
+				szBuffer[i++] = ':';
+
+				valueLen = getTemperature(QUERY_TYPE_MIN, &szBuffer[i]);
+
+				szBuffer[i + valueLen] = ';';
+				i += valueLen + 1;
+
+				szBuffer[i++] = 'P';
+				szBuffer[i++] = ':';
+
+				valueLen = getPressure(QUERY_TYPE_MIN, &szBuffer[i]);
+
+				szBuffer[i + valueLen] = ';';
+				i += valueLen + 1;
+
+				szBuffer[i++] = 'H';
+				szBuffer[i++] = ':';
+
+				valueLen = getHumidity(QUERY_TYPE_MIN, &szBuffer[i]);
+
+				szBuffer[i + valueLen] = ';';
+				i += valueLen + 1;
+
+				// Null terminate string...
+				szBuffer[i++] = 0;
+
+				txACK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), szBuffer, i);
+				break;
+
+			case RX_CMD_RESET_MINMAX_TPH:
+				resetMinMax();
+				txACK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), NULL, 0);
 				break;
 
 			case RX_CMD_ANEMOMETER:
@@ -71,52 +138,4 @@ void RxTask(PTASKPARM p)
 				break;
 		}
 	}
-}
-
-void TxTask(PTASKPARM p)
-{
-	uint8_t		len;
-	int			i = 0;
-
-	szBuffer[i++] = '<';
-	szBuffer[i++] = 't';
-	szBuffer[i++] = ':';
-	len = getTemperature(&szBuffer[i]);
-	szBuffer[i + len] = '>';
-	i += len + 1;
-	
-	szBuffer[i++] = '<';
-	szBuffer[i++] = 'p';
-	szBuffer[i++] = ':';
-	len = getPressure(&szBuffer[i]);
-	szBuffer[i + len] = '>';
-	i += len + 1;
-	
-	szBuffer[i++] = '<';
-	szBuffer[i++] = 'h';
-	szBuffer[i++] = ':';
-	len = getHumidity(&szBuffer[i]);
-	szBuffer[i + len] = '>';
-	i += len + 1;
-	
-	szBuffer[i++] = '<';
-	szBuffer[i++] = 'w';
-	szBuffer[i++] = ':';
-	len = getMaxWindSpeed(&szBuffer[i]);
-	szBuffer[i + len] = '>';
-	i += len + 1;
-	
-	szBuffer[i++] = '<';
-	szBuffer[i++] = 'r';
-	szBuffer[i++] = ':';
-	len = getRainfall(&szBuffer[i]);
-	szBuffer[i + len] = '>';
-	i += len + 1;
-
-	szBuffer[i++] = '\n';
-	szBuffer[i] = 0;
-
-	txstr(szBuffer, i);
-	
-	rescheduleTask(TASK_TX, NULL);
 }
