@@ -86,8 +86,8 @@ int processFrame(PRXMSGSTRUCT pMsg, uint8_t * buffer, int bufferLength)
 
 		switch (state) {
 			case RX_STATE_START:
-				printf("[S]");
-				printf("[0x%02X]", b);
+//				printf("[S]");
+//				printf("[0x%02X]", b);
 				if (b == MSG_CHAR_START) {
 					pMsg->frame.start = b;
 					state = RX_STATE_LENGTH;
@@ -95,23 +95,23 @@ int processFrame(PRXMSGSTRUCT pMsg, uint8_t * buffer, int bufferLength)
 				break;
 
 			case RX_STATE_LENGTH:
-				printf("[L]");
-				printf("[%d]", b);
+//				printf("[L]");
+//				printf("[%d]", b);
 				pMsg->frame.frameLength = b;
 				state = RX_STATE_MSGID;
 				break;
 
 			case RX_STATE_MSGID:
-				printf("[M]");
-				printf("[0x%02X]", b);
+//				printf("[M]");
+//				printf("[0x%02X]", b);
 				pMsg->frame.msgID = b;
 				pMsg->frameChecksumTotal = b;
 				state = RX_STATE_RESPONSE;
 				break;
 
 			case RX_STATE_RESPONSE:
-				printf("[R]");
-				printf("[0x%02X]", b);
+//				printf("[R]");
+//				printf("[0x%02X]", b);
 				pMsg->frame.response = b;
 				pMsg->frameChecksumTotal += b;
 				state = RX_STATE_RESPTYPE;
@@ -159,8 +159,8 @@ int processFrame(PRXMSGSTRUCT pMsg, uint8_t * buffer, int bufferLength)
 				break;
 
 			case RX_STATE_CHECKSUM:
-				printf("[C]");
-				printf("[0x%02X]", b);
+//				printf("[C]");
+//				printf("[0x%02X]", b);
 				pMsg->frame.checksum = b;
 				pMsg->frameChecksumTotal += b;
 
@@ -175,8 +175,8 @@ int processFrame(PRXMSGSTRUCT pMsg, uint8_t * buffer, int bufferLength)
 				break;
 
 			case RX_STATE_END:
-				printf("[N]");
-				printf("[0x%02X]", b);
+//				printf("[N]");
+//				printf("[0x%02X]", b);
 				if (b == MSG_CHAR_END) {
 					pMsg->frame.end = b;
 					rtn = 0;
@@ -214,7 +214,7 @@ void processResponse(FILE * fptr, uint8_t * response, int responseLength)
 
 			fprintf(
 				fptr,
-				"%d-%02d-%02d %02d:%02d:%02d,%s,%s,%s\n",
+				"%d-%02d-%02d %02d:%02d:%02d,AVG,%s,%s,%s\n",
 				time->tm_year + 1900,
 				time->tm_mon + 1,
 				time->tm_mday,
@@ -229,9 +229,53 @@ void processResponse(FILE * fptr, uint8_t * response, int responseLength)
 			break;
 
 		case RX_RSP_MAX_TPH:
+			time = localtime(&(msg.timeStamp));
+
+			memcpy(szTPH, msg.frame.data, msg.frame.frameLength - 3);
+
+			strcpy(szTemperature, strtok(szTPH, ";"));
+			strcpy(szPressure, strtok(NULL, ";"));
+			strcpy(szHumidity, strtok(NULL, ";"));
+
+			fprintf(
+				fptr,
+				"%d-%02d-%02d %02d:%02d:%02d,MAX,%s,%s,%s\n",
+				time->tm_year + 1900,
+				time->tm_mon + 1,
+				time->tm_mday,
+				time->tm_hour,
+				time->tm_min,
+				time->tm_sec,
+				&szTemperature[2],
+				&szPressure[2],
+				&szHumidity[2]);
+
+			fflush(fptr);
 			break;
 
 		case RX_RSP_MIN_TPH:
+			time = localtime(&(msg.timeStamp));
+
+			memcpy(szTPH, msg.frame.data, msg.frame.frameLength - 3);
+
+			strcpy(szTemperature, strtok(szTPH, ";"));
+			strcpy(szPressure, strtok(NULL, ";"));
+			strcpy(szHumidity, strtok(NULL, ";"));
+
+			fprintf(
+				fptr,
+				"%d-%02d-%02d %02d:%02d:%02d,MIN,%s,%s,%s\n",
+				time->tm_year + 1900,
+				time->tm_mon + 1,
+				time->tm_mday,
+				time->tm_hour,
+				time->tm_min,
+				time->tm_sec,
+				&szTemperature[2],
+				&szPressure[2],
+				&szHumidity[2]);
+
+			fflush(fptr);
 			break;
 
 		case RX_RSP_RESET_MINMAX_TPH:

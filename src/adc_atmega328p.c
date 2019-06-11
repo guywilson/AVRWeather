@@ -13,6 +13,8 @@ void setupADC(void)
 {
 	ADMUX	= _BV(REFS0) | ADC_CHANNEL0;
 	ADCSRA	= _BV(ADEN) | _BV(ADIE) | ADC_PRESCALER_DIV128;
+
+	resetMinMax();
 }
 
 void triggerADC(void)

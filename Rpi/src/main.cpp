@@ -204,7 +204,7 @@ void * pingThread(void * pArgs)
 void txrxDeamon(SerialPort * port)
 {
 	int				go = 1;
-	int				i;
+//	int				i;
 	int				writeLen;
 	int				bytesRead = 0;
 
@@ -231,9 +231,9 @@ void txrxDeamon(SerialPort * port)
 			}
 
 			printf("TX[%d]: ", writeLen);
-			for (i = 0;i < writeLen;i++) {
-				printf("[0x%02X]", pTxFrame->data[i]);
-			}
+//			for (i = 0;i < writeLen;i++) {
+//				printf("[0x%02X]", pTxFrame->data[i]);
+//			}
 			printf("\n");
 
 			fm->freeFrame(pTxFrame);
@@ -328,14 +328,14 @@ int main(int argc, char *argv[])
 	/*
 	 * Open the CSV file...
 	 */
-	fptrCSV = fopen("./data.csv", "at");
+	fptrCSV = fopen("./tph.csv", "at");
 
 	if (fptrCSV == NULL) {
 		printf("Failed to open CSV file");
 		return -1;
 	}
 
-	fprintf(fptrCSV, "TIME,TEMPERATURE,PRESSURE,HUMIDITY\n");
+	fprintf(fptrCSV, "TIME,TYPE,TEMPERATURE,PRESSURE,HUMIDITY\n");
 
 	err = pthread_mutex_init(&txLock, NULL);
 
