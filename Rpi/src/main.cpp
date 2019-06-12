@@ -77,7 +77,7 @@ void * queryMinMaxTPHThread(void * pArgs)
 	tm = localtime(&t);
 
 	while (go) {
-		while (tm->tm_hour != 23 && tm->tm_min != 59 && tm->tm_sec < 57) {
+		while (!(tm->tm_hour == 23 && tm->tm_min == 59 && tm->tm_sec >= 57)) {
 			t = time(0);
 			tm = localtime(&t);
 
