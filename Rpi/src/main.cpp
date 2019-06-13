@@ -21,11 +21,14 @@
 using namespace std;
 
 FrameManager *		fm;
-
 queue<PFRAME>		txQueue;
 pthread_mutex_t 	txLock;
-
+SerialPort *		port;
 FILE *				fptrCSV;
+
+pthread_t			tidPing;
+pthread_t			tidAvgTPH;
+pthread_t			tidMinMaxTPH;
 
 
 void * queryAvgTPHThread(void * pArgs)
@@ -276,11 +279,43 @@ void txrxDeamon(SerialPort * port)
 	}
 }
 
+void cleanup(void)
+{
+	/*
+	 * Kill threads...
+	 */
+	pthread_kill(tidPing, SIGKILL);
+	pthread_kill(tidAvgTPH, SIGKILL);
+	pthread_kill(tidMinMaxTPH, SIGKILL);
+
+	pthread_mutex_destroy(&txLock);
+
+	fclose(fptrCSV);
+
+    delete port;
+    delete fm;
+}
+
+void handleSignal(int sigNum)
+{
+	switch (sigNum) {
+		case SIGINT:
+			printf("Detected SIGINT, cleaning up...\n");
+			break;
+
+		case SIGTERM:
+			printf("Detected SIGTERM, cleaning up...\n");
+			break;
+	}
+
+	cleanup();
+
+    exit(0);
+}
+
 int main(int argc, char *argv[])
 {
 	int				err;
-	pthread_t		tid;
-	SerialPort *	port;
 	char			szPort[128];
 	char			szBaud[8];
 	int				i;
@@ -300,6 +335,19 @@ int main(int argc, char *argv[])
 	else {
 		printf("Usage:\n");
 		printf("\twctl -port [serialPort] -baud [baudrate]\n\n");
+		return -1;
+	}
+
+	/*
+	 * Register signal handler for cleanup...
+	 */
+	if (signal(SIGINT, &handleSignal) == SIG_ERR) {
+		printf("Failed to register signal handler for SIGINT\n");
+		return -1;
+	}
+
+	if (signal(SIGTERM, &handleSignal) == SIG_ERR) {
+		printf("Failed to register signal handler for SIGTERM\n");
 		return -1;
 	}
 
@@ -351,7 +399,7 @@ int main(int argc, char *argv[])
 	/*
 	 * Ping every second...
 	 */
-	err = pthread_create(&tid, NULL, &pingThread, NULL);
+	err = pthread_create(&tidPing, NULL, &pingThread, NULL);
 
 	if (err != 0) {
 		printf("\nCan't create pingThread thread :[%s]", strerror(err));
@@ -364,7 +412,7 @@ int main(int argc, char *argv[])
 	/*
 	 * Get average temperature, pressure & humidity every 20 seconds...
 	 */
-	err = pthread_create(&tid, NULL, &queryAvgTPHThread, NULL);
+	err = pthread_create(&tidAvgTPH, NULL, &queryAvgTPHThread, NULL);
 
 	if (err != 0) {
 		printf("\nCan't create queryTPHThread thread :[%s]", strerror(err));
@@ -377,7 +425,7 @@ int main(int argc, char *argv[])
 	/*
 	 * Get minimum & maximum TPH just before midnight...
 	 */
-	err = pthread_create(&tid, NULL, &queryMinMaxTPHThread, NULL);
+	err = pthread_create(&tidMinMaxTPH, NULL, &queryMinMaxTPHThread, NULL);
 
 	if (err != 0) {
 		printf("\nCan't create queryTPHThread thread :[%s]", strerror(err));
@@ -395,12 +443,7 @@ int main(int argc, char *argv[])
 	 */
 	txrxDeamon(port);
 
-	pthread_mutex_destroy(&txLock);
-
-	fclose(fptrCSV);
-
-    delete port;
-    delete fm;
+	cleanup();
 
 	return 0;
 }
