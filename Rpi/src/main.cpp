@@ -189,7 +189,7 @@ void * pingThread(void * pArgs)
 		pTxFrame->dataLength = 6;
 
 		/*
-		 * Send TPH frame...
+		 * Send ping frame...
 		 */
 		pthread_mutex_lock(&txLock);
 		txQueue.push(pTxFrame);

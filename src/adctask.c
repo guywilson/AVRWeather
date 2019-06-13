@@ -28,8 +28,12 @@ uint16_t		adcMin[NUM_ADC_CHANNELS];
 
 void resetMinMax()
 {
-	memset(adcMin, 0, (NUM_ADC_CHANNELS * sizeof(uint16_t)));
-	memset(adcMax, 0, (NUM_ADC_CHANNELS * sizeof(uint16_t)));
+	int		channel;
+
+	for (channel = 0;channel < NUM_ADC_CHANNELS;channel++) {
+		adcMin[channel] = 1023;
+		adcMax[channel] = 0;
+	}
 }
 
 #ifdef MOVING_AVG_ENABLE
