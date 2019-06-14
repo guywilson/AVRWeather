@@ -11,6 +11,7 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <time.h>
+#include <signal.h>
 
 #include "serial.h"
 #include "exception.h"
