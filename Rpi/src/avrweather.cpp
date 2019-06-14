@@ -7,6 +7,8 @@
 #include "avrweather.h"
 #include "exception.h"
 
+#define LOG_RXTX
+
 PFRAME				_pFrameMem = NULL;
 int					_size = 0;
 uint8_t				_msgID = 0;
@@ -86,8 +88,10 @@ int processFrame(PRXMSGSTRUCT pMsg, uint8_t * buffer, int bufferLength)
 
 		switch (state) {
 			case RX_STATE_START:
-//				printf("[S]");
-//				printf("[0x%02X]", b);
+#ifdef LOG_RXTX
+				printf("[S]");
+				printf("[0x%02X]", b);
+#endif
 				if (b == MSG_CHAR_START) {
 					pMsg->frame.start = b;
 					state = RX_STATE_LENGTH;
@@ -95,23 +99,29 @@ int processFrame(PRXMSGSTRUCT pMsg, uint8_t * buffer, int bufferLength)
 				break;
 
 			case RX_STATE_LENGTH:
-//				printf("[L]");
-//				printf("[%d]", b);
+#ifdef LOG_RXTX
+				printf("[L]");
+				printf("[%d]", b);
+#endif
 				pMsg->frame.frameLength = b;
 				state = RX_STATE_MSGID;
 				break;
 
 			case RX_STATE_MSGID:
-//				printf("[M]");
-//				printf("[0x%02X]", b);
+#ifdef LOG_RXTX
+				printf("[M]");
+				printf("[0x%02X]", b);
+#endif
 				pMsg->frame.msgID = b;
 				pMsg->frameChecksumTotal = b;
 				state = RX_STATE_RESPONSE;
 				break;
 
 			case RX_STATE_RESPONSE:
-//				printf("[R]");
-//				printf("[0x%02X]", b);
+#ifdef LOG_RXTX
+				printf("[R]");
+				printf("[0x%02X]", b);
+#endif
 				pMsg->frame.response = b;
 				pMsg->frameChecksumTotal += b;
 				state = RX_STATE_RESPTYPE;
@@ -159,8 +169,10 @@ int processFrame(PRXMSGSTRUCT pMsg, uint8_t * buffer, int bufferLength)
 				break;
 
 			case RX_STATE_CHECKSUM:
-//				printf("[C]");
-//				printf("[0x%02X]", b);
+#ifdef LOG_RXTX
+				printf("[C]");
+				printf("[0x%02X]", b);
+#endif
 				pMsg->frame.checksum = b;
 				pMsg->frameChecksumTotal += b;
 
@@ -175,8 +187,10 @@ int processFrame(PRXMSGSTRUCT pMsg, uint8_t * buffer, int bufferLength)
 				break;
 
 			case RX_STATE_END:
-//				printf("[N]");
-//				printf("[0x%02X]", b);
+#ifdef LOG_RXTX
+				printf("[N]");
+				printf("[0x%02X]", b);
+#endif
 				if (b == MSG_CHAR_END) {
 					pMsg->frame.end = b;
 					rtn = 0;

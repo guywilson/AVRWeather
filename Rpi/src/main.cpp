@@ -17,6 +17,7 @@
 #include "avrweather.h"
 
 #define FRAME_MEM_SIZE				16
+#define LOG_RXTX
 
 using namespace std;
 
@@ -207,12 +208,15 @@ void * pingThread(void * pArgs)
 void txrxDeamon(SerialPort * port)
 {
 	int				go = 1;
-//	int				i;
 	int				writeLen;
 	int				bytesRead = 0;
 
 	PFRAME			pTxFrame;
 	PFRAME			pRxFrame;
+
+#ifdef LOG_RXTX
+	int				i;
+#endif
 
 	while (go) {
 		pthread_mutex_lock(&txLock);
@@ -234,9 +238,11 @@ void txrxDeamon(SerialPort * port)
 			}
 
 			printf("TX[%d]: ", writeLen);
-//			for (i = 0;i < writeLen;i++) {
-//				printf("[0x%02X]", pTxFrame->data[i]);
-//			}
+#ifdef LOG_RXTX
+			for (i = 0;i < writeLen;i++) {
+				printf("[0x%02X]", pTxFrame->data[i]);
+			}
+#endif
 			printf("\n");
 
 			fm->freeFrame(pTxFrame);
