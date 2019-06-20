@@ -41,7 +41,7 @@ $(BUILD)/serial.o: $(SOURCE)/serial.cpp $(SOURCE)/serial.h
 $(BUILD)/avrweather.o: $(SOURCE)/avrweather.cpp $(SOURCE)/avrweather.h $(SOURCE)/webconnect.h
 	$(CPP) $(CPPFLAGS) -o $(BUILD)/avrweather.o $(SOURCE)/avrweather.cpp
 
-$(BUILD)/webconnect.o: $(SOURCE)/webconnect.cpp $(SOURCE)/webconnect.h
+$(BUILD)/webconnect.o: $(SOURCE)/webconnect.cpp $(SOURCE)/webconnect.h $(SOURCE)/exception.h
 	$(CPP) $(CPPFLAGS) -o $(BUILD)/webconnect.o $(SOURCE)/webconnect.cpp
 
 $(BUILD)/exception.o: $(SOURCE)/exception.cpp $(SOURCE)/exception.h $(SOURCE)/types.h
@@ -49,3 +49,8 @@ $(BUILD)/exception.o: $(SOURCE)/exception.cpp $(SOURCE)/exception.h $(SOURCE)/ty
 
 $(TARGET): $(OBJFILES)
 	$(LINKER) -lpthread -lstdc++ -o $(TARGET) $(OBJFILES)
+
+test: webtest
+
+webtest: $(BUILD)/exception.o $(BUILD)/webconnect.o
+	$(LINKER) -lstdc++ -o webtest $(BUILD)/exception.o $(BUILD)/webconnect.o

@@ -214,6 +214,7 @@ void processResponse(FILE * fptr, uint8_t * response, int responseLength)
 	char 				szPressure[20];
 	char 				szHumidity[20];
 	struct tm *			time;
+	WebConnector		web;
 
 	processFrame(&msg, response, responseLength);
 
@@ -242,7 +243,7 @@ void processResponse(FILE * fptr, uint8_t * response, int responseLength)
 
 			fflush(fptr);
 
-			postAvgTPH(&szTemperature[2], &szPressure[2], &szHumidity[2]);
+			web.postAvgTPH(&szTemperature[2], &szPressure[2], &szHumidity[2]);
 			break;
 
 		case RX_RSP_MAX_TPH:
@@ -269,7 +270,7 @@ void processResponse(FILE * fptr, uint8_t * response, int responseLength)
 
 			fflush(fptr);
 
-			postMaxTPH(&szTemperature[2], &szPressure[2], &szHumidity[2]);
+			web.postMaxTPH(&szTemperature[2], &szPressure[2], &szHumidity[2]);
 			break;
 
 		case RX_RSP_MIN_TPH:
@@ -296,7 +297,7 @@ void processResponse(FILE * fptr, uint8_t * response, int responseLength)
 
 			fflush(fptr);
 
-			postMinTPH(&szTemperature[2], &szPressure[2], &szHumidity[2]);
+			web.postMinTPH(&szTemperature[2], &szPressure[2], &szHumidity[2]);
 			break;
 
 		case RX_RSP_RESET_MINMAX_TPH:

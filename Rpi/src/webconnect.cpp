@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -6,22 +8,71 @@
 #include <netinet/in.h>
 #include <netdb.h>
 
+#include "exception.h"
 #include "webconnect.h"
 
-#define WEB_HOST			"localhost"
-#define WEB_PORT			3000
-#define WEB_PATH_AVG		"/api/avg-tph"
-#define WEB_PATH_MIN		"/api/min-tph"
-#define WEB_PATH_MAX		"/api/max-tph"
+//#define TEST_WEB
 
 #ifdef TEST_WEB
 int main(void)
 {
-	postAvgTPH("19.98", "1008.25", "57.32");
+	try {
+		WebConnector * web = new WebConnector();
+
+		web->postAvgTPH("19.98", "1008.25", "57.32");
+
+		delete web;
+	}
+	catch (Exception * e) {
+		cout << "Caught exception " << e->getMessage() << endl;
+	}
 }
 #endif
 
-int post(const char * pszHost, const int port, const char * pszPath, char * pszBody)
+void WebConnector::queryConfig()
+{
+	FILE *		fptr;
+	char *		pszToken;
+	char		config[1024];
+	int			i = 0;
+
+	fptr = fopen("./webconfig.cfg", "rt");
+
+	if (fptr == NULL) {
+		throw new Exception("ERROR reading config");
+	}
+
+	do {
+		config[i++] = (char)fgetc(fptr);
+	}
+	while (!feof(fptr));
+
+	config[i] = 0;
+
+	fclose(fptr);
+
+	pszToken = strtok(config, "=\n\r ");
+
+	while (pszToken != NULL) {
+		if (strcmp(pszToken, "host") == 0) {
+			pszToken = strtok(NULL, "=\n\r ");
+
+			strcpy(this->szHost, pszToken);
+		}
+		else if (strcmp(pszToken, "port") == 0) {
+			pszToken = strtok(NULL, "=\n\r ");
+
+			this->port = atoi(pszToken);
+		}
+		else {
+			pszToken = strtok(NULL, "=\n\r ");
+		}
+	}
+
+	cout << "Read host [" << szHost << "], port [" << port << "]" << endl;
+}
+
+void WebConnector::post(const char * pszHost, const int port, const char * pszPath, char * pszBody)
 {
     struct hostent *	server;
     struct sockaddr_in 	serv_addr;
@@ -45,9 +96,9 @@ int post(const char * pszHost, const int port, const char * pszPath, char * pszB
     message = (char *)malloc(message_size);
 
     if (message == NULL) {
-    	printf("ERROR allocating message buffer\n");
-    	return -1;
+    	throw new Exception("ERROR allocating message buffer");
     }
+
     /* fill in the parameters */
 	sprintf(message, pszMsgTemplate, pszPath, strlen(pszBody));
 	strcat(message, pszBody);
@@ -59,16 +110,14 @@ int post(const char * pszHost, const int port, const char * pszPath, char * pszB
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
     if (sockfd < 0) {
-    	printf("ERROR opening socket\n");
-    	return -1;
+    	throw new Exception("ERROR opening socket");
     }
 
     /* lookup the ip address */
     server = gethostbyname(pszHost);
 
     if (server == NULL) {
-    	printf("ERROR, no such host\n");
-    	return -1;
+    	throw new Exception("ERROR, no such host");
     }
 
     /* fill in the structure */
@@ -81,8 +130,7 @@ int post(const char * pszHost, const int port, const char * pszPath, char * pszB
 
     /* connect the socket */
     if (connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
-        printf("ERROR connecting\n");
-        return -1;
+        throw new Exception("ERROR connecting");
     }
 
     /* send the request */
@@ -94,8 +142,7 @@ int post(const char * pszHost, const int port, const char * pszPath, char * pszB
         bytes = write(sockfd, message + sent, total - sent);
 
         if (bytes < 0) {
-            printf("ERROR writing message to socket\n");
-            return -1;
+            throw new Exception("ERROR writing message to socket");
         }
 
         if (bytes == 0) {
@@ -117,8 +164,7 @@ int post(const char * pszHost, const int port, const char * pszPath, char * pszB
         bytes = read(sockfd, response + received, total - received);
 
         if (bytes < 0) {
-            printf("ERROR reading response from socket\n");
-            return -1;
+            throw new Exception("ERROR reading response from socket");
         }
 
         if (bytes == 0) {
@@ -130,8 +176,7 @@ int post(const char * pszHost, const int port, const char * pszPath, char * pszB
     while (received < total);
 
     if (received == total) {
-        printf("ERROR storing complete response from socket\n");
-        return -1;
+        throw new Exception("ERROR storing complete response from socket");
     }
 
     /* close the socket */
@@ -141,11 +186,9 @@ int post(const char * pszHost, const int port, const char * pszPath, char * pszB
     printf("Response:\n%s\n",response);
 
     free(message);
-
-    return 0;
 }
 
-int postAvgTPH(char * pszTemperature, char * pszPressure, char * pszHumidity)
+void WebConnector::postAvgTPH(char * pszTemperature, char * pszPressure, char * pszHumidity)
 {
 	char		szBody[1024];
 
@@ -156,10 +199,10 @@ int postAvgTPH(char * pszTemperature, char * pszPressure, char * pszHumidity)
 		pszPressure,
 		pszHumidity);
 
-	return post(WEB_HOST, WEB_PORT, WEB_PATH_AVG, szBody);
+	post(this->szHost, this->port, WEB_PATH_AVG, szBody);
 }
 
-int postMinTPH(char * pszTemperature, char * pszPressure, char * pszHumidity)
+void WebConnector::postMinTPH(char * pszTemperature, char * pszPressure, char * pszHumidity)
 {
 	char		szBody[1024];
 
@@ -170,10 +213,10 @@ int postMinTPH(char * pszTemperature, char * pszPressure, char * pszHumidity)
 		pszPressure,
 		pszHumidity);
 
-	return post(WEB_HOST, WEB_PORT, WEB_PATH_MIN, szBody);
+	post(this->szHost, this->port, WEB_PATH_MIN, szBody);
 }
 
-int postMaxTPH(char * pszTemperature, char * pszPressure, char * pszHumidity)
+void WebConnector::postMaxTPH(char * pszTemperature, char * pszPressure, char * pszHumidity)
 {
 	char		szBody[1024];
 
@@ -184,5 +227,10 @@ int postMaxTPH(char * pszTemperature, char * pszPressure, char * pszHumidity)
 		pszPressure,
 		pszHumidity);
 
-	return post(WEB_HOST, WEB_PORT, WEB_PATH_MAX, szBody);
+	post(this->szHost, this->port, WEB_PATH_MAX, szBody);
+}
+
+WebConnector::WebConnector()
+{
+	queryConfig();
 }
