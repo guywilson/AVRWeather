@@ -8,13 +8,13 @@ var avgTemperature = '0.00';
 var avgPressure = '0.00';
 var avgHumidity = '0.00';
 
-var minTemperature = '19.52';
-var minPressure = '1008.12';
-var minHumidity = '51.54';
+var minTemperature = '---';
+var minPressure = '---';
+var minHumidity = '---';
 
-var maxTemperature = '37.84';
-var maxPressure = '1012.54';
-var maxHumidity = '75.12';
+var maxTemperature = '---';
+var maxPressure = '---';
+var maxHumidity = '---';
 
 app.use(express.static('public'));
 app.use(bodyParser.json());
@@ -23,7 +23,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 
 app.get('/', function (req, res) {
-	res.render('index', {temperature: avgTemperature, pressure: avgPressure, humidity: avgHumidity});
+	res.render('index', {avgTemperature: avgTemperature, avgPressure: avgPressure, avgHumidity: avgHumidity});
 })
 
 /*
