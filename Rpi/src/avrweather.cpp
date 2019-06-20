@@ -6,6 +6,7 @@
 
 #include "avrweather.h"
 #include "exception.h"
+#include "webconnect.h"
 
 #define LOG_RXTX
 
@@ -240,6 +241,8 @@ void processResponse(FILE * fptr, uint8_t * response, int responseLength)
 				&szHumidity[2]);
 
 			fflush(fptr);
+
+			postAvgTPH(&szTemperature[2], &szPressure[2], &szHumidity[2]);
 			break;
 
 		case RX_RSP_MAX_TPH:
@@ -265,6 +268,8 @@ void processResponse(FILE * fptr, uint8_t * response, int responseLength)
 				&szHumidity[2]);
 
 			fflush(fptr);
+
+			postMaxTPH(&szTemperature[2], &szPressure[2], &szHumidity[2]);
 			break;
 
 		case RX_RSP_MIN_TPH:
@@ -290,6 +295,8 @@ void processResponse(FILE * fptr, uint8_t * response, int responseLength)
 				&szHumidity[2]);
 
 			fflush(fptr);
+
+			postMinTPH(&szTemperature[2], &szPressure[2], &szHumidity[2]);
 			break;
 
 		case RX_RSP_RESET_MINMAX_TPH:
