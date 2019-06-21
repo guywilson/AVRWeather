@@ -1,3 +1,4 @@
+#include <iostream>
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -7,6 +8,8 @@
 #include "avrweather.h"
 #include "exception.h"
 #include "webconnect.h"
+
+using namespace std;
 
 #define LOG_RXTX
 
@@ -243,7 +246,12 @@ void processResponse(FILE * fptr, uint8_t * response, int responseLength)
 
 			fflush(fptr);
 
-			web.postAvgTPH(&szTemperature[2], &szPressure[2], &szHumidity[2]);
+			try {
+				web.postAvgTPH(&szTemperature[2], &szPressure[2], &szHumidity[2]);
+			}
+			catch (Exception * e) {
+				cout << "Caught exception posting to web server: " << e->getMessage() << endl;
+			}
 			break;
 
 		case RX_RSP_MAX_TPH:
@@ -270,7 +278,12 @@ void processResponse(FILE * fptr, uint8_t * response, int responseLength)
 
 			fflush(fptr);
 
-			web.postMaxTPH(&szTemperature[2], &szPressure[2], &szHumidity[2]);
+			try {
+				web.postMaxTPH(&szTemperature[2], &szPressure[2], &szHumidity[2]);
+			}
+			catch (Exception * e) {
+				cout << "Caught exception posting to web server: " << e->getMessage() << endl;
+			}
 			break;
 
 		case RX_RSP_MIN_TPH:
@@ -297,7 +310,12 @@ void processResponse(FILE * fptr, uint8_t * response, int responseLength)
 
 			fflush(fptr);
 
-			web.postMinTPH(&szTemperature[2], &szPressure[2], &szHumidity[2]);
+			try {
+				web.postMinTPH(&szTemperature[2], &szPressure[2], &szHumidity[2]);
+			}
+			catch (Exception * e) {
+				cout << "Caught exception posting to web server: " << e->getMessage() << endl;
+			}
 			break;
 
 		case RX_RSP_RESET_MINMAX_TPH:
