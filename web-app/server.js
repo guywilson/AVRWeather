@@ -1,8 +1,12 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const request = require('request');
+const MongoClient = require('mongodb').MongoClient;
+
 const app = express();
-const apiKey = 'b340cca5287ba875e11c7fa0a257926a';
+const mongoURL = 'mongodb://localhost/WeatherDB';
+
+var timestamp = '1900-01-01 00:00:00';
 
 var avgTemperature = '0.00';
 var avgPressure = '0.00';
@@ -40,10 +44,20 @@ app.get('/', function (req, res) {
 ** Handle API post for average TPH data...
 */
 app.post('/api/avg-tph', function(req, res) {
+	timestamp = req.body.time;
 	avgTemperature = req.body.temperature;
 	avgPressure = req.body.pressure;
 	avgHumidity = req.body.humidity;
-	
+
+	MongoClient.connect(url, function(err, db) {
+	    db.collection('AverageTPH').insertOne({
+	        timestamp: timestamp,
+	        temperature: avgTemperature,
+			pressure: avgPressure,
+			humidity: avgHumidity
+	    });
+	});
+	 	
 	console.log('Received TPH data. T = ' + avgTemperature + ' P = ' + avgPressure + ' H = ' + avgHumidity);
 	
 	res.json(["OK", ""]);
@@ -53,9 +67,19 @@ app.post('/api/avg-tph', function(req, res) {
 ** Handle API post for min TPH data...
 */
 app.post('/api/min-tph', function(req, res) {
+	timestamp = req.body.time;
 	minTemperature = req.body.temperature;
 	minPressure = req.body.pressure;
 	minHumidity = req.body.humidity;
+
+	MongoClient.connect(url, function(err, db) {
+	    db.collection('MinimumTPH').insertOne({
+	        timestamp: timestamp,
+	        temperature: minTemperature,
+			pressure: minPressure,
+			humidity: minHumidity
+	    });
+	});
 	
 	console.log('Received TPH data. T = ' + minTemperature + ' P = ' + minPressure + ' H = ' + minHumidity);
 	
@@ -66,9 +90,19 @@ app.post('/api/min-tph', function(req, res) {
 ** Handle API post for max TPH data...
 */
 app.post('/api/max-tph', function(req, res) {
+	timestamp = req.body.time;
 	maxTemperature = req.body.temperature;
 	maxPressure = req.body.pressure;
 	maxHumidity = req.body.humidity;
+
+	MongoClient.connect(url, function(err, db) {
+	    db.collection('MaximumTPH').insertOne({
+	        timestamp: timestamp,
+	        temperature: maxTemperature,
+			pressure: maxPressure,
+			humidity: maxHumidity
+	    });
+	});
 	
 	console.log('Received TPH data. T = ' + maxTemperature + ' P = ' + maxPressure + ' H = ' + maxHumidity);
 	
