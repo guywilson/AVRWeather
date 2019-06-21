@@ -4,7 +4,7 @@ const request = require('request');
 const MongoClient = require('mongodb').MongoClient;
 
 const app = express();
-const mongoURL = 'mongodb://localhost/WeatherDB';
+const mongoURL = 'mongodb://localhost';
 
 var timestamp = '1900-01-01 00:00:00';
 
@@ -49,7 +49,13 @@ app.post('/api/avg-tph', function(req, res) {
 	avgPressure = req.body.pressure;
 	avgHumidity = req.body.humidity;
 
-	MongoClient.connect(mongoURL, function(err, db) {
+	MongoClient.connect(mongoURL, function(error, client) {
+		if (error) {
+			throw err;
+		}
+		
+		var db = client.db('WeatherDB');
+		
 	    db.collection('AverageTPH').insertOne({
 	        timestamp: timestamp,
 	        temperature: avgTemperature,
