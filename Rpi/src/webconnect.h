@@ -15,11 +15,13 @@ public:
 	}
 
 private:
-	char		szHost[256];
-	int			port;
+	char			szTimeStr[20];
+	char			szHost[256];
+	int				port;
 
 	WebConnector();
 
+	char *		getTimeStamp();
 	void		queryConfig();
 	void		post(
 					const char * pszHost,

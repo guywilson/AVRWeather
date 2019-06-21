@@ -18,7 +18,7 @@
 #include "avrweather.h"
 
 #define FRAME_MEM_SIZE				16
-#define LOG_RXTX
+//#define LOG_RXTX
 
 using namespace std;
 
