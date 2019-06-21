@@ -49,7 +49,7 @@ app.post('/api/avg-tph', function(req, res) {
 	avgPressure = req.body.pressure;
 	avgHumidity = req.body.humidity;
 
-	MongoClient.connect(url, function(err, db) {
+	MongoClient.connect(mongoURL, function(err, db) {
 	    db.collection('AverageTPH').insertOne({
 	        timestamp: timestamp,
 	        temperature: avgTemperature,
@@ -72,7 +72,7 @@ app.post('/api/min-tph', function(req, res) {
 	minPressure = req.body.pressure;
 	minHumidity = req.body.humidity;
 
-	MongoClient.connect(url, function(err, db) {
+	MongoClient.connect(mongoURL, function(err, db) {
 	    db.collection('MinimumTPH').insertOne({
 	        timestamp: timestamp,
 	        temperature: minTemperature,
@@ -95,7 +95,7 @@ app.post('/api/max-tph', function(req, res) {
 	maxPressure = req.body.pressure;
 	maxHumidity = req.body.humidity;
 
-	MongoClient.connect(url, function(err, db) {
+	MongoClient.connect(mongoURL, function(err, db) {
 	    db.collection('MaximumTPH').insertOne({
 	        timestamp: timestamp,
 	        temperature: maxTemperature,
