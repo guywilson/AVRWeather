@@ -62,6 +62,8 @@ app.post('/api/avg-tph', function(req, res) {
 			pressure: avgPressure,
 			humidity: avgHumidity
 	    });
+
+		client.close();
 	});
 	 	
 	console.log('Received TPH data. T = ' + avgTemperature + ' P = ' + avgPressure + ' H = ' + avgHumidity);
@@ -78,13 +80,21 @@ app.post('/api/min-tph', function(req, res) {
 	minPressure = req.body.pressure;
 	minHumidity = req.body.humidity;
 
-	MongoClient.connect(mongoURL, function(err, db) {
+	MongoClient.connect(mongoURL, function(error, client) {
+		if (error) {
+			throw err;
+		}
+		
+		var db = client.db('WeatherDB');
+		
 	    db.collection('MinimumTPH').insertOne({
 	        timestamp: timestamp,
 	        temperature: minTemperature,
 			pressure: minPressure,
 			humidity: minHumidity
 	    });
+
+		client.close();
 	});
 	
 	console.log('Received TPH data. T = ' + minTemperature + ' P = ' + minPressure + ' H = ' + minHumidity);
@@ -101,13 +111,21 @@ app.post('/api/max-tph', function(req, res) {
 	maxPressure = req.body.pressure;
 	maxHumidity = req.body.humidity;
 
-	MongoClient.connect(mongoURL, function(err, db) {
+	MongoClient.connect(mongoURL, function(error, client) {
+		if (error) {
+			throw err;
+		}
+		
+		var db = client.db('WeatherDB');
+		
 	    db.collection('MaximumTPH').insertOne({
 	        timestamp: timestamp,
 	        temperature: maxTemperature,
 			pressure: maxPressure,
 			humidity: maxHumidity
 	    });
+
+		client.close();
 	});
 	
 	console.log('Received TPH data. T = ' + maxTemperature + ' P = ' + maxPressure + ' H = ' + maxHumidity);
