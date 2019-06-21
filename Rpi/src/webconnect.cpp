@@ -11,17 +11,17 @@
 #include "exception.h"
 #include "webconnect.h"
 
+#define INT_LENGTH				10
+
 //#define TEST_WEB
 
 #ifdef TEST_WEB
 int main(void)
 {
 	try {
-		WebConnector * web = new WebConnector();
+		WebConnector & web = WebConnector::getInstance();
 
-		web->postAvgTPH("19.98", "1008.25", "57.32");
-
-		delete web;
+		web.postAvgTPH("19.98", "1008.25", "57.32");
 	}
 	catch (Exception * e) {
 		cout << "Caught exception " << e->getMessage() << endl;
@@ -68,8 +68,6 @@ void WebConnector::queryConfig()
 			pszToken = strtok(NULL, "=\n\r ");
 		}
 	}
-
-	cout << "Read host [" << szHost << "], port [" << port << "]" << endl;
 }
 
 void WebConnector::post(const char * pszHost, const int port, const char * pszPath, char * pszBody)
@@ -88,7 +86,7 @@ void WebConnector::post(const char * pszHost, const int port, const char * pszPa
 
      /* How big is the message? */
     message_size = 0;
-	message_size += strlen(pszMsgTemplate) + 10;
+	message_size += strlen(pszMsgTemplate) + INT_LENGTH;
 	message_size += strlen(pszPath);
 	message_size += strlen(pszBody);
 
@@ -104,7 +102,7 @@ void WebConnector::post(const char * pszHost, const int port, const char * pszPa
 	strcat(message, pszBody);
 
     /* What are we going to send? */
-    printf("Request:\n%s\n", message);
+//    printf("Request:\n%s\n", message);
 
     /* create the socket */
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -183,7 +181,7 @@ void WebConnector::post(const char * pszHost, const int port, const char * pszPa
     close(sockfd);
 
     /* process response */
-    printf("Response:\n%s\n",response);
+//    printf("Response:\n%s\n",response);
 
     free(message);
 }

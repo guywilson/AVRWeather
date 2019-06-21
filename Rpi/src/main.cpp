@@ -409,11 +409,11 @@ int main(int argc, char *argv[])
 	err = pthread_create(&tidPing, NULL, &pingThread, NULL);
 
 	if (err != 0) {
-		printf("\nCan't create pingThread thread :[%s]", strerror(err));
+		printf("ERROR! Can't create pingThread thread :[%s]\n", strerror(err));
 		return -1;
 	}
 	else {
-		printf("\nThread pingThread created successfully\n");
+		printf("Thread pingThread() created successfully\n");
 	}
 
 	/*
@@ -422,11 +422,11 @@ int main(int argc, char *argv[])
 	err = pthread_create(&tidAvgTPH, NULL, &queryAvgTPHThread, NULL);
 
 	if (err != 0) {
-		printf("\nCan't create queryTPHThread thread :[%s]", strerror(err));
+		printf("ERROR! Can't create queryAvgTPHThread thread :[%s]\n", strerror(err));
 		return -1;
 	}
 	else {
-		printf("\nThread queryTPHThread created successfully\n");
+		printf("Thread queryAvgTPHThread() created successfully\n");
 	}
 
 	/*
@@ -435,11 +435,11 @@ int main(int argc, char *argv[])
 	err = pthread_create(&tidMinMaxTPH, NULL, &queryMinMaxTPHThread, NULL);
 
 	if (err != 0) {
-		printf("\nCan't create queryTPHThread thread :[%s]", strerror(err));
+		printf("ERROR! Can't create queryMinMaxTPHThread thread :[%s]\n", strerror(err));
 		return -1;
 	}
 	else {
-		printf("\nThread queryTPHThread created successfully\n");
+		printf("Thread queryMinMaxTPHThread() created successfully\n");
 	}
 
 	/*

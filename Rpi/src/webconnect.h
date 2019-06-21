@@ -7,9 +7,18 @@
 
 class WebConnector
 {
+public:
+	static WebConnector & getInstance()
+	{
+		static WebConnector instance;
+		return instance;
+	}
+
 private:
 	char		szHost[256];
 	int			port;
+
+	WebConnector();
 
 	void		queryConfig();
 	void		post(
@@ -19,8 +28,6 @@ private:
 					char * pszBody);
 
 public:
-	WebConnector();
-
 	void postAvgTPH(char * pszTemperature, char * pszPressure, char * pszHumidity);
 	void postMinTPH(char * pszTemperature, char * pszPressure, char * pszHumidity);
 	void postMaxTPH(char * pszTemperature, char * pszPressure, char * pszHumidity);

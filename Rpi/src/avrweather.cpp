@@ -11,7 +11,7 @@
 
 using namespace std;
 
-#define LOG_RXTX
+//#define LOG_RXTX
 
 PFRAME				_pFrameMem = NULL;
 int					_size = 0;
@@ -217,104 +217,108 @@ void processResponse(FILE * fptr, uint8_t * response, int responseLength)
 	char 				szPressure[20];
 	char 				szHumidity[20];
 	struct tm *			time;
-	WebConnector		web;
+
+	WebConnector & web = WebConnector::getInstance();
 
 	processFrame(&msg, response, responseLength);
 
 	switch (msg.frame.response) {
 		case RX_RSP_AVG_TPH:
-			time = localtime(&(msg.timeStamp));
-
 			memcpy(szTPH, msg.frame.data, msg.frame.frameLength - 3);
 
 			strcpy(szTemperature, strtok(szTPH, ";"));
 			strcpy(szPressure, strtok(NULL, ";"));
 			strcpy(szHumidity, strtok(NULL, ";"));
-
-			fprintf(
-				fptr,
-				"%d-%02d-%02d %02d:%02d:%02d,AVG,%s,%s,%s\n",
-				time->tm_year + 1900,
-				time->tm_mon + 1,
-				time->tm_mday,
-				time->tm_hour,
-				time->tm_min,
-				time->tm_sec,
-				&szTemperature[2],
-				&szPressure[2],
-				&szHumidity[2]);
-
-			fflush(fptr);
 
 			try {
 				web.postAvgTPH(&szTemperature[2], &szPressure[2], &szHumidity[2]);
 			}
 			catch (Exception * e) {
 				cout << "Caught exception posting to web server: " << e->getMessage() << endl;
+				cout << "Writing to local CSV instead" << endl;
+
+				time = localtime(&(msg.timeStamp));
+
+				fprintf(
+					fptr,
+					"%d-%02d-%02d %02d:%02d:%02d,AVG,%s,%s,%s\n",
+					time->tm_year + 1900,
+					time->tm_mon + 1,
+					time->tm_mday,
+					time->tm_hour,
+					time->tm_min,
+					time->tm_sec,
+					&szTemperature[2],
+					&szPressure[2],
+					&szHumidity[2]);
+
+				fflush(fptr);
 			}
 			break;
 
 		case RX_RSP_MAX_TPH:
-			time = localtime(&(msg.timeStamp));
-
 			memcpy(szTPH, msg.frame.data, msg.frame.frameLength - 3);
 
 			strcpy(szTemperature, strtok(szTPH, ";"));
 			strcpy(szPressure, strtok(NULL, ";"));
 			strcpy(szHumidity, strtok(NULL, ";"));
-
-			fprintf(
-				fptr,
-				"%d-%02d-%02d %02d:%02d:%02d,MAX,%s,%s,%s\n",
-				time->tm_year + 1900,
-				time->tm_mon + 1,
-				time->tm_mday,
-				time->tm_hour,
-				time->tm_min,
-				time->tm_sec,
-				&szTemperature[2],
-				&szPressure[2],
-				&szHumidity[2]);
-
-			fflush(fptr);
 
 			try {
 				web.postMaxTPH(&szTemperature[2], &szPressure[2], &szHumidity[2]);
 			}
 			catch (Exception * e) {
 				cout << "Caught exception posting to web server: " << e->getMessage() << endl;
+				cout << "Writing to local CSV instead" << endl;
+
+				time = localtime(&(msg.timeStamp));
+
+				fprintf(
+					fptr,
+					"%d-%02d-%02d %02d:%02d:%02d,MAX,%s,%s,%s\n",
+					time->tm_year + 1900,
+					time->tm_mon + 1,
+					time->tm_mday,
+					time->tm_hour,
+					time->tm_min,
+					time->tm_sec,
+					&szTemperature[2],
+					&szPressure[2],
+					&szHumidity[2]);
+
+				fflush(fptr);
 			}
 			break;
 
 		case RX_RSP_MIN_TPH:
-			time = localtime(&(msg.timeStamp));
-
 			memcpy(szTPH, msg.frame.data, msg.frame.frameLength - 3);
 
 			strcpy(szTemperature, strtok(szTPH, ";"));
 			strcpy(szPressure, strtok(NULL, ";"));
 			strcpy(szHumidity, strtok(NULL, ";"));
 
-			fprintf(
-				fptr,
-				"%d-%02d-%02d %02d:%02d:%02d,MIN,%s,%s,%s\n",
-				time->tm_year + 1900,
-				time->tm_mon + 1,
-				time->tm_mday,
-				time->tm_hour,
-				time->tm_min,
-				time->tm_sec,
-				&szTemperature[2],
-				&szPressure[2],
-				&szHumidity[2]);
-
-			fflush(fptr);
-
 			try {
 				web.postMinTPH(&szTemperature[2], &szPressure[2], &szHumidity[2]);
 			}
 			catch (Exception * e) {
 				cout << "Caught exception posting to web server: " << e->getMessage() << endl;
+				cout << "Writing to local CSV instead" << endl;
+
+				time = localtime(&(msg.timeStamp));
+
+				fprintf(
+					fptr,
+					"%d-%02d-%02d %02d:%02d:%02d,MIN,%s,%s,%s\n",
+					time->tm_year + 1900,
+					time->tm_mon + 1,
+					time->tm_mday,
+					time->tm_hour,
+					time->tm_min,
+					time->tm_sec,
+					&szTemperature[2],
+					&szPressure[2],
+					&szHumidity[2]);
+
+				fflush(fptr);
 			}
 			break;
 
