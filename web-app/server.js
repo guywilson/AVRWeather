@@ -33,15 +33,9 @@ function getChartData(callback) {
 		if (error) {
 			throw err;
 		}
-		
-		var query = {
-			timestamp: {$gte:'2019-06-21 00:00:00'},
-			timestamp: true,
-			temperature: true
-		};
 	
 		var options = {
-			"limit": 8
+			"limit": 24
 		};
 	
 		var db = client.db('WeatherDB');
@@ -83,7 +77,7 @@ app.get('/', function (req, res) {
 ** Render charts page...
 */
 app.get('/charts', function (req, res) {
-	var xLabels = [8,9,10,11,12,13,14,15];
+	var xLabels = [23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
 	var tempReadings = [];
 
 	getChartData(function(items) {
