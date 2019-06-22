@@ -28,18 +28,38 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.set('view engine', 'ejs');
 
+/*
+** Render landing page...
+*/
 app.get('/', function (req, res) {
 	res.render(
 			'index', 
-			{avgTemperature: avgTemperature, 
-			 avgPressure: avgPressure, 
-			 avgHumidity: avgHumidity,
-			 minTemperature: minTemperature,
-			 minPressure: minPressure,
-			 minHumidity: minHumidity,
-			 maxTemperature: maxTemperature,
-			 maxPressure: maxPressure,
-			 maxHumidity: maxHumidity});
+			{
+				avgTemperature: avgTemperature, 
+			 	avgPressure: avgPressure, 
+			 	avgHumidity: avgHumidity,
+			 	minTemperature: minTemperature,
+			 	minPressure: minPressure,
+			 	minHumidity: minHumidity,
+			 	maxTemperature: maxTemperature,
+			 	maxPressure: maxPressure,
+			 	maxHumidity: maxHumidity
+			});
+})
+
+/*
+** Render charts page...
+*/
+app.get('/charts', function (req, res) {
+	var xLabels = ['0800', '1000', '1200', '1400', '1600', '1800', '2000', '2200'];
+	var tempReadings = [16.49, 17.05, 18.12, 19.50, 19.87, 20.23, 18.87, 17.54];
+	
+	res.render(
+			'charts',
+			{
+				xLabels: xLabels,
+				tempReadings: tempReadings
+			});
 })
 
 /*
