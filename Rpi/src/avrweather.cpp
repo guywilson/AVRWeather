@@ -226,15 +226,13 @@ void processResponse(FILE * fptr, uint8_t * response, int responseLength)
 {
 	RXMSGSTRUCT			msg;
 	int					avgCount = 0;
-	int					minCount = 0;
-	int					maxCount = 0;
 	char				szTPH[80];
 	char 				szTemperature[20];
 	char 				szPressure[20];
 	char 				szHumidity[20];
 	static bool			avgSave = true;
-	static bool			minSave = true;
-	static bool			maxSave = true;
+	static bool			minSave = false;
+	static bool			maxSave = false;
 
 	WebConnector & web = WebConnector::getInstance();
 
@@ -297,20 +295,13 @@ void processResponse(FILE * fptr, uint8_t * response, int responseLength)
 			strcpy(szHumidity, strtok(NULL, ";"));
 
 			try {
+				if (time.getHour() == 23 && time.getMinute() == 59 && time.getSecond() >= 30) {
+					maxSave = true;
+				}
+
 				web.postMaxTPH(maxSave, &szTemperature[2], &szPressure[2], &szHumidity[2]);
 
-				maxCount++;
-
-				/*
-				 * Save once a day...
-				 */
-				if (maxCount < 4320) {
-					maxSave = false;
-				}
-				else {
-					maxSave = true;
-					maxCount = 0;
-				}
+				maxSave = false;
 			}
 			catch (Exception * e) {
 				cout << "Caught exception posting to web server: " << e->getMessage() << endl;
@@ -341,20 +332,13 @@ void processResponse(FILE * fptr, uint8_t * response, int responseLength)
 			strcpy(szHumidity, strtok(NULL, ";"));
 
 			try {
+				if (time.getHour() == 23 && time.getMinute() == 59 && time.getSecond() >= 30) {
+					minSave = true;
+				}
+
 				web.postMinTPH(minSave, &szTemperature[2], &szPressure[2], &szHumidity[2]);
 
-				minCount++;
-
-				/*
-				 * Save once a day...
-				 */
-				if (minCount < 4320) {
-					minSave = false;
-				}
-				else {
-					minSave = true;
-					minCount = 0;
-				}
+				minSave = false;
 			}
 			catch (Exception * e) {
 				cout << "Caught exception posting to web server: " << e->getMessage() << endl;
