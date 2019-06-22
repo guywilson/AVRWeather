@@ -122,9 +122,9 @@ void * queryTPHThread(void * pArgs)
 		pthread_mutex_unlock(&txLock);
 
 		/*
-		 * Sleep for 30 seconds...
+		 * Sleep for 20 seconds total...
 		 */
-		sleep(30);
+		sleep(18);
 	}
 
 	return NULL;

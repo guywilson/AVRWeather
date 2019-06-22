@@ -186,7 +186,7 @@ void WebConnector::post(const char * pszHost, const int port, const char * pszPa
     free(message);
 }
 
-void WebConnector::postAvgTPH(char * pszTemperature, char * pszPressure, char * pszHumidity)
+void WebConnector::postAvgTPH(bool save, char * pszTemperature, char * pszPressure, char * pszHumidity)
 {
 	char				szBody[128];
 
@@ -196,7 +196,7 @@ void WebConnector::postAvgTPH(char * pszTemperature, char * pszPressure, char * 
 		szBody,
 		"{\n\t\"time\": \"%s\",\n\t\"save\": \"%s\",\n\t\"temperature\": \"%s\",\n\t\"pressure\": \"%s\",\n\t\"humidity\": \"%s\"\n}",
 		time.getTimeStamp(),
-		"true",
+		save ? "true" : "false",
 		pszTemperature,
 		pszPressure,
 		pszHumidity);
@@ -204,22 +204,17 @@ void WebConnector::postAvgTPH(char * pszTemperature, char * pszPressure, char * 
 	post(this->szHost, this->port, WEB_PATH_AVG, szBody);
 }
 
-void WebConnector::postMinTPH(char * pszTemperature, char * pszPressure, char * pszHumidity)
+void WebConnector::postMinTPH(bool save, char * pszTemperature, char * pszPressure, char * pszHumidity)
 {
 	char			szBody[128];
-	const char *	pszDoSave = "false";
 
 	CurrentTime & time = CurrentTime::getInstance();
-
-	if (time.getHour() == 23 && time.getMinute() == 59 && time.getSecond() >= 30) {
-		pszDoSave = "true";
-	}
 
 	sprintf(
 		szBody,
 		"{\n\t\"time\": \"%s\",\n\t\"save\": \"%s\",\n\t\"temperature\": \"%s\",\n\t\"pressure\": \"%s\",\n\t\"humidity\": \"%s\"\n}",
 		time.getTimeStamp(),
-		pszDoSave,
+		save ? "true" : "false",
 		pszTemperature,
 		pszPressure,
 		pszHumidity);
@@ -227,22 +222,17 @@ void WebConnector::postMinTPH(char * pszTemperature, char * pszPressure, char * 
 	post(this->szHost, this->port, WEB_PATH_MIN, szBody);
 }
 
-void WebConnector::postMaxTPH(char * pszTemperature, char * pszPressure, char * pszHumidity)
+void WebConnector::postMaxTPH(bool save, char * pszTemperature, char * pszPressure, char * pszHumidity)
 {
 	char			szBody[128];
-	const char *	pszDoSave = "false";
 
 	CurrentTime & time = CurrentTime::getInstance();
-
-	if (time.getHour() == 23 && time.getMinute() == 59 && time.getSecond() >= 30) {
-		pszDoSave = "true";
-	}
 
 	sprintf(
 		szBody,
 		"{\n\t\"time\": \"%s\",\n\t\"save\": \"%s\",\n\t\"temperature\": \"%s\",\n\t\"pressure\": \"%s\",\n\t\"humidity\": \"%s\"\n}",
 		time.getTimeStamp(),
-		pszDoSave,
+		save ? "true" : "false",
 		pszTemperature,
 		pszPressure,
 		pszHumidity);

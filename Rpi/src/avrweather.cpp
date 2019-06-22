@@ -225,10 +225,14 @@ int processFrame(PRXMSGSTRUCT pMsg, uint8_t * buffer, int bufferLength)
 void processResponse(FILE * fptr, uint8_t * response, int responseLength)
 {
 	RXMSGSTRUCT			msg;
+	int					avgCount = 0;
+	int					minCount = 0;
+	int					maxCount = 0;
 	char				szTPH[80];
 	char 				szTemperature[20];
 	char 				szPressure[20];
 	char 				szHumidity[20];
+	bool				save;
 
 	WebConnector & web = WebConnector::getInstance();
 
@@ -247,7 +251,19 @@ void processResponse(FILE * fptr, uint8_t * response, int responseLength)
 			strcpy(szHumidity, strtok(NULL, ";"));
 
 			try {
-				web.postAvgTPH(&szTemperature[2], &szPressure[2], &szHumidity[2]);
+				/*
+				 * Save once an hour...
+				 */
+				if (avgCount < 180) {
+					save = false;
+					avgCount++;
+				}
+				else {
+					save = true;
+					avgCount = 0;
+				}
+
+				web.postAvgTPH(save, &szTemperature[2], &szPressure[2], &szHumidity[2]);
 			}
 			catch (Exception * e) {
 				cout << "Caught exception posting to web server: " << e->getMessage() << endl;
@@ -278,7 +294,19 @@ void processResponse(FILE * fptr, uint8_t * response, int responseLength)
 			strcpy(szHumidity, strtok(NULL, ";"));
 
 			try {
-				web.postMaxTPH(&szTemperature[2], &szPressure[2], &szHumidity[2]);
+				/*
+				 * Save once a day...
+				 */
+				if (maxCount < 4320) {
+					save = false;
+					maxCount++;
+				}
+				else {
+					save = true;
+					maxCount = 0;
+				}
+
+				web.postMaxTPH(save, &szTemperature[2], &szPressure[2], &szHumidity[2]);
 			}
 			catch (Exception * e) {
 				cout << "Caught exception posting to web server: " << e->getMessage() << endl;
@@ -309,7 +337,19 @@ void processResponse(FILE * fptr, uint8_t * response, int responseLength)
 			strcpy(szHumidity, strtok(NULL, ";"));
 
 			try {
-				web.postMinTPH(&szTemperature[2], &szPressure[2], &szHumidity[2]);
+				/*
+				 * Save once a day...
+				 */
+				if (minCount < 4320) {
+					save = false;
+					minCount++;
+				}
+				else {
+					save = true;
+					minCount = 0;
+				}
+
+				web.postMinTPH(save, &szTemperature[2], &szPressure[2], &szHumidity[2]);
 			}
 			catch (Exception * e) {
 				cout << "Caught exception posting to web server: " << e->getMessage() << endl;

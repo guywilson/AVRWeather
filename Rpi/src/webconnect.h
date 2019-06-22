@@ -28,9 +28,9 @@ private:
 					char * pszBody);
 
 public:
-	void postAvgTPH(char * pszTemperature, char * pszPressure, char * pszHumidity);
-	void postMinTPH(char * pszTemperature, char * pszPressure, char * pszHumidity);
-	void postMaxTPH(char * pszTemperature, char * pszPressure, char * pszHumidity);
+	void postAvgTPH(bool save, char * pszTemperature, char * pszPressure, char * pszHumidity);
+	void postMinTPH(bool save, char * pszTemperature, char * pszPressure, char * pszHumidity);
+	void postMaxTPH(bool save, char * pszTemperature, char * pszPressure, char * pszHumidity);
 };
 
 #endif
