@@ -47,7 +47,7 @@ app.get('/', function (req, res) {
 			});
 })
 
-function getChartLabels() {
+function getChartLabels(callback) {
 	var query = {
 		timestamp: {$gte:'2019-06-21 00:00:00'},
 		timestamp: true
@@ -72,7 +72,7 @@ function getChartLabels() {
 			}
 			
 			console.log(items)
-			return items;
+			return callback(items);
 		});
 	
 		client.close();
@@ -102,7 +102,7 @@ function getChartLabels(collection, callback) {
 }
 */
 
-function getChartData() {
+function getChartData(callback) {
 	MongoClient.connect(mongoURL, function(error, client) {
 		if (error) {
 			throw err;
@@ -127,7 +127,7 @@ function getChartData() {
 			}
 			
 			console.log(items)
-			return items;
+			return callback(items);
 		});
 	
 		client.close();
@@ -164,68 +164,18 @@ app.get('/charts', function (req, res) {
 	var xLabels = [];
 	var tempReadings = [];
 
-	MongoClient.connect(mongoURL, function(error, client) {
-		if (error) {
-			throw err;
-		}
-		
-		var query = {
-			timestamp: {$gte:'2019-06-21 00:00:00'},
-			timestamp: true
-		};
-	
-		var options = {
-			"limit": 8
-		};
-	
-		var db = client.db('WeatherDB');
-
-		var collection = db.collection('AverageTPH');
-		
-		collection.find({}, options).toArray((error, items) => {
-			if (error) {
-				throw error;
-			}
-			
-			items.forEach(function(item, index) {
-				xLabels = xLabels.concat(item.timestamp);
-			});
+	getChartLabels(function(items) {
+		items.forEach(function(item, index) {
+			xLabels = xLabels.concat(item.timestamp);
 		});
-	
-		client.close();
 	});
 
 	console.log('Got labels ' + xLabels);
 
-	MongoClient.connect(mongoURL, function(error, client) {
-		if (error) {
-			throw err;
-		}
-		
-		var query = {
-			timestamp: {$gte:'2019-06-21 00:00:00'},
-			temperature: true
-		};
-	
-		var options = {
-			"limit": 8
-		};
-	
-		var db = client.db('WeatherDB');
-
-		var collection = db.collection('AverageTPH');
-		
-		collection.find({}, options).toArray((error, items) => {
-			if (error) {
-				throw error;
-			}
-			
-			items.forEach(function(item, index) {
-				tempReadings = tempReadings.concat(item.temperature);
-			});
+	getChartData(function(items) {
+		items.forEach(function(item, index) {
+			tempReadings = tempReadings.concat(item.temperature);
 		});
-	
-		client.close();
 	});
 
 	console.log('Got data ' + tempReadings);
