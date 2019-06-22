@@ -83,12 +83,12 @@ app.get('/', function (req, res) {
 ** Render charts page...
 */
 app.get('/charts', function (req, res) {
-	var xLabels = [];
+	var xLabels = [8,9,10,11,12,13,14,15];
 	var tempReadings = [];
 
 	getChartData(function(items) {
 		items.forEach(function(item, index) {
-			xLabels = xLabels.concat('\'' + item.timestamp + '\'');
+			//xLabels = xLabels.concat('\'' + item.timestamp + '\'');
 			tempReadings = tempReadings.concat(item.temperature);
 		});
 
