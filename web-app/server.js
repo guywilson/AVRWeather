@@ -103,22 +103,20 @@ function getChartLabels(collection, callback) {
 */
 
 function getChartData() {
-	var query = {
-		timestamp: {$gte:'2019-06-21 00:00:00'},
-		temperature: true
-	};
-
-	var options = {
-		"limit": 8
-	};
-	
-	var db;
-	
 	MongoClient.connect(mongoURL, function(error, client) {
 		if (error) {
 			throw err;
 		}
 		
+		var query = {
+			timestamp: {$gte:'2019-06-21 00:00:00'},
+			temperature: true
+		};
+	
+		var options = {
+			"limit": 8
+		};
+	
 		var db = client.db('WeatherDB');
 
 		var collection = db.collection('AverageTPH');
@@ -166,6 +164,65 @@ app.get('/charts', function (req, res) {
 	var xLabels = [];
 	var tempReadings = [];
 
+	MongoClient.connect(mongoURL, function(error, client) {
+		if (error) {
+			throw err;
+		}
+		
+		var query = {
+			timestamp: {$gte:'2019-06-21 00:00:00'},
+			timestamp: true
+		};
+	
+		var options = {
+			"limit": 8
+		};
+	
+		var db = client.db('WeatherDB');
+
+		var collection = db.collection('AverageTPH');
+		
+		collection.find({}, options).toArray((error, items) => {
+			if (error) {
+				throw error;
+			}
+			
+			xLabels = xLabels.concat(results);
+		});
+	
+		client.close();
+	});
+
+	MongoClient.connect(mongoURL, function(error, client) {
+		if (error) {
+			throw err;
+		}
+		
+		var query = {
+			timestamp: {$gte:'2019-06-21 00:00:00'},
+			temperature: true
+		};
+	
+		var options = {
+			"limit": 8
+		};
+	
+		var db = client.db('WeatherDB');
+
+		var collection = db.collection('AverageTPH');
+		
+		collection.find({}, options).toArray((error, items) => {
+			if (error) {
+				throw error;
+			}
+			
+			tempReadings = tempReadings.concat(results);
+		});
+	
+		client.close();
+	});
+
+/*
 	getChartLabels(function(items) {
 		console.info('The promise was fulfilled with items!', items);
 		xLabels = xLabels.concat(results);
@@ -179,6 +236,7 @@ app.get('/charts', function (req, res) {
 	}, function(err) {
 		console.error('The promise was rejected', err, err.stack);
 	});
+*/
 	
 	res.render(
 			'charts',
