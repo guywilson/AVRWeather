@@ -247,13 +247,13 @@ void txrxDeamon(SerialPort * port)
 				continue;
 			}
 
-			printf("TX[%d]: ", writeLen);
 #ifdef LOG_RXTX
+			printf("TX[%d]: ", writeLen);
 			for (i = 0;i < writeLen;i++) {
 				printf("[0x%02X]", pTxFrame->data[i]);
 			}
-#endif
 			printf("\n");
+#endif
 
 			fm->freeFrame(pTxFrame);
 
@@ -280,7 +280,9 @@ void txrxDeamon(SerialPort * port)
 			/*
 			 * Process response...
 			 */
+#ifdef LOG_RXTX
 			printf("RX[%d]: ", bytesRead);
+#endif
 			if (bytesRead) {
 				processResponse(fptrCSV, pRxFrame->data, bytesRead);
 			}

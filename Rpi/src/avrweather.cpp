@@ -136,7 +136,9 @@ int processFrame(PRXMSGSTRUCT pMsg, uint8_t * buffer, int bufferLength)
 
 			case RX_STATE_RESPTYPE:
 				if (b == MSG_CHAR_ACK) {
+#ifdef LOG_RXTX
 					printf("[ACK]");
+#endif
 					pMsg->frame.responseType = MSG_CHAR_ACK;
 
 					if (pMsg->frame.frameLength > 3) {
@@ -148,7 +150,9 @@ int processFrame(PRXMSGSTRUCT pMsg, uint8_t * buffer, int bufferLength)
 					}
 				}
 				else if (b == MSG_CHAR_NAK) {
+#ifdef LOG_RXTX
 					printf("[NAK]");
+#endif
 					pMsg->frame.responseType = MSG_CHAR_NAK;
 
 					state = RX_STATE_ERRCODE;
@@ -158,7 +162,9 @@ int processFrame(PRXMSGSTRUCT pMsg, uint8_t * buffer, int bufferLength)
 				break;
 
 			case RX_STATE_DATA:
+#ifdef LOG_RXTX
 				printf("%c", b);
+#endif
 				pMsg->frame.data[i++] = b;
 				pMsg->frameChecksumTotal += b;
 
@@ -168,8 +174,10 @@ int processFrame(PRXMSGSTRUCT pMsg, uint8_t * buffer, int bufferLength)
 				break;
 
 			case RX_STATE_ERRCODE:
+#ifdef LOG_RXTX
 				printf("[E]");
 				printf("[0x%02X]", b);
+#endif
 				pMsg->frame.errorCode = b;
 				pMsg->frameChecksumTotal += b;
 				state = RX_STATE_CHECKSUM;
@@ -201,7 +209,9 @@ int processFrame(PRXMSGSTRUCT pMsg, uint8_t * buffer, int bufferLength)
 				if (b == MSG_CHAR_END) {
 					pMsg->frame.end = b;
 					rtn = 0;
+#ifdef LOG_RXTX
 					printf("\n");
+#endif
 				}
 
 				state = RX_STATE_START;
