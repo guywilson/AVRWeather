@@ -168,17 +168,17 @@ app.get('/charts', function (req, res) {
 		items.forEach(function(item, index) {
 			xLabels = xLabels.concat(item.timestamp);
 		});
-	});
 
-	console.log('Got labels ' + xLabels);
+		console.log('Got labels ' + xLabels);
+	});
 
 	getChartData(function(items) {
 		items.forEach(function(item, index) {
 			tempReadings = tempReadings.concat(item.temperature);
 		});
-	});
 
-	console.log('Got data ' + tempReadings);
+		console.log('Got data ' + tempReadings);
+	});
 
 	res.render(
 			'charts',
