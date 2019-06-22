@@ -187,6 +187,7 @@ app.get('/charts', function (req, res) {
 				throw error;
 			}
 			
+			console.log('Got labels' + items);
 			xLabels = items;
 		});
 	
@@ -216,6 +217,7 @@ app.get('/charts', function (req, res) {
 				throw error;
 			}
 			
+			console.log('Got data' + items);
 			tempReadings = items;
 		});
 	
