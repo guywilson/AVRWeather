@@ -54,7 +54,7 @@ function getChartLabels() {
 	};
 
 	var options = {
-		"limit": 2880
+		"limit": 50
 	};
 	
 	MongoClient.connect(mongoURL, function(error, client) {
@@ -109,7 +109,7 @@ function getChartData() {
 	};
 
 	var options = {
-		"limit": 2880
+		"limit": 50
 	};
 	
 	var db;
