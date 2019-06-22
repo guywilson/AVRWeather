@@ -28,25 +28,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.set('view engine', 'ejs');
 
-/*
-** Render landing page...
-*/
-app.get('/', function (req, res) {
-	res.render(
-			'index', 
-			{
-				avgTemperature: avgTemperature, 
-			 	avgPressure: avgPressure, 
-			 	avgHumidity: avgHumidity,
-			 	minTemperature: minTemperature,
-			 	minPressure: minPressure,
-			 	minHumidity: minHumidity,
-			 	maxTemperature: maxTemperature,
-			 	maxPressure: maxPressure,
-			 	maxHumidity: maxHumidity
-			});
-})
-
 function getChartData(callback) {
 	MongoClient.connect(mongoURL, function(error, client) {
 		if (error) {
@@ -72,13 +53,31 @@ function getChartData(callback) {
 				throw error;
 			}
 			
-			console.log(items)
 			return callback(items);
 		});
 	
 		client.close();
 	});
 }
+
+/*
+** Render landing page...
+*/
+app.get('/', function (req, res) {
+	res.render(
+			'index', 
+			{
+				avgTemperature: avgTemperature, 
+			 	avgPressure: avgPressure, 
+			 	avgHumidity: avgHumidity,
+			 	minTemperature: minTemperature,
+			 	minPressure: minPressure,
+			 	minHumidity: minHumidity,
+			 	maxTemperature: maxTemperature,
+			 	maxPressure: maxPressure,
+			 	maxHumidity: maxHumidity
+			});
+})
 
 /*
 ** Render charts page...
