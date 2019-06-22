@@ -47,12 +47,72 @@ app.get('/', function (req, res) {
 			});
 })
 
+function getChartLabels(collection, callback) {
+	var queryLabels = {
+		timestamp: {$gte:'2019-06-21 00:00:00'},
+		timestamp: true
+	};
+
+	var options = {
+		"limit": 2880
+	};
+	
+	collection.find({}, options).toArray(function (error, results) {
+		if (error) {
+			throw error;
+		}
+		
+		if (results.length > 0) {
+			callback(results);
+		}
+	});
+}
+
+function getChartData(collection, callback) {
+	var queryData = {
+		timestamp: {$gte:'2019-06-21 00:00:00'},
+		temperature: true
+	};
+
+	var options = {
+		"limit": 2880
+	};
+	
+	collection.find({}, options).toArray(function (error, results) {
+		if (error) {
+			throw error;
+		}
+		
+		if (results.length > 0) {
+			callback(results);
+		}
+	});
+}
+
 /*
 ** Render charts page...
 */
 app.get('/charts', function (req, res) {
-	var xLabels = ['0800', '1000', '1200', '1400', '1600', '1800', '2000', '2200'];
-	var tempReadings = [16.49, 17.05, 18.12, 19.50, 19.87, 20.23, 18.87, 17.54];
+	var xLabels = [];
+	var tempReadings = [];
+
+	MongoClient.connect(mongoURL, function(error, client) {
+		if (error) {
+			throw err;
+		}
+		
+		var db = client.db('WeatherDB');
+		
+		getChartLabels(db.collection('AverageTPH'), function(results) {
+			xLabels = xLabels.concat(results);
+		});
+		
+		getChartData(db.collection('AverageTPH'), function(results) {
+			tempReadings = tempReadings.concat(results);
+		});
+		
+		client.close();
+	});
 	
 	res.render(
 			'charts',
