@@ -187,8 +187,11 @@ app.get('/charts', function (req, res) {
 				throw error;
 			}
 			
-			console.log('Got labels' + items);
-			xLabels = items;
+			items.forEach(function(item, index) {
+				xLabels = xLabels.concat(item.timestamp);
+			});
+
+			console.log('Got labels ' + xLabels);
 		});
 	
 		client.close();
@@ -217,8 +220,11 @@ app.get('/charts', function (req, res) {
 				throw error;
 			}
 			
-			console.log('Got data' + items);
-			tempReadings = items;
+			items.forEach(function(item, index) {
+				tempReadings = tempReadings.concat(item.temperature);
+			});
+
+			console.log('Got data ' + tempReadings);
 		});
 	
 		client.close();
