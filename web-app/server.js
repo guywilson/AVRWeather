@@ -187,7 +187,7 @@ app.get('/charts', function (req, res) {
 				throw error;
 			}
 			
-			xLabels = xLabels.concat(items);
+			xLabels = items;
 		});
 	
 		client.close();
@@ -216,7 +216,7 @@ app.get('/charts', function (req, res) {
 				throw error;
 			}
 			
-			tempReadings = tempReadings.concat(items);
+			tempReadings = items;
 		});
 	
 		client.close();
