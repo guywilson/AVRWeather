@@ -190,12 +190,12 @@ app.get('/charts', function (req, res) {
 			items.forEach(function(item, index) {
 				xLabels = xLabels.concat(item.timestamp);
 			});
-
-			console.log('Got labels ' + xLabels);
 		});
 	
 		client.close();
 	});
+
+	console.log('Got labels ' + xLabels);
 
 	MongoClient.connect(mongoURL, function(error, client) {
 		if (error) {
@@ -223,29 +223,13 @@ app.get('/charts', function (req, res) {
 			items.forEach(function(item, index) {
 				tempReadings = tempReadings.concat(item.temperature);
 			});
-
-			console.log('Got data ' + tempReadings);
 		});
 	
 		client.close();
 	});
 
-/*
-	getChartLabels(function(items) {
-		console.info('The promise was fulfilled with items!', items);
-		xLabels = xLabels.concat(results);
-	}, function(err) {
-		console.error('The promise was rejected', err, err.stack);
-	});
+	console.log('Got data ' + tempReadings);
 
-	getChartData(function(items) {
-		console.info('The promise was fulfilled with items!', items);
-		tempReadings = tempReadings.concat(results);
-	}, function(err) {
-		console.error('The promise was rejected', err, err.stack);
-	});
-*/
-	
 	res.render(
 			'charts',
 			{
