@@ -17,18 +17,18 @@
 				var temperatureChart = new Chart(ctx, {
 					type: 'line',
 					data: {
-						labels: [
+						labels: 
 							<% if(xLabels !== null){ %>
 								<p><%= xLabels %></p>
 							<% } %>
-						],
+						,
 						datasets: [{
 							label: 'Temperature last 24h',
-							data: [
+							data: 
 								<% if(tempReadings !== null){ %>
 								<p><%= tempReadings %></p>
 							<% } %>
-							]
+							
 						}]
 					}
 				});
