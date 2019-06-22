@@ -47,61 +47,6 @@ app.get('/', function (req, res) {
 			});
 })
 
-function getChartLabels(callback) {
-	var query = {
-		timestamp: {$gte:'2019-06-21 00:00:00'},
-		timestamp: true
-	};
-
-	var options = {
-		"limit": 8
-	};
-	
-	MongoClient.connect(mongoURL, function(error, client) {
-		if (error) {
-			throw err;
-		}
-		
-		var db = client.db('WeatherDB');
-
-		var collection = db.collection('AverageTPH');
-		
-		collection.find({}, options).toArray((error, items) => {
-			if (error) {
-				throw error;
-			}
-			
-			console.log(items)
-			return callback(items);
-		});
-	
-		client.close();
-	});
-}
-
-/*
-function getChartLabels(collection, callback) {
-	var queryLabels = {
-		timestamp: {$gte:'2019-06-21 00:00:00'},
-		timestamp: true
-	};
-
-	var options = {
-		"limit": 2880
-	};
-	
-	collection.find({}, options).toArray(function (error, results) {
-		if (error) {
-			throw error;
-		}
-		
-		if (results.length > 0) {
-			callback(results);
-		}
-	});
-}
-*/
-
 function getChartData(callback) {
 	MongoClient.connect(mongoURL, function(error, client) {
 		if (error) {
@@ -110,6 +55,7 @@ function getChartData(callback) {
 		
 		var query = {
 			timestamp: {$gte:'2019-06-21 00:00:00'},
+			timestamp: true,
 			temperature: true
 		};
 	
@@ -135,57 +81,26 @@ function getChartData(callback) {
 }
 
 /*
-function getChartData(collection, callback) {
-	var query = {
-		timestamp: {$gte:'2019-06-21 00:00:00'},
-		temperature: true
-	};
-
-	var options = {
-		"limit": 2880
-	};
-	
-	collection.find({}, options).toArray(function (error, results) {
-		if (error) {
-			throw error;
-		}
-		
-		if (results.length > 0) {
-			callback(results);
-		}
-	});
-}
-*/
-
-/*
 ** Render charts page...
 */
 app.get('/charts', function (req, res) {
 	var xLabels = [];
 	var tempReadings = [];
 
-	getChartLabels(function(items) {
-		items.forEach(function(item, index) {
-			xLabels = xLabels.concat(item.timestamp);
-		});
-
-		console.log('Got labels ' + xLabels);
-	});
-
 	getChartData(function(items) {
 		items.forEach(function(item, index) {
+			xLabels = xLabels.concat(item.timestamp);
 			tempReadings = tempReadings.concat(item.temperature);
 		});
 
+		console.log('Got labels ' + xLabels);
 		console.log('Got data ' + tempReadings);
-	});
 
-	res.render(
-			'charts',
-			{
-				xLabels: xLabels,
-				tempReadings: tempReadings
-			});
+		res.render('charts', {
+					xLabels: xLabels,
+					tempReadings: tempReadings
+		});
+	});
 })
 
 /*
