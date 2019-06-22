@@ -47,6 +47,39 @@ app.get('/', function (req, res) {
 			});
 })
 
+function getChartLabels() {
+	var query = {
+		timestamp: {$gte:'2019-06-21 00:00:00'},
+		timestamp: true
+	};
+
+	var options = {
+		"limit": 2880
+	};
+	
+	MongoClient.connect(mongoURL, function(error, client) {
+		if (error) {
+			throw err;
+		}
+		
+		var db = client.db('WeatherDB');
+
+		var collection = db.collection('AverageTPH');
+		
+		collection.find({}, options).toArray((error, items) => {
+			if (error) {
+				throw error;
+			}
+			
+			console.log(items)
+			return items;
+		});
+	
+		client.close();
+	});
+}
+
+/*
 function getChartLabels(collection, callback) {
 	var queryLabels = {
 		timestamp: {$gte:'2019-06-21 00:00:00'},
@@ -67,9 +100,45 @@ function getChartLabels(collection, callback) {
 		}
 	});
 }
+*/
 
+function getChartData() {
+	var query = {
+		timestamp: {$gte:'2019-06-21 00:00:00'},
+		temperature: true
+	};
+
+	var options = {
+		"limit": 2880
+	};
+	
+	var db;
+	
+	MongoClient.connect(mongoURL, function(error, client) {
+		if (error) {
+			throw err;
+		}
+		
+		var db = client.db('WeatherDB');
+
+		var collection = db.collection('AverageTPH');
+		
+		collection.find({}, options).toArray((error, items) => {
+			if (error) {
+				throw error;
+			}
+			
+			console.log(items)
+			return items;
+		});
+	
+		client.close();
+	});
+}
+
+/*
 function getChartData(collection, callback) {
-	var queryData = {
+	var query = {
 		timestamp: {$gte:'2019-06-21 00:00:00'},
 		temperature: true
 	};
@@ -88,6 +157,7 @@ function getChartData(collection, callback) {
 		}
 	});
 }
+*/
 
 /*
 ** Render charts page...
@@ -96,22 +166,18 @@ app.get('/charts', function (req, res) {
 	var xLabels = [];
 	var tempReadings = [];
 
-	MongoClient.connect(mongoURL, function(error, client) {
-		if (error) {
-			throw err;
-		}
-		
-		var db = client.db('WeatherDB');
-		
-		getChartLabels(db.collection('AverageTPH'), function(results) {
-			xLabels = xLabels.concat(results);
-		});
-		
-		getChartData(db.collection('AverageTPH'), function(results) {
-			tempReadings = tempReadings.concat(results);
-		});
-		
-		client.close();
+	getChartLabels(function(items) {
+		console.info('The promise was fulfilled with items!', items);
+		xLabels = xLabels.concat(results);
+	}, function(err) {
+		console.error('The promise was rejected', err, err.stack);
+	});
+
+	getChartData(function(items) {
+		console.info('The promise was fulfilled with items!', items);
+		tempReadings = tempReadings.concat(results);
+	}, function(err) {
+		console.error('The promise was rejected', err, err.stack);
 	});
 	
 	res.render(
