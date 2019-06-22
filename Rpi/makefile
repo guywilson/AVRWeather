@@ -25,7 +25,7 @@ LINKER=g++
 CPPFLAGS=-c -O3 -fpermissive -fPIC -Wall -std=c++11
 
 # Object files 
-OBJFILES=$(BUILD)/main.o $(BUILD)/serial.o $(BUILD)/avrweather.o $(BUILD)/webconnect.o $(BUILD)/exception.o
+OBJFILES=$(BUILD)/main.o $(BUILD)/serial.o $(BUILD)/avrweather.o $(BUILD)/currenttime.o $(BUILD)/webconnect.o $(BUILD)/exception.o
 
 # Target
 all: $(TARGET)
@@ -41,6 +41,9 @@ $(BUILD)/serial.o: $(SOURCE)/serial.cpp $(SOURCE)/serial.h
 $(BUILD)/avrweather.o: $(SOURCE)/avrweather.cpp $(SOURCE)/avrweather.h $(SOURCE)/webconnect.h
 	$(CPP) $(CPPFLAGS) -o $(BUILD)/avrweather.o $(SOURCE)/avrweather.cpp
 
+$(BUILD)/currenttime.o: $(SOURCE)/currenttime.cpp $(SOURCE)/currenttime.h
+	$(CPP) $(CPPFLAGS) -o $(BUILD)/currenttime.o $(SOURCE)/currenttime.cpp
+
 $(BUILD)/webconnect.o: $(SOURCE)/webconnect.cpp $(SOURCE)/webconnect.h $(SOURCE)/exception.h
 	$(CPP) $(CPPFLAGS) -o $(BUILD)/webconnect.o $(SOURCE)/webconnect.cpp
 
@@ -52,5 +55,5 @@ $(TARGET): $(OBJFILES)
 
 test: webtest
 
-webtest: $(BUILD)/exception.o $(BUILD)/webconnect.o
-	$(LINKER) -lstdc++ -o webtest $(BUILD)/exception.o $(BUILD)/webconnect.o
+webtest: $(BUILD)/exception.o $(BUILD)/currenttime.o $(BUILD)/webconnect.o
+	$(LINKER) -lstdc++ -o webtest $(BUILD)/exception.o $(BUILD)/currenttime.o $(BUILD)/webconnect.o

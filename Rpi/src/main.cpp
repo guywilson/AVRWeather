@@ -33,12 +33,15 @@ pthread_t			tidAvgTPH;
 pthread_t			tidMinMaxTPH;
 
 
-void * queryAvgTPHThread(void * pArgs)
+void * queryTPHThread(void * pArgs)
 {
 	PFRAME			pTxFrame;
 	int				go = 1;
 
 	while (go) {
+		/*
+		 * Get AVG TPH...
+		 */
 		pTxFrame = fm->allocFrame();
 
 		if (pTxFrame == NULL) {
@@ -56,41 +59,16 @@ void * queryAvgTPHThread(void * pArgs)
 		pTxFrame->dataLength = 6;
 
 		/*
-		 * Send TPH frame...
+		 * Send getAvgTPH frame...
 		 */
 		pthread_mutex_lock(&txLock);
 		txQueue.push(pTxFrame);
 		pthread_mutex_unlock(&txLock);
 
-		/*
-		 * Sleep for 20 seconds...
-		 */
-		sleep(20);
-	}
-
-	return NULL;
-}
-
-void * queryMinMaxTPHThread(void * pArgs)
-{
-	PFRAME			pTxFrame;
-	int				go = 1;
-	time_t			t;
-	struct tm *		tm;
-
-	t = time(0);
-	tm = localtime(&t);
-
-	while (go) {
-		while (!(tm->tm_hour == 23 && tm->tm_min == 59 && tm->tm_sec >= 57)) {
-			t = time(0);
-			tm = localtime(&t);
-
-			sleep(2);
-		}
+		usleep(500000);
 
 		/*
-		 * Get MIN TPH for the last period...
+		 * Get MIN TPH...
 		 */
 		pTxFrame = fm->allocFrame();
 
@@ -108,14 +86,17 @@ void * queryMinMaxTPHThread(void * pArgs)
 
 		pTxFrame->dataLength = 6;
 
+		/*
+		 * Send getMinTPH frame...
+		 */
 		pthread_mutex_lock(&txLock);
 		txQueue.push(pTxFrame);
 		pthread_mutex_unlock(&txLock);
 
-		sleep(1);
+		usleep(500000);
 
 		/*
-		 * Get MAX TPH for the last period...
+		 * Get MAX TPH...
 		 */
 		pTxFrame = fm->allocFrame();
 
@@ -133,11 +114,39 @@ void * queryMinMaxTPHThread(void * pArgs)
 
 		pTxFrame->dataLength = 6;
 
+		/*
+		 * Send getMaxTPH frame...
+		 */
 		pthread_mutex_lock(&txLock);
 		txQueue.push(pTxFrame);
 		pthread_mutex_unlock(&txLock);
 
-		sleep(1);
+		/*
+		 * Sleep for 30 seconds...
+		 */
+		sleep(30);
+	}
+
+	return NULL;
+}
+
+void * resetMinMaxTPHThread(void * pArgs)
+{
+	PFRAME			pTxFrame;
+	int				go = 1;
+	time_t			t;
+	struct tm *		tm;
+
+	t = time(0);
+	tm = localtime(&t);
+
+	while (go) {
+		while (!(tm->tm_hour == 23 && tm->tm_min == 59 && tm->tm_sec >= 57)) {
+			t = time(0);
+			tm = localtime(&t);
+
+			sleep(2);
+		}
 
 		/*
 		 * Reset MIN & MAX TPH...
@@ -417,9 +426,9 @@ int main(int argc, char *argv[])
 	}
 
 	/*
-	 * Get average temperature, pressure & humidity every 20 seconds...
+	 * Get temperature, pressure & humidity every 30 seconds...
 	 */
-	err = pthread_create(&tidAvgTPH, NULL, &queryAvgTPHThread, NULL);
+	err = pthread_create(&tidAvgTPH, NULL, &queryTPHThread, NULL);
 
 	if (err != 0) {
 		printf("ERROR! Can't create queryAvgTPHThread thread :[%s]\n", strerror(err));
@@ -430,9 +439,9 @@ int main(int argc, char *argv[])
 	}
 
 	/*
-	 * Get minimum & maximum TPH just before midnight...
+	 * Reset minimum & maximum TPH just before midnight...
 	 */
-	err = pthread_create(&tidMinMaxTPH, NULL, &queryMinMaxTPHThread, NULL);
+	err = pthread_create(&tidMinMaxTPH, NULL, &resetMinMaxTPHThread, NULL);
 
 	if (err != 0) {
 		printf("ERROR! Can't create queryMinMaxTPHThread thread :[%s]\n", strerror(err));

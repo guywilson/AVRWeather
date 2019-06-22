@@ -3,12 +3,12 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#include <time.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
 
 #include "exception.h"
+#include "currenttime.h"
 #include "webconnect.h"
 
 #define INT_LENGTH				10
@@ -186,35 +186,17 @@ void WebConnector::post(const char * pszHost, const int port, const char * pszPa
     free(message);
 }
 
-char * WebConnector::getTimeStamp()
-{
-	time_t				t;
-	struct tm *			localTime;
-
-	t = time(0);
-	localTime = localtime(&t);
-
-	sprintf(
-		this->szTimeStr,
-		"%d-%02d-%02d %02d:%02d:%02d",
-		localTime->tm_year + 1900,
-		localTime->tm_mon + 1,
-		localTime->tm_mday,
-		localTime->tm_hour,
-		localTime->tm_min,
-		localTime->tm_sec);
-
-	return this->szTimeStr;
-}
-
 void WebConnector::postAvgTPH(char * pszTemperature, char * pszPressure, char * pszHumidity)
 {
 	char				szBody[128];
 
+	CurrentTime & time = CurrentTime::getInstance();
+
 	sprintf(
 		szBody,
-		"{\n\t\"time\": \"%s\",\n\t\"temperature\": \"%s\",\n\t\"pressure\": \"%s\",\n\t\"humidity\": \"%s\"\n}",
-		getTimeStamp(),
+		"{\n\t\"time\": \"%s\",\n\t\"save\": \"%s\",\n\t\"temperature\": \"%s\",\n\t\"pressure\": \"%s\",\n\t\"humidity\": \"%s\"\n}",
+		time.getTimeStamp(),
+		"true",
 		pszTemperature,
 		pszPressure,
 		pszHumidity);
@@ -224,12 +206,20 @@ void WebConnector::postAvgTPH(char * pszTemperature, char * pszPressure, char * 
 
 void WebConnector::postMinTPH(char * pszTemperature, char * pszPressure, char * pszHumidity)
 {
-	char		szBody[128];
+	char			szBody[128];
+	const char *	pszDoSave = "false";
+
+	CurrentTime & time = CurrentTime::getInstance();
+
+	if (time.getHour() == 23 && time.getMinute() == 59 && time.getSecond() >= 30) {
+		pszDoSave = "true";
+	}
 
 	sprintf(
 		szBody,
-		"{\n\t\"time\": \"%s\",\n\t\"temperature\": \"%s\",\n\t\"pressure\": \"%s\",\n\t\"humidity\": \"%s\"\n}",
-		getTimeStamp(),
+		"{\n\t\"time\": \"%s\",\n\t\"save\": \"%s\",\n\t\"temperature\": \"%s\",\n\t\"pressure\": \"%s\",\n\t\"humidity\": \"%s\"\n}",
+		time.getTimeStamp(),
+		pszDoSave,
 		pszTemperature,
 		pszPressure,
 		pszHumidity);
@@ -239,12 +229,20 @@ void WebConnector::postMinTPH(char * pszTemperature, char * pszPressure, char * 
 
 void WebConnector::postMaxTPH(char * pszTemperature, char * pszPressure, char * pszHumidity)
 {
-	char		szBody[128];
+	char			szBody[128];
+	const char *	pszDoSave = "false";
+
+	CurrentTime & time = CurrentTime::getInstance();
+
+	if (time.getHour() == 23 && time.getMinute() == 59 && time.getSecond() >= 30) {
+		pszDoSave = "true";
+	}
 
 	sprintf(
 		szBody,
-		"{\n\t\"time\": \"%s\",\n\t\"temperature\": \"%s\",\n\t\"pressure\": \"%s\",\n\t\"humidity\": \"%s\"\n}",
-		getTimeStamp(),
+		"{\n\t\"time\": \"%s\",\n\t\"save\": \"%s\",\n\t\"temperature\": \"%s\",\n\t\"pressure\": \"%s\",\n\t\"humidity\": \"%s\"\n}",
+		time.getTimeStamp(),
+		pszDoSave,
 		pszTemperature,
 		pszPressure,
 		pszHumidity);

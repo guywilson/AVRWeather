@@ -8,6 +8,7 @@
 #include "avrweather.h"
 #include "exception.h"
 #include "webconnect.h"
+#include "currenttime.h"
 
 using namespace std;
 
@@ -85,7 +86,9 @@ int processFrame(PRXMSGSTRUCT pMsg, uint8_t * buffer, int bufferLength)
 	int					count = 0;
 	uint8_t				b;
 
-	pMsg->timeStamp = time(0);
+	CurrentTime & time = CurrentTime::getInstance();
+
+	pMsg->timeStamp = time.updateTime();
 
 	while (count < bufferLength) {
 		b = buffer[count++];
@@ -216,11 +219,14 @@ void processResponse(FILE * fptr, uint8_t * response, int responseLength)
 	char 				szTemperature[20];
 	char 				szPressure[20];
 	char 				szHumidity[20];
-	struct tm *			time;
 
 	WebConnector & web = WebConnector::getInstance();
 
+	CurrentTime & time = CurrentTime::getInstance();
+
 	processFrame(&msg, response, responseLength);
+
+	time.updateTime(&(msg.timeStamp));
 
 	switch (msg.frame.response) {
 		case RX_RSP_AVG_TPH:
@@ -237,17 +243,15 @@ void processResponse(FILE * fptr, uint8_t * response, int responseLength)
 				cout << "Caught exception posting to web server: " << e->getMessage() << endl;
 				cout << "Writing to local CSV instead" << endl;
 
-				time = localtime(&(msg.timeStamp));
-
 				fprintf(
 					fptr,
 					"%d-%02d-%02d %02d:%02d:%02d,AVG,%s,%s,%s\n",
-					time->tm_year + 1900,
-					time->tm_mon + 1,
-					time->tm_mday,
-					time->tm_hour,
-					time->tm_min,
-					time->tm_sec,
+					time.getYear(),
+					time.getMonth(),
+					time.getDay(),
+					time.getHour(),
+					time.getMinute(),
+					time.getSecond(),
 					&szTemperature[2],
 					&szPressure[2],
 					&szHumidity[2]);
@@ -270,17 +274,15 @@ void processResponse(FILE * fptr, uint8_t * response, int responseLength)
 				cout << "Caught exception posting to web server: " << e->getMessage() << endl;
 				cout << "Writing to local CSV instead" << endl;
 
-				time = localtime(&(msg.timeStamp));
-
 				fprintf(
 					fptr,
 					"%d-%02d-%02d %02d:%02d:%02d,MAX,%s,%s,%s\n",
-					time->tm_year + 1900,
-					time->tm_mon + 1,
-					time->tm_mday,
-					time->tm_hour,
-					time->tm_min,
-					time->tm_sec,
+					time.getYear(),
+					time.getMonth(),
+					time.getDay(),
+					time.getHour(),
+					time.getMinute(),
+					time.getSecond(),
 					&szTemperature[2],
 					&szPressure[2],
 					&szHumidity[2]);
@@ -303,17 +305,15 @@ void processResponse(FILE * fptr, uint8_t * response, int responseLength)
 				cout << "Caught exception posting to web server: " << e->getMessage() << endl;
 				cout << "Writing to local CSV instead" << endl;
 
-				time = localtime(&(msg.timeStamp));
-
 				fprintf(
 					fptr,
 					"%d-%02d-%02d %02d:%02d:%02d,MIN,%s,%s,%s\n",
-					time->tm_year + 1900,
-					time->tm_mon + 1,
-					time->tm_mday,
-					time->tm_hour,
-					time->tm_min,
-					time->tm_sec,
+					time.getYear(),
+					time.getMonth(),
+					time.getDay(),
+					time.getHour(),
+					time.getMinute(),
+					time.getSecond(),
 					&szTemperature[2],
 					&szPressure[2],
 					&szHumidity[2]);
