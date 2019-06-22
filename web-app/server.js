@@ -88,7 +88,7 @@ app.get('/charts', function (req, res) {
 
 	getChartData(function(items) {
 		items.forEach(function(item, index) {
-			xLabels = xLabels.concat(item.timestamp);
+			xLabels = xLabels.concat('"' + item.timestamp + '"');
 			tempReadings = tempReadings.concat(item.temperature);
 		});
 
