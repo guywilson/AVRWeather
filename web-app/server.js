@@ -127,7 +127,7 @@ app.post('/api/avg-tph', function(req, res) {
 		});
 	}
 	 	
-	console.log('Received TPH data. T = ' + avgTemperature + ' P = ' + avgPressure + ' H = ' + avgHumidity);
+	console.log('Received AVG TPH data. Save = ' + doSave + 'T = ' + avgTemperature + ' P = ' + avgPressure + ' H = ' + avgHumidity);
 	
 	res.json(["OK", ""]);
 })
@@ -162,8 +162,8 @@ app.post('/api/min-tph', function(req, res) {
 			client.close();
 		});
 	}
-	
-	console.log('Received TPH data. T = ' + minTemperature + ' P = ' + minPressure + ' H = ' + minHumidity);
+	 	
+	console.log('Received MIN TPH data. Save = ' + doSave + 'T = ' + avgTemperature + ' P = ' + avgPressure + ' H = ' + avgHumidity);
 	
 	res.json(["OK", ""]);
 })
@@ -198,8 +198,8 @@ app.post('/api/max-tph', function(req, res) {
 			client.close();
 		});
 	}
-	
-	console.log('Received TPH data. T = ' + maxTemperature + ' P = ' + maxPressure + ' H = ' + maxHumidity);
+	 	
+	console.log('Received MAX TPH data. Save = ' + doSave + 'T = ' + avgTemperature + ' P = ' + avgPressure + ' H = ' + avgHumidity);
 	
 	res.json(["OK", ""]);
 })
