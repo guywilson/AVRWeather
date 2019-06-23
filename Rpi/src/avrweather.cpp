@@ -225,11 +225,11 @@ int processFrame(PRXMSGSTRUCT pMsg, uint8_t * buffer, int bufferLength)
 void processResponse(FILE * fptr, uint8_t * response, int responseLength)
 {
 	RXMSGSTRUCT			msg;
-	int					avgCount = 0;
 	char				szTPH[80];
 	char 				szTemperature[20];
 	char 				szPressure[20];
 	char 				szHumidity[20];
+	static int			avgCount = 0;
 	static bool			avgSave = true;
 	static bool			minSave = false;
 	static bool			maxSave = false;
