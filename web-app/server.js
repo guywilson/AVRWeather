@@ -42,7 +42,7 @@ function getChartData(callback) {
 
 		var collection = db.collection('AverageTPH');
 		
-		collection.find({}, options).toArray((error, items) => {
+		collection.find({}, options).sort({timestamp: 1}).toArray((error, items) => {
 			if (error) {
 				throw error;
 			}

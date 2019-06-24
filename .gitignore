@@ -1,0 +1,9 @@
+/build/
+/ADC Mock Values.xlsx
+/MAV
+/MAV.c
+/MAV.h
+/avrw.hex
+/avrw.s
+/web-app/node_modules/
+

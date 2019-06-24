@@ -9,8 +9,8 @@
 	</head>
 	<body>
 		<div class="container">
-			<h1>Weather Charts</h1>
-			<canvas id="temperatureChart" width="800" height="400"></canvas>
+			<h1 style="text-align:center">Weather Charts</h1>
+			<canvas id="temperatureChart" width="1600" height="1200"></canvas>
 			<script>
 				var ctx = document.getElementById('temperatureChart');
 
@@ -34,6 +34,31 @@
 						}]
 					},
 					options: {
+						responsive: true,
+                		legend: {
+                    		position: 'bottom',
+                		},
+						scales: {
+							xAxes: [{
+									display: true,
+									scaleLabel: {
+										display: true,
+										labelString: 'Previous Hours'
+									}
+								}],
+							yAxes: [{
+									display: true,
+									scaleLabel: {
+										display: true,
+										labelString: 'deg. C'
+									},
+									ticks: {
+										stepSize: 5,
+										suggestedMin: 0,
+										suggestedMax: 30
+									}
+								}]
+                		},
 						title: {
 							display: true,
 							text: 'Temperature last 24h'
