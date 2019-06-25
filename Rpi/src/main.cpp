@@ -24,9 +24,9 @@ using namespace std;
 
 FrameManager *		fm;
 queue<PFRAME>		txQueue;
-pthread_mutex_t 	txLock;
 SerialPort *		port;
-FILE *				fptrCSV;
+
+pthread_mutex_t 	txLock;
 
 pthread_t			tidPing;
 pthread_t			tidAvgTPH;
@@ -284,7 +284,7 @@ void txrxDeamon(SerialPort * port)
 			printf("RX[%d]: ", bytesRead);
 #endif
 			if (bytesRead) {
-				processResponse(fptrCSV, pRxFrame->data, bytesRead);
+				processResponse(pRxFrame->data, bytesRead);
 			}
 
 			fm->freeFrame(pRxFrame);
@@ -307,8 +307,6 @@ void cleanup(void)
 	pthread_kill(tidMinMaxTPH, SIGKILL);
 
 	pthread_mutex_destroy(&txLock);
-
-	fclose(fptrCSV);
 
     delete port;
     delete fm;
@@ -391,18 +389,6 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
-	/*
-	 * Open the CSV file...
-	 */
-	fptrCSV = fopen("./tph.csv", "at");
-
-	if (fptrCSV == NULL) {
-		printf("Failed to open CSV file");
-		return -1;
-	}
-
-	fprintf(fptrCSV, "TIME,TYPE,TEMPERATURE,PRESSURE,HUMIDITY\n");
-
 	err = pthread_mutex_init(&txLock, NULL);
 
 	if (err != 0) {
@@ -461,6 +447,8 @@ int main(int argc, char *argv[])
 	 */
 	txrxDeamon(port);
 
+	printf("Cleaning up and exiting!\n");
+	
 	cleanup();
 
 	return 0;

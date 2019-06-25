@@ -9,6 +9,7 @@
 #include "exception.h"
 #include "webconnect.h"
 #include "currenttime.h"
+#include "csvhelper.h"
 
 using namespace std;
 
@@ -222,13 +223,14 @@ int processFrame(PRXMSGSTRUCT pMsg, uint8_t * buffer, int bufferLength)
 	return rtn;
 }
 
-void processResponse(FILE * fptr, uint8_t * response, int responseLength)
+void processResponse(uint8_t * response, int responseLength)
 {
 	RXMSGSTRUCT			msg;
 	char				szTPH[80];
 	char 				szTemperature[20];
 	char 				szPressure[20];
 	char 				szHumidity[20];
+	char				szTimeStamp[20];
 	static int			avgCount = 0;
 	static bool			avgSave = true;
 	static bool			minSave = false;
@@ -270,20 +272,21 @@ void processResponse(FILE * fptr, uint8_t * response, int responseLength)
 				cout << "Caught exception posting to web server: " << e->getMessage() << endl;
 				cout << "Writing to local CSV instead" << endl;
 
-				fprintf(
-					fptr,
-					"%d-%02d-%02d %02d:%02d:%02d,AVG,%s,%s,%s\n",
+				sprintf(
+					szTimeStamp,
+					"%d-%02d-%02d %02d:%02d:%02d",
 					time.getYear(),
 					time.getMonth(),
 					time.getDay(),
 					time.getHour(),
 					time.getMinute(),
-					time.getSecond(),
-					&szTemperature[2],
-					&szPressure[2],
-					&szHumidity[2]);
+					time.getSecond());
 
-				fflush(fptr);
+				vector<string> avgRecord = {szTimeStamp, "AVG", &szTemperature[2], &szPressure[2], &szHumidity[2]};
+
+				CSVHelper & csvAvg = CSVHelper::getInstance();
+
+				csvAvg.writeRecord(5, avgRecord);
 			}
 			break;
 
@@ -307,20 +310,21 @@ void processResponse(FILE * fptr, uint8_t * response, int responseLength)
 				cout << "Caught exception posting to web server: " << e->getMessage() << endl;
 				cout << "Writing to local CSV instead" << endl;
 
-				fprintf(
-					fptr,
-					"%d-%02d-%02d %02d:%02d:%02d,MAX,%s,%s,%s\n",
+				sprintf(
+					szTimeStamp,
+					"%d-%02d-%02d %02d:%02d:%02d",
 					time.getYear(),
 					time.getMonth(),
 					time.getDay(),
 					time.getHour(),
 					time.getMinute(),
-					time.getSecond(),
-					&szTemperature[2],
-					&szPressure[2],
-					&szHumidity[2]);
+					time.getSecond());
 
-				fflush(fptr);
+				vector<string> maxRecord = {szTimeStamp, "MAX", &szTemperature[2], &szPressure[2], &szHumidity[2]};
+
+				CSVHelper & csvMax = CSVHelper::getInstance();
+
+				csvMax.writeRecord(5, maxRecord);
 			}
 			break;
 
@@ -344,20 +348,21 @@ void processResponse(FILE * fptr, uint8_t * response, int responseLength)
 				cout << "Caught exception posting to web server: " << e->getMessage() << endl;
 				cout << "Writing to local CSV instead" << endl;
 
-				fprintf(
-					fptr,
-					"%d-%02d-%02d %02d:%02d:%02d,MIN,%s,%s,%s\n",
+				sprintf(
+					szTimeStamp,
+					"%d-%02d-%02d %02d:%02d:%02d",
 					time.getYear(),
 					time.getMonth(),
 					time.getDay(),
 					time.getHour(),
 					time.getMinute(),
-					time.getSecond(),
-					&szTemperature[2],
-					&szPressure[2],
-					&szHumidity[2]);
+					time.getSecond());
 
-				fflush(fptr);
+				vector<string> minRecord = {szTimeStamp, "MIN", &szTemperature[2], &szPressure[2], &szHumidity[2]};
+
+				CSVHelper & csvMin = CSVHelper::getInstance();
+
+				csvMin.writeRecord(5, minRecord);
 			}
 			break;
 

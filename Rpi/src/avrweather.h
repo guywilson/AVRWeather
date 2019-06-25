@@ -132,6 +132,6 @@ public:
 
 uint8_t	getMsgID();
 int 	processFrame(PRXMSGSTRUCT pMsg, uint8_t * buffer, int bufferLength);
-void	processResponse(FILE * fptr, uint8_t * response, int responseLength);
+void	processResponse(uint8_t * response, int responseLength);
 
 #endif
