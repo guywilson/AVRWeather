@@ -42,7 +42,7 @@ function getChartData(callback) {
 
 		var collection = db.collection('AverageTPH');
 		
-		collection.find({}, options).sort({timestamp: 1}).toArray((error, items) => {
+		collection.find({}, options).sort({timestamp: -1}).toArray((error, items) => {
 			if (error) {
 				throw error;
 			}
@@ -89,6 +89,14 @@ app.get('/charts', function (req, res) {
 			pressureReadings = pressureReadings.concat(item.pressure);
 			humidityReadings = humidityReadings.concat(item.humidity);
 		});
+
+		/*
+		** We want the readings the other way around, with the latest
+		** reading last...
+		*/
+		tempReadings = tempReadings.reverse();
+		pressureReadings = pressureReadings.reverse();
+		humidityReadings = humidityReadings.reverse();
 
 		console.log('Got labels ' + xLabels);
 		console.log('Got temperature data ' + tempReadings);
