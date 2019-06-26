@@ -79,19 +79,27 @@ app.get('/', function (req, res) {
 app.get('/charts', function (req, res) {
 	var xLabels = [23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
 	var tempReadings = [];
+	var pressureReadings = [];
+	var humidityReadings = [];
 
 	getChartData(function(items) {
 		items.forEach(function(item, index) {
 			//xLabels = xLabels.concat('\'' + item.timestamp + '\'');
 			tempReadings = tempReadings.concat(item.temperature);
+			pressureReadings = pressureReadings.concat(item.pressure);
+			humidityReadings = humidityReadings.concat(item.humidity);
 		});
 
 		console.log('Got labels ' + xLabels);
-		console.log('Got data ' + tempReadings);
+		console.log('Got temperature data ' + tempReadings);
+		console.log('Got pressure data ' + pressureReadings);
+		console.log('Got humidity data ' + humidityReadings);
 
 		res.render('charts', {
 					xLabels: xLabels,
-					tempReadings: tempReadings
+					tempReadings: tempReadings,
+					pressureReadings: pressureReadings,
+					humidityReadings: humidityReadings
 		});
 	});
 })

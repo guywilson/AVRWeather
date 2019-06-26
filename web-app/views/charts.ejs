@@ -12,9 +12,9 @@
 			<h1 style="text-align:center">Weather Charts</h1>
 			<canvas id="temperatureChart" width="1600" height="1200"></canvas>
 			<script>
-				var ctx = document.getElementById('temperatureChart');
+				var ctxTemp = document.getElementById('temperatureChart');
 
-				new Chart(ctx, {
+				new Chart(ctxTemp, {
 					type: 'line',
 					data: {
 						labels: [
@@ -65,6 +65,119 @@
 						}
 					}
 					
+				});
+			</script>
+			<canvas id="pressureChart" width="1600" height="1200"></canvas>
+			<script>
+				var ctxPressure = document.getElementById('pressureChart');
+
+				new Chart(ctxPressure, {
+					type: 'line',
+					data: {
+						labels: [
+							<% if(xLabels !== null){ %>
+								<%= xLabels %>
+							<% } %>
+						],
+						datasets: [{
+							data: [
+								<% if(pressureReadings !== null){ %>
+									<%= pressureReadings %>
+								<% } %>
+							],
+							label: 'Air Pressure mbar',
+							borderColor: "#3e95cd",
+							fill: false
+						}]
+					},
+					options: {
+						responsive: true,
+                		legend: {
+                    		position: 'bottom',
+                		},
+						scales: {
+							xAxes: [{
+									display: true,
+									scaleLabel: {
+										display: true,
+										labelString: 'Previous Hours'
+									}
+								}],
+							yAxes: [{
+									display: true,
+									scaleLabel: {
+										display: true,
+										labelString: 'mbar'
+									},
+									ticks: {
+										stepSize: 5,
+										suggestedMin: 850,
+										suggestedMax: 1050
+									}
+								}]
+                		},
+						title: {
+							display: true,
+							text: 'Air Pressure last 24h'
+						}
+					}
+					
+				});
+			</script>
+			<canvas id="humidityChart" width="1600" height="1200"></canvas>
+			<script>
+				var ctxHumidity = document.getElementById('humidityChart');
+
+				new Chart(ctxHumidity, {
+					type: 'line',
+					data: {
+						labels: [
+							<% if(xLabels !== null){ %>
+								<%= xLabels %>
+							<% } %>
+						],
+						datasets: [{
+							data: [
+								<% if(humidityReadings !== null){ %>
+									<%= humidityReadings %>
+								<% } %>
+							],
+							label: 'RH %',
+							borderColor: "#3e95cd",
+							fill: false
+						}]
+					},
+					options: {
+						responsive: true,
+                		legend: {
+                    		position: 'bottom',
+                		},
+						scales: {
+							xAxes: [{
+									display: true,
+									scaleLabel: {
+										display: true,
+										labelString: 'Previous Hours'
+									}
+								}],
+							yAxes: [{
+									display: true,
+									scaleLabel: {
+										display: true,
+										labelString: 'RH'
+									},
+									ticks: {
+										stepSize: 5,
+										suggestedMin: 50,
+										suggestedMax: 100
+									}
+								}]
+                		},
+						title: {
+							display: true,
+							text: 'Humidity last 24h'
+						}
+					}
 				});
 			</script>
 		</div>

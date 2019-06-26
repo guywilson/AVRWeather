@@ -9,7 +9,7 @@ body {
   font-family: 'Open Sans', sans-serif;
 }
 .container {
-  width: 600px;
+  width: 800px;
   margin: 0 auto;
 }
 fieldset {
@@ -29,9 +29,13 @@ fieldset {
   min-width: -webkit-min-content;
   padding: 30px;
 }
-table, td, th {
+.table-left {
+  margin-left: 0px;
+  margin-right: autu;
 	border: 0px solid rgb(83, 162, 243);
-	width: 800px
+}
+td, th {
+	border: 0px solid rgb(83, 162, 243);
 }
 .ghost-input, p {
   display: block;
