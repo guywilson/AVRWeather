@@ -45,6 +45,8 @@ void CSVHelper::writeHeader(int numColumns, vector<string> & headerArray)
     }
 
     fputc('\n', fptr);
+
+    fflush(fptr);
 }
 
 void CSVHelper::writeRecord(int valueCount, vector<string> & valueArray)
@@ -61,6 +63,8 @@ void CSVHelper::writeRecord(int valueCount, vector<string> & valueArray)
     }
 
     fputc('\n', fptr);
+
+    fflush(fptr);
 }
 
 void CSVHelper::addValue(string & szValue)
@@ -73,5 +77,6 @@ void CSVHelper::addValue(string & szValue)
     else {
         cellCount = 0;
         fputc('\n', fptr);
+        fflush(fptr);
     }
 }
