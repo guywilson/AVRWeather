@@ -33,7 +33,7 @@ void CSVHelper::writeHeader(int numColumns, vector<string> & headerArray)
 {
     int         i;
 
-    if (headerArray.size() != numColumns) {
+    if (headerArray.size() != (size_t)numColumns) {
         cout << "Error: numColumns " << numColumns << " does not match array size " << headerArray.size() << endl;
         throw new Exception("Array size does not match column count!");
     }
@@ -53,7 +53,7 @@ void CSVHelper::writeRecord(int valueCount, vector<string> & valueArray)
 {
     int         i;
 
-    if (valueCount != numColumns || valueArray.size() != numColumns) {
+    if (valueCount != numColumns || valueArray.size() != (size_t)numColumns) {
         cout << "Error: valueCount " << valueCount << " does not match columnCount " << numColumns << " previously specified" << endl;
         throw new Exception("Num values does not match column count!");
     }

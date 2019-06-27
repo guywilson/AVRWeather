@@ -18,7 +18,7 @@
 #include "avrweather.h"
 #include "currenttime.h"
 
-#define LOG_RXTX
+//#define LOG_RXTX
 
 using namespace std;
 
@@ -54,7 +54,7 @@ void * txCmdThread(void * pArgs)
 	txResetMinMax = ((23 - time.getHour()) * 3600) + ((59 - time.getMinute()) * 60) + (59 - time.getMinute());
 
 	cout << "Seconds till midnight: " << txResetMinMax << endl;
-	
+
 	while (go) {
 		if (txCount == txAvgTPH) {
 			/*

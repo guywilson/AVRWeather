@@ -13,7 +13,7 @@
 
 using namespace std;
 
-#define LOG_RXTX
+//#define LOG_RXTX
 
 PFRAME				_pFrameMem = NULL;
 int					_size = 0;
