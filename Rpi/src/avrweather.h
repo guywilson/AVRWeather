@@ -73,6 +73,8 @@
 #define RX_RSP_RESET_MINMAX_TPH		(RX_CMD_RESET_MINMAX_TPH << 4)
 #define RX_RSP_PING					(RX_CMD_PING << 4)
 
+#define FRAME_MEM_SIZE				16
+
 typedef struct {
 	uint8_t			data[MAX_REQUEST_MESSAGE_LENGTH];
 	int				dataLength;
@@ -115,12 +117,20 @@ typedef RXMSGSTRUCT *	PRXMSGSTRUCT;
 
 class FrameManager
 {
+public:
+	static FrameManager & getInstance()
+	{
+		static FrameManager instance;
+		return instance;
+	}
+
 private:
+	FrameManager();
+
 	PFRAME			_pFrameMem = NULL;
 	int				_size;
 
 public:
-	FrameManager();
 	FrameManager(int size);
 	~FrameManager();
 

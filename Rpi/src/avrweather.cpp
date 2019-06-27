@@ -13,13 +13,13 @@
 
 using namespace std;
 
-//#define LOG_RXTX
+#define LOG_RXTX
 
 PFRAME				_pFrameMem = NULL;
 int					_size = 0;
 uint8_t				_msgID = 0;
 
-FrameManager::FrameManager() : FrameManager(16)
+FrameManager::FrameManager() : FrameManager(FRAME_MEM_SIZE)
 {
 }
 
