@@ -98,11 +98,6 @@ app.get('/charts', function (req, res) {
 		pressureReadings = pressureReadings.reverse();
 		humidityReadings = humidityReadings.reverse();
 
-		console.log('Got labels ' + xLabels);
-		console.log('Got temperature data ' + tempReadings);
-		console.log('Got pressure data ' + pressureReadings);
-		console.log('Got humidity data ' + humidityReadings);
-
 		res.render('charts', {
 					xLabels: xLabels,
 					tempReadings: tempReadings,
@@ -123,7 +118,7 @@ app.post('/api/avg-tph', function(req, res) {
 	avgHumidity = req.body.humidity;
 
 	if (doSave == 'true') {
-		console.log('Saving average TPH data to database');
+//		console.log('Saving average TPH data to database');
 		
 		MongoClient.connect(mongoURL, function(error, client) {
 			if (error) {
@@ -143,7 +138,7 @@ app.post('/api/avg-tph', function(req, res) {
 		});
 	}
 	 	
-	console.log('Received AVG TPH data. Save = ' + doSave + 'T = ' + avgTemperature + ' P = ' + avgPressure + ' H = ' + avgHumidity);
+//	console.log('Received AVG TPH data. Save = ' + doSave + 'T = ' + avgTemperature + ' P = ' + avgPressure + ' H = ' + avgHumidity);
 	
 	res.json(["OK", ""]);
 })
@@ -159,7 +154,7 @@ app.post('/api/min-tph', function(req, res) {
 	minHumidity = req.body.humidity;
 
 	if (doSave == 'true') {
-		console.log('Saving minimum TPH data to database');
+//		console.log('Saving minimum TPH data to database');
 		
 		MongoClient.connect(mongoURL, function(error, client) {
 			if (error) {
@@ -179,7 +174,7 @@ app.post('/api/min-tph', function(req, res) {
 		});
 	}
 	 	
-	console.log('Received MIN TPH data. Save = ' + doSave + 'T = ' + avgTemperature + ' P = ' + avgPressure + ' H = ' + avgHumidity);
+//	console.log('Received MIN TPH data. Save = ' + doSave + 'T = ' + avgTemperature + ' P = ' + avgPressure + ' H = ' + avgHumidity);
 	
 	res.json(["OK", ""]);
 })
@@ -195,7 +190,7 @@ app.post('/api/max-tph', function(req, res) {
 	maxHumidity = req.body.humidity;
 
 	if (doSave == 'true') {
-		console.log('Saving maximum TPH data to database');
+//		console.log('Saving maximum TPH data to database');
 		
 		MongoClient.connect(mongoURL, function(error, client) {
 			if (error) {
@@ -215,7 +210,7 @@ app.post('/api/max-tph', function(req, res) {
 		});
 	}
 	 	
-	console.log('Received MAX TPH data. Save = ' + doSave + 'T = ' + avgTemperature + ' P = ' + avgPressure + ' H = ' + avgHumidity);
+//	console.log('Received MAX TPH data. Save = ' + doSave + 'T = ' + avgTemperature + ' P = ' + avgPressure + ' H = ' + avgHumidity);
 	
 	res.json(["OK", ""]);
 })
