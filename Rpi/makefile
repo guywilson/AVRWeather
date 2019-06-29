@@ -25,7 +25,7 @@ LINKER=g++
 CPPFLAGS=-c -O3 -fpermissive -fPIC -Wall -std=c++11
 
 # Object files 
-OBJFILES=$(BUILD)/main.o $(BUILD)/serial.o $(BUILD)/avrweather.o $(BUILD)/currenttime.o $(BUILD)/csvhelper.o $(BUILD)/webconnect.o $(BUILD)/exception.o
+OBJFILES=$(BUILD)/main.o $(BUILD)/serial.o $(BUILD)/avrweather.o $(BUILD)/currenttime.o $(BUILD)/csvhelper.o $(BUILD)/wctlconfig.o $(BUILD)/webconnect.o $(BUILD)/exception.o
 
 # Target
 all: $(TARGET)
@@ -46,6 +46,9 @@ $(BUILD)/currenttime.o: $(SOURCE)/currenttime.cpp $(SOURCE)/currenttime.h
 
 $(BUILD)/csvhelper.o: $(SOURCE)/csvhelper.cpp $(SOURCE)/csvhelper.h $(SOURCE)/exception.h
 	$(CPP) $(CPPFLAGS) -o $(BUILD)/csvhelper.o $(SOURCE)/csvhelper.cpp
+
+$(BUILD)/wctlconfig.o: $(SOURCE)/wctlconfig.cpp $(SOURCE)/wctlconfig.h $(SOURCE)/wctlconfig.h
+	$(CPP) $(CPPFLAGS) -o $(BUILD)/wctlconfig.o $(SOURCE)/wctlconfig.cpp
 
 $(BUILD)/webconnect.o: $(SOURCE)/webconnect.cpp $(SOURCE)/webconnect.h $(SOURCE)/exception.h
 	$(CPP) $(CPPFLAGS) -o $(BUILD)/webconnect.o $(SOURCE)/webconnect.cpp

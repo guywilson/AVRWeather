@@ -1,23 +1,23 @@
 {
-  "name": "weather-app",
-  "version": "1.0.0",
-  "description": "JS web app for accepting and displaying weather data",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "../.git"
-  },
-  "author": "Guy Wilson",
-  "license": "GPL-3.0-or-later",
-  "dependencies": {
-    "body-parser": "^1.19.0",
-    "chart.js": "^2.8.0",
-    "ejs": "^2.6.2",
-    "express": "^4.17.1",
-    "mongodb": "^3.2.7",
-    "request": "^2.88.0"
-  }
+	"name": "weather-app",
+	"version": "1.0.0",
+	"description": "JS web app for accepting and displaying weather data",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "../.git"
+	},
+	"author": "Guy Wilson",
+	"license": "GPL-3.0-or-later",
+	"dependencies": {
+		"body-parser": "^1.19.0",
+		"chart.js": "^2.8.0",
+		"ejs": "^2.6.2",
+		"express": "^4.17.1",
+		"mongodb": "^3.2.7",
+		"request": "^2.88.0"
+	}
 }
