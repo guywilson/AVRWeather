@@ -45,7 +45,7 @@
 									display: true,
 									scaleLabel: {
 										display: true,
-										labelString: 'Previous Hours'
+										labelString: <%= chartXLabel %>
 									}
 								}],
 							yAxes: [{
@@ -63,7 +63,7 @@
                 		},
 						title: {
 							display: true,
-							text: 'Temperature last 24h'
+							text: <%= chartTempTitle %>
 						}
 					}
 					
@@ -102,7 +102,7 @@
 									display: true,
 									scaleLabel: {
 										display: true,
-										labelString: 'Previous Hours'
+										labelString: <%= chartXLabel %>
 									}
 								}],
 							yAxes: [{
@@ -120,7 +120,7 @@
                 		},
 						title: {
 							display: true,
-							text: 'Air Pressure last 24h'
+							text: <%= chartPresTitle %>
 						}
 					}
 					
@@ -159,7 +159,7 @@
 									display: true,
 									scaleLabel: {
 										display: true,
-										labelString: 'Previous Hours'
+										labelString: <%= chartXLabel %>
 									}
 								}],
 							yAxes: [{
@@ -177,7 +177,7 @@
                 		},
 						title: {
 							display: true,
-							text: 'Humidity last 24h'
+							text: <%= chartHumiTitle %>
 						}
 					}
 				});

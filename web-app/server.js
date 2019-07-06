@@ -21,6 +21,11 @@ var maxTemperature = '---';
 var maxPressure = '---';
 var maxHumidity = '---';
 
+var chartXLabel = 'Previous 24h';
+var chartTempTitle = 'Temperature last 24h';
+var chartPresTitle = 'Air Pressure last 24h';
+var chartHumiTitle = 'Humidity last 24h';
+
 app.use(express.static('public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -58,6 +63,11 @@ app.get('/charts', function (req, res) {
 	if (req.query.period == '24h') {
 		xLabels = [23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
 
+		chartXLabel = 'Previous 24h';
+		chartTempTitle = 'Temperature last 24h';
+		chartPresTitle = 'Air Pressure last 24h';
+		chartHumiTitle = 'Humidity last 24h';
+		
 		db.getChartData_24h(function(items) {
 			items.forEach(function(item, index) {
 				tempReadings = tempReadings.concat(item.temperature);
@@ -83,6 +93,11 @@ app.get('/charts', function (req, res) {
 	}
 	else if (req.query.period == '7d') {
 		xLabels = [6, 5, 4, 3, 2, 1, 0];
+
+		chartXLabel = 'Previous 7d';
+		chartTempTitle = 'Temperature last 7d';
+		chartPresTitle = 'Air Pressure last 7d';
+		chartHumiTitle = 'Humidity last 7d';
 
 		db.getChartData_7d(function(items) {
 			items.forEach(function(item, index) {
@@ -110,6 +125,11 @@ app.get('/charts', function (req, res) {
 	}
 	else if (req.query.period == '28d') {
 		xLabels = [27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
+
+		chartXLabel = 'Previous 28d';
+		chartTempTitle = 'Temperature last 28d';
+		chartPresTitle = 'Air Pressure last 28d';
+		chartHumiTitle = 'Humidity last 28d';
 
 		db.getChartData_28d(function(items) {
 			items.forEach(function(item, index) {
