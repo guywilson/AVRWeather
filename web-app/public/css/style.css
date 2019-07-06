@@ -2,39 +2,6 @@
   Styles from this codepen:
   https://codepen.io/official_naveen/pen/rgknI
 */
-@import url("http://fonts.googleapis.com/css?family=Roboto");
-
-input[type=radio] {
-  position: absolute;
-  visibility: hidden;
-  display: none;
-}
-
-label {
-  color: #9a929e;
-  display: inline-block;
-  cursor: pointer;
-  font-weight: bold;
-  padding: 5px 20px;
-}
-
-input[type=radio]:checked + label {
-  color: #ccc8ce;
-  background: #675f6b;
-}
-
-label + input[type=radio] + label {
-  border-left: solid 3px #675f6b;
-}
-
-.radio-group {
-  border: solid 3px #675f6b;
-  display: inline-block;
-  margin: 0px;
-  border-radius: 10px;
-  overflow: hidden;
-}
-
 body {
 	width: 800px;
 	margin: 0 auto;

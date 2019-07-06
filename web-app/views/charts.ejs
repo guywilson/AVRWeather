@@ -11,16 +11,11 @@
 </head>
 <body>
 	<h1 style="text-align: center">Weather Charts</h1>
-	<form>
-		<div class="radio-group">
-			<input type="radio" id="option-one" name="selector" checked="true">
-			<label for="option-one">Last 24h</label>
-			<input type="radio" id="option-two" name="selector">
-			<label for="option-two">Last 7d</label>
-			<input type="radio" id="option-three" name="selector">
-			<label for="option-three">Last 28d</label>
-		</div>
-	</form>
+	<div class="container">
+		<a href="/charts?period=24h">Last 24 hours</a>
+		<a href="/charts?period=7d">Last 7 days</a>
+		<a href="/charts?period=28d">Last 28 days</a>
+	</div>
 	<div class="container">
 		<canvas id="temperatureChart" width="1600" height="1200"></canvas>
 		<script>
