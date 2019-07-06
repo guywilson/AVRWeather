@@ -87,7 +87,11 @@ app.get('/charts', function (req, res) {
 						xLabels: xLabels,
 						tempReadings: tempReadings,
 						pressureReadings: pressureReadings,
-						humidityReadings: humidityReadings
+						humidityReadings: humidityReadings,
+						chartXLabel: chartXLabel,
+						chartTempTitle: chartTempTitle,
+						chartPresTitle: chartPresTitle,
+						chartHumiTitle: chartHumiTitle
 			});
 		});
 	}
@@ -119,7 +123,11 @@ app.get('/charts', function (req, res) {
 						xLabels: xLabels,
 						tempReadings: tempReadings,
 						pressureReadings: pressureReadings,
-						humidityReadings: humidityReadings
+						humidityReadings: humidityReadings,
+						chartXLabel: chartXLabel,
+						chartTempTitle: chartTempTitle,
+						chartPresTitle: chartPresTitle,
+						chartHumiTitle: chartHumiTitle
 			});
 		});
 	}
@@ -150,7 +158,11 @@ app.get('/charts', function (req, res) {
 						xLabels: xLabels,
 						tempReadings: tempReadings,
 						pressureReadings: pressureReadings,
-						humidityReadings: humidityReadings
+						humidityReadings: humidityReadings,
+						chartXLabel: chartXLabel,
+						chartTempTitle: chartTempTitle,
+						chartPresTitle: chartPresTitle,
+						chartHumiTitle: chartHumiTitle
 			});
 		});
 	}
