@@ -3,10 +3,7 @@ const bodyParser = require('body-parser');
 const request = require('request');
 const db = require('./db');
 
-const MongoClient = require('mongodb').MongoClient;
-
 const app = express();
-const mongoURL = 'mongodb://localhost';
 
 var timestamp = '1900-01-01 00:00:00';
 
@@ -30,125 +27,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.set('view engine', 'ejs');
 
-function getAllMongoData(callback) {
-	MongoClient.connect(mongoURL, async function(error, client) {
-		if (error) {
-			throw err;
-		}
-	
-		var db = client.db('WeatherDB');
-		var collection = db.collection('AverageTPH');
-
-		var query = {};
-		
-		await collection.find(query).toArray((error, items) => {
-			if (error) {
-				throw error;
-			}
-			
-			return callback(items);
-		});
-	
-		//client.close();
-	});
-}
-
-function getChartData_24h(callback) {
-	MongoClient.connect(mongoURL, function(error, client) {
-		if (error) {
-			throw err;
-		}
-	
-		var db = client.db('WeatherDB');
-		var collection = db.collection('AverageTPH');
-
-		var query = {};
-	
-		var options = {
-			"limit": 24
-		};
-		
-		collection.find(query, options).sort({timestamp: -1}).toArray((error, items) => {
-			if (error) {
-				throw error;
-			}
-			
-			return callback(items);
-		});
-	
-		client.close();
-	});
-}
-
-function getChartData_7d(callback) {
-	MongoClient.connect(mongoURL, function(error, client) {
-		if (error) {
-			throw err;
-		}
-	
-		var db = client.db('WeatherDB');
-		var collection = db.collection('AverageTPH');
-
-		var query = {
-			"$or": [
-				{ "timestamp": /.* 06:.*/ }, 
-				{ "timestamp": /.* 12:.*/ }, 
-				{ "timestamp": /.* 18:.*/ }, 
-				{ "timestamp": /.* 00:.*/ }
-			]
-		};
-	
-		var options = {
-			"limit": 28
-		};
-		
-		/*
-		** Get a reading 4 times a day at 06:xx, 12:xx, 18:xx, 00:xx for 7 days...
-		*/
-		collection.find(query, options).sort({timestamp: -1}).toArray((error, items) => {
-			if (error) {
-				throw error;
-			}
-			
-			return callback(items);
-		});
-	
-		client.close();
-	});
-}
-
-function getChartData_28d(callback) {
-	MongoClient.connect(mongoURL, function(error, client) {
-		if (error) {
-			throw err;
-		}
-	
-		var db = client.db('WeatherDB');
-		var collection = db.collection('AverageTPH');
-
-		var query = {
-			timestamp: "/.* 12:.*/"
-		};
-	
-		var options = {
-			"limit": 28
-		};
-		
-		/*
-		** Get a reading once a day at noon for 28 days...
-		*/
-		collection.find(query, options).sort({timestamp: -1}).toArray((error, items) => {
-			if (error) {
-				throw error;
-			}
-			
-			return callback(items);
-		});
-	
-		client.close();
-	});
-}
-
 /*
 ** Render landing page...
 */
@@ -166,31 +44,6 @@ app.get('/', function (req, res) {
 			 	maxPressure: maxPressure,
 			 	maxHumidity: maxHumidity
 			});
-})
-
-app.get('/copy', function (req, res) {
-	console.log('Copying data from MongoDB to Postgresql');
-
-	getAllMongoData(function(items) {
-		items.forEach(function(item, index) {
-			console.log('Got item: ' + item.temperature);
-			db.putChartData(item.timestamp, 'AVG', item.temperature, item.pressure, item.humidity);
-		});
-
-		res.render(
-			'index', 
-			{
-				avgTemperature: avgTemperature, 
-			 	avgPressure: avgPressure, 
-			 	avgHumidity: avgHumidity,
-			 	minTemperature: minTemperature,
-			 	minPressure: minPressure,
-			 	minHumidity: minHumidity,
-			 	maxTemperature: maxTemperature,
-			 	maxPressure: maxPressure,
-			 	maxHumidity: maxHumidity
-			});
-	});
 })
 
 /*
