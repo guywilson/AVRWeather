@@ -2,11 +2,7 @@
   Styles from this codepen:
   https://codepen.io/official_naveen/pen/rgknI
 */
-@import url('https://fonts.googleapis.com/css?family=Roboto');
-
-$bg: #332f35;
-$fg: lighten($bg,20%);
-$borderWidth: 3px;
+@import url("http://fonts.googleapis.com/css?family=Roboto");
 
 input[type=radio] {
   position: absolute;
@@ -15,24 +11,24 @@ input[type=radio] {
 }
 
 label {
-  color: lighten($bg,40%);
+  color: #9a929e;
   display: inline-block;
   cursor: pointer;
   font-weight: bold;
   padding: 5px 20px;
 }
 
-input[type=radio]:checked + label{
-  color: lighten($bg,60%);
-  background: $fg;
+input[type=radio]:checked + label {
+  color: #ccc8ce;
+  background: #675f6b;
 }
 
 label + input[type=radio] + label {
-  border-left: solid $borderWidth $fg;
+  border-left: solid 3px #675f6b;
 }
 
 .radio-group {
-  border: solid $borderWidth $fg;
+  border: solid 3px #675f6b;
   display: inline-block;
   margin: 20px;
   border-radius: 10px;
