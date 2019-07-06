@@ -9,7 +9,7 @@ const pool = new Pool({
 });
 
 function getChartData_24h(callback) {
-    pool.query('SELECT * FROM TPH WHERE TYPE = "AVG" ORDER BY TIMESTAMP DESC LIMIT 24', (error, results) => {
+    pool.query('SELECT * FROM tph WHERE type = "AVG" ORDER BY ts DESC LIMIT 24', (error, results) => {
         if (error) {
             console.log("Error selecting chart data");
             throw error;
