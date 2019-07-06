@@ -49,8 +49,10 @@ function getAllMongoData(callback) {
 			return callback(items);
 		});
 	
-		client.close();
-	});
+		setTimeout(function() {
+			client.close();
+		});
+	}, 3000);
 }
 
 function getChartData_24h(callback) {
