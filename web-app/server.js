@@ -173,7 +173,7 @@ app.get('/copy', function (req, res) {
 
 	getAllMongoData(function(items) {
 		items.forEach(function(item, index) {
-			Console.log('Got item: ' + item.temperature);
+			console.log('Got item: ' + item.temperature);
 			db.putChartData(item.timestamp, 'AVG', item.temperature, item.pressure, item.humidity);
 		});
 
