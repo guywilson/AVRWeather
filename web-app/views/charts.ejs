@@ -4,14 +4,31 @@
 <meta charset="utf-8">
 <title>Weather Charts</title>
 <link rel="stylesheet" type="text/css" href="/css/style.css">
-<link href='https://fonts.googleapis.com/css?family=Open+Sans:300'
-	rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
 <script
 	src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 </head>
 <body>
 	<h1 style="text-align: center">Weather Charts</h1>
 	<div class="container">
+		<button class="btn" onclick="getChart('24h')"><i class="fa fa-line-chart"></i> Last 24h</button>
+		<button class="btn" onclick="getChart('7d')"><i class="fa fa-line-chart"></i> Last 7d</button>
+		<button class="btn" onclick="getChart('28d')"><i class="fa fa-line-chart"></i> Last 28d</button>
+
+		<script>
+			function getChart(period) {
+				if (period = '24h') {
+					window.location.href = "/charts?period=24h";
+				}
+				else if (period = '7d') {
+					window.location.href = "/charts?period=7d";
+				}
+				else if (period = '28d') {
+					window.location.href = "/charts?period=28d";
+				}
+			}
+		</script>
 		<a href="/charts?period=24h">Last 24 hours</a>
 		<a href="/charts?period=7d">Last 7 days</a>
 		<a href="/charts?period=28d">Last 28 days</a>
