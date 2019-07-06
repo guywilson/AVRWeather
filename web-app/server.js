@@ -175,6 +175,8 @@ app.get('/copy', function (req, res) {
 		items.forEach(function(item, index) {
 			db.putChartData(item.timestamp, 'AVG', item.temperature, item.pressure, item.humidity);
 		});
+
+		res.render('index');
 	});
 })
 /*

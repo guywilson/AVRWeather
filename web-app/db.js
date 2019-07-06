@@ -20,7 +20,7 @@ function getChartData_24h(callback) {
 }
 
 function getChartData_7d(callback) {
-    pool.query('SELECT * FROM TPH WHERE TYPE = "AVG" AND EXTRACT (\'hour\' from TS) IN (0, 6, 12, 18) ORDER BY TIMESTAMP DESC LIMIT 28', (error, results) => {
+    pool.query('SELECT * FROM tph WHERE type = \'AVG\' AND EXTRACT (\'hour\' from ts) IN (0, 6, 12, 18) ORDER BY ts DESC LIMIT 28', (error, results) => {
         if (error) {
             console.log("Error selecting chart data");
             throw error;
@@ -31,7 +31,7 @@ function getChartData_7d(callback) {
 }
 
 function getChartData_28d(callback) {
-    pool.query('SELECT * FROM TPH WHERE TYPE = "AVG" AND EXTRACT (\'hour\' from TS) = 12 ORDER BY TIMESTAMP DESC LIMIT 28', (error, results) => {
+    pool.query('SELECT * FROM tph WHERE type = \'AVG\' AND EXTRACT (\'hour\' from ts) = 12 ORDER BY ts DESC LIMIT 28', (error, results) => {
         if (error) {
             console.log("Error selecting chart data");
             throw error;
@@ -44,7 +44,7 @@ function getChartData_28d(callback) {
 function putChartData(ts, type, temperature, pressure, humidity) {
     console.log('Inserting record');
 
-    pool.query('INSERT INTO TPH (ts, type, temperature, pressure, humidity) VALUES ($1, $2, $3, $4, $5)', [ts, type, temperature, pressure, humidity], (error, results) => {
+    pool.query('INSERT INTO tph (ts, type, temperature, pressure, humidity) VALUES ($1, $2, $3, $4, $5)', [ts, type, temperature, pressure, humidity], (error, results) => {
         if (error) {
             console.log("Error inserting chart data");
             throw error;
