@@ -171,15 +171,16 @@ app.get('/', function (req, res) {
 app.get('/copy', function (req, res) {
 	console.log('Copying data from MongoDB to Postgresql');
 
-	getAllMongoData(function(items) {
+	await getAllMongoData(function(items) {
 		items.forEach(function(item, index) {
 			Console.log('Got item: ' + item.temperature);
-			//db.putChartData(item.timestamp, 'AVG', item.temperature, item.pressure, item.humidity);
+			db.putChartData(item.timestamp, 'AVG', item.temperature, item.pressure, item.humidity);
 		});
 
 		res.render('index');
 	});
 })
+
 /*
 ** Render charts page...
 */
