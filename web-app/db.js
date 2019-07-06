@@ -5,7 +5,7 @@ const pool = new Pool({
     user: 'web-app',
     host: 'localhost',
     database: 'web-app',
-    password: 'Jup1ter',
+    password: '',
     post: 5432
 });
 
