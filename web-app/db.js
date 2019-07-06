@@ -3,10 +3,7 @@ const Postgres = require('pg');
 const Pool = Postgres.Pool;
 const pool = new Pool({
     user: 'web-app',
-    host: 'localhost',
-    database: 'web-app',
-    password: '',
-    post: 5432
+    host: 'localhost'
 });
 
 function getChartData_24h(callback) {
