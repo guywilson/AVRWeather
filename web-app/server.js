@@ -30,8 +30,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.set('view engine', 'ejs');
 
-async function getAllMongoData(callback) {
-	MongoClient.connect(mongoURL, function(error, client) {
+function getAllMongoData(callback) {
+	MongoClient.connect(mongoURL, async function(error, client) {
 		if (error) {
 			throw err;
 		}
