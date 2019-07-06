@@ -30,7 +30,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.set('view engine', 'ejs');
 
-function getAllMongoData(callback) {
+async function getAllMongoData(callback) {
 	MongoClient.connect(mongoURL, function(error, client) {
 		if (error) {
 			throw err;
@@ -41,7 +41,7 @@ function getAllMongoData(callback) {
 
 		var query = {};
 		
-		collection.find(query).toArray((error, items) => {
+		await collection.find(query).toArray((error, items) => {
 			if (error) {
 				throw error;
 			}
@@ -171,7 +171,7 @@ app.get('/', function (req, res) {
 app.get('/copy', function (req, res) {
 	console.log('Copying data from MongoDB to Postgresql');
 
-	await getAllMongoData(function(items) {
+	getAllMongoData(function(items) {
 		items.forEach(function(item, index) {
 			Console.log('Got item: ' + item.temperature);
 			db.putChartData(item.timestamp, 'AVG', item.temperature, item.pressure, item.humidity);
