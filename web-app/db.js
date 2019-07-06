@@ -52,3 +52,10 @@ function putChartData(ts, type, temperature, pressure, humidity) {
         }
     });
 }
+
+module.exports = {
+    getChartData_24h,
+    getChartData_7d,
+    getChartData_28d,
+    putChartData
+}
