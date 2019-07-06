@@ -177,7 +177,19 @@ app.get('/copy', function (req, res) {
 			db.putChartData(item.timestamp, 'AVG', item.temperature, item.pressure, item.humidity);
 		});
 
-		res.render('index');
+		res.render(
+			'index', 
+			{
+				avgTemperature: avgTemperature, 
+			 	avgPressure: avgPressure, 
+			 	avgHumidity: avgHumidity,
+			 	minTemperature: minTemperature,
+			 	minPressure: minPressure,
+			 	minHumidity: minHumidity,
+			 	maxTemperature: maxTemperature,
+			 	maxPressure: maxPressure,
+			 	maxHumidity: maxHumidity
+			});
 	});
 })
 
