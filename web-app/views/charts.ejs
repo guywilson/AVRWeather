@@ -11,10 +11,12 @@
 </head>
 <body>
 	<h1 style="text-align: center">Weather Charts</h1>
-	<div class="container">
-		<button class="btn" onclick="getChart('24h')"><i class="fa fa-line-chart"></i> Last 24h</button>
-		<button class="btn" onclick="getChart('7d')"><i class="fa fa-line-chart"></i> Last 7d</button>
-		<button class="btn" onclick="getChart('28d')"><i class="fa fa-line-chart"></i> Last 28d</button>
+	<div class="centred-div">
+		<p class="button-frame">
+			<button class="btn" onclick="getChart('24h')"><i class="fa fa-line-chart"></i> Last 24h</button>
+			<button class="btn" onclick="getChart('7d')"><i class="fa fa-line-chart"></i> Last 7d</button>
+			<button class="btn" onclick="getChart('28d')"><i class="fa fa-line-chart"></i> Last 28d</button>
+		</p>
 
 		<script>
 			function getChart(period) {

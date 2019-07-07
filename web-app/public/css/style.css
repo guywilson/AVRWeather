@@ -20,7 +20,7 @@ body {
 	padding: 12px 16px; /* Some padding */
 	font-size: 16px; /* Set a font size */
 	cursor: pointer; /* Mouse pointer on hover */
-}
+  }
 
 /* Darker background on mouse-over */
 .btn:hover {
@@ -101,4 +101,16 @@ td, th {
 
 p {
 	color: #E64A19;
+}
+
+.button-frame {
+	border: 3px navy;
+	border-radius: 10px;
+	background: lightblue;
+}
+
+.centred-div {
+	text-align: cemter;
+	width: 800px;
+	margin: 0 auto;
 }
