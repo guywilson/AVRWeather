@@ -105,7 +105,6 @@ app.get('/charts', function (req, res) {
 
 		db.getChartData_7d(function(items) {
 			items.forEach(function(item, index) {
-				console.log("Timestamp: " + item.timestamp);
 				tempReadings = tempReadings.concat(item.temperature);
 				pressureReadings = pressureReadings.concat(item.pressure);
 				humidityReadings = humidityReadings.concat(item.humidity);
@@ -179,12 +178,9 @@ app.post('/api/avg-tph', function(req, res) {
 	avgHumidity = req.body.humidity;
 
 	if (doSave == 'true') {
-//		console.log('Saving average TPH data to database');
 		db.putChartData(timestamp, 'AVG', avgTemperature, avgPressure, avgHumidity);		
 	}
 	 	
-//	console.log('Received AVG TPH data. Save = ' + doSave + 'T = ' + avgTemperature + ' P = ' + avgPressure + ' H = ' + avgHumidity);
-	
 	res.json(["OK", ""]);
 })
 
@@ -199,12 +195,9 @@ app.post('/api/min-tph', function(req, res) {
 	minHumidity = req.body.humidity;
 
 	if (doSave == 'true') {
-//		console.log('Saving minimum TPH data to database');
 		db.putChartData(timestamp, 'MIN', avgTemperature, avgPressure, avgHumidity);		
 	}
 				 
-//	console.log('Received MIN TPH data. Save = ' + doSave + 'T = ' + avgTemperature + ' P = ' + avgPressure + ' H = ' + avgHumidity);
-	
 	res.json(["OK", ""]);
 })
 
@@ -219,12 +212,9 @@ app.post('/api/max-tph', function(req, res) {
 	maxHumidity = req.body.humidity;
 
 	if (doSave == 'true') {
-//		console.log('Saving maximum TPH data to database');
 		db.putChartData(timestamp, 'MAX', avgTemperature, avgPressure, avgHumidity);		
 }
 	 	
-//	console.log('Received MAX TPH data. Save = ' + doSave + 'T = ' + avgTemperature + ' P = ' + avgPressure + ' H = ' + avgHumidity);
-	
 	res.json(["OK", ""]);
 })
 
