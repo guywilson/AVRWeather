@@ -40,8 +40,12 @@ void CSVHelper::writeHeader(int numColumns, vector<string> & headerArray)
 
     this->numColumns = numColumns;
 
-    for (i = 0;i< numColumns;i++) {
+    for (i = 0;i < numColumns;i++) {
         fputs(headerArray.at(i).c_str(), fptr);
+
+        if (i < (numColumns - 1)) {
+            fputc(',', fptr);
+        }
     }
 
     fputc('\n', fptr);
@@ -60,6 +64,10 @@ void CSVHelper::writeRecord(int valueCount, vector<string> & valueArray)
 
     for (i = 0;i< valueCount;i++) {
         fputs(valueArray.at(i).c_str(), fptr);
+
+        if (i < (numColumns - 1)) {
+            fputc(',', fptr);
+        }
     }
 
     fputc('\n', fptr);
@@ -73,6 +81,10 @@ void CSVHelper::addValue(string & szValue)
 
     if (cellCount < numColumns) {
         fputs(szValue.c_str(), fptr);
+
+        if (cellCount < (numColumns - 1)) {
+            fputc(',', fptr);
+        }
     }
     else {
         cellCount = 0;
