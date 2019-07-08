@@ -120,7 +120,7 @@ ISR(TIMER1_CAPT_vect, ISR_BLOCK) {
  * Timer/Counter1 Compare Match A
  */
 ISR(TIMER1_COMPA_vect, ISR_BLOCK) {
-	handleTimer1Compare();
+	_rtcISR();
 }
 
 /*

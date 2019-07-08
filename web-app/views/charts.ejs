@@ -11,29 +11,37 @@
 </head>
 <body>
 	<h1 style="text-align: center">Weather Charts</h1>
-	<div class="centred-div">
-		<p class="button-frame">
-			<button class="btn" onclick="getChart('24h')"><i class="fa fa-line-chart"></i> Last 24h</button>
-			<button class="btn" onclick="getChart('7d')"><i class="fa fa-line-chart"></i> Last 7d</button>
-			<button class="btn" onclick="getChart('28d')"><i class="fa fa-line-chart"></i> Last 28d</button>
+	<div class="centred-outer">
+		<div class="centred-inner">
+		<p class="pretty-frame">
+			<button class="btn" onclick="getHREF('weather')"><i class="fa fa-cloud"></i> Current</button>
+			<button class="btn" onclick="getHREF('24h')"><i class="fa fa-line-chart"></i> Last 24h</button>
+			<button class="btn" onclick="getHREF('7d')"><i class="fa fa-line-chart"></i> Last 7d</button>
+			<button class="btn" onclick="getHREF('28d')"><i class="fa fa-line-chart"></i> Last 28d</button>
 		</p>
+		</div>
 
 		<script>
-			function getChart(period) {
-				if (period == '24h') {
+			function getHREF(ref) {
+				if (ref == 'weather') {
+					window.location.href = "/";
+				}
+				else if (ref == '24h') {
 					window.location.href = "/charts?period=24h";
 				}
-				else if (period == '7d') {
+				else if (ref == '7d') {
 					window.location.href = "/charts?period=7d";
 				}
-				else if (period == '28d') {
+				else if (ref == '28d') {
 					window.location.href = "/charts?period=28d";
 				}
 			}
 		</script>
 	</div>
-	<div class="container">
-		<canvas id="temperatureChart" width="1600" height="1200"></canvas>
+	<div class="centred-div">
+		<p class="pretty-frame">
+			<canvas id="temperatureChart" width="1600" height="1200"></canvas>
+		</p>
 		<script>
 				var ctxTemp = document.getElementById('temperatureChart');
 
@@ -89,8 +97,10 @@
 					}
 					
 				});
-			</script>
-		<canvas id="pressureChart" width="1600" height="1200"></canvas>
+		</script>
+		<p class="pretty-frame">
+			<canvas id="pressureChart" width="1600" height="1200"></canvas>
+		</p>
 		<script>
 				var ctxPressure = document.getElementById('pressureChart');
 
@@ -146,8 +156,10 @@
 					}
 					
 				});
-			</script>
-		<canvas id="humidityChart" width="1600" height="1200"></canvas>
+		</script>
+		<p class="pretty-frame">
+			<canvas id="humidityChart" width="1600" height="1200"></canvas>
+		</p>
 		<script>
 				var ctxHumidity = document.getElementById('humidityChart');
 

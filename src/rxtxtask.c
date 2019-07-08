@@ -123,6 +123,21 @@ void RxTask(PTASKPARM p)
 				txACK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), NULL, 0);
 				break;
 
+			case RX_CMD_CPU_PERCENTAGE:
+				szBuffer[i++] = 'C';
+				szBuffer[i++] = ':';
+
+				valueLen = getCPUPercentage(&szBuffer[i]);
+
+				szBuffer[i + valueLen] = ';';
+				i += valueLen + 1;
+
+				// Null terminate string...
+				szBuffer[i++] = 0;
+
+				txACK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), szBuffer, i);
+				break;
+
 			case RX_CMD_ANEMOMETER:
 				break;
 
@@ -130,7 +145,14 @@ void RxTask(PTASKPARM p)
 				break;
 
 			case RX_CMD_PING:
-				txACK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), NULL, 0);
+				valueLen = getCPUPercentage(&szBuffer[i]);
+
+				i += valueLen + 1;
+
+				// Null terminate string...
+				szBuffer[i++] = 0;
+
+				txACK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), szBuffer, i);
 				break;
 
 			default:

@@ -3,8 +3,6 @@
 #ifndef _INCL_SCHEDULER
 #define _INCL_SCHEDULER
 
-//#define TRACK_CPU_PCT
-
 #define MAX_TASKS           	16
 
 typedef void *					PTASKPARM;
@@ -25,32 +23,26 @@ typedef uint64_t				timer_t;
 
 #define MAX_TIMER_VALUE			~((timer_t)0)
 
+/*
+ * If, for example, you want a faster interrupt frequency for the
+ * RTC tick task, set the prescaler here. If you want the interrupt
+ * frequency and clock frequency to be the same, simply set this to 1...
+ */
+#define RTC_INTERRUPT_PRESCALER			4
 
 /******************************************************************************
 **
-** Used for tracking CPU usage (e.g. how much time is spent running tasks). If
-** TRACK_CPU_PCT is defined, then the example below will toggle the on-board
-** LED on an Arduino.
+** The real-time clock interrupt service routing
 **
 ******************************************************************************/
-#ifndef TRACK_CPU_PCT
-#define signalCPUTrackingStart()		// Do nothing
-#define signalCPUTrackingEnd()			// Do nothing
-#else
-#include <avr/io.h>
-#define signalCPUTrackingStart()		PORTB &= ~(_BV(PORTB5))		// Turn off
-#define signalCPUTrackingEnd()			PORTB |= _BV(PORTB5)		// Turn on
-#endif
-
+void        _rtcISR();
 
 /******************************************************************************
 **
-** The real-time clock that drives the scheduler. Typically this
-** will be incremented by a timer interrupt
+** Get the last recorded CPU percentage
 **
 ******************************************************************************/
-extern volatile uint32_t 		_realTimeClock;
-
+int         getCPUPercentage(char * pszBuffer);
 
 /******************************************************************************
 **
@@ -58,6 +50,8 @@ extern volatile uint32_t 		_realTimeClock;
 **
 ******************************************************************************/
 void		initScheduler();
+
+void        registerTickTask(void (* tickTask)());
 
 void		registerTask(uint16_t taskID, void (* run)(PTASKPARM));
 void		deregisterTask(uint16_t taskID);

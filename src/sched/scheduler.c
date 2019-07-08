@@ -17,6 +17,7 @@
 #include "schederr.h"
 
 #define CHECK_TIMER_OVERFLOW
+#define TRACK_CPU_PCT
 
 /******************************************************************************
 **
@@ -41,8 +42,8 @@ TASKDEF;
 
 typedef TASKDEF *	PTASKDEF;
 
-TASKDEF		taskDefs[MAX_TASKS];			// Array of tasks for the scheduler
-int			taskCount = 0;					// Number of tasks registered
+TASKDEF						taskDefs[MAX_TASKS];	// Array of tasks for the scheduler
+int							taskCount = 0;			// Number of tasks registered
 
 /******************************************************************************
 **
@@ -58,6 +59,119 @@ int			taskCount = 0;					// Number of tasks registered
 void _nullTask(PTASKPARM p)
 {
 	handleError(ERROR_SCHED_NULLTASKEXEC);
+}
+
+/******************************************************************************
+**
+** Name: _nullTickTask()
+**
+** Description: Null tick task.
+**
+** Parameters:	N/A
+**
+** Returns:		void 
+**
+******************************************************************************/
+void _nullTickTask()
+{
+	// Do nothing...
+}
+
+volatile uint32_t 			_realTimeClock = 0;		// The real time clock counter
+volatile uint16_t			_tickCount = 0;			// Num ticks between rtc counts
+
+volatile uint32_t			_busyCount = 0;
+volatile uint32_t			_idleCount = 0;
+int							_cpuPct = 0;
+
+// The RTC tick task...
+void 						(* _tickTask)() = &_nullTickTask;
+
+#ifdef TRACK_CPU_PCT
+#define signalBusy()		_busyCount++
+#define signalIdle()		_idleCount++
+
+static const char * _szCPUPct[101] = {
+	 "0",  "1",  "2",  "3",  "4",  "5",  "6",  "7",  "8",  "9",
+	"10", "11", "12", "13", "14", "15", "16", "17", "18", "19",
+	"20", "21", "22", "23", "24", "25", "26", "27", "28", "29",
+	"30", "31", "32", "33", "34", "35", "36", "37", "38", "39",
+	"40", "41", "42", "43", "44", "45", "46", "47", "48", "49",
+	"50", "51", "52", "53", "54", "55", "56", "57", "58", "59",
+	"60", "61", "62", "63", "64", "65", "66", "67", "68", "69",
+	"70", "71", "72", "73", "74", "75", "76", "77", "78", "79",
+	"80", "81", "82", "83", "84", "85", "86", "87", "88", "89",
+	"90", "91", "92", "93", "94", "95", "96", "97", "98", "99",
+	"100"
+};
+#else
+#define signalBusy()		// Do nothing
+#define signalIdle()		// Do nothing
+#endif
+
+/******************************************************************************
+**
+** Name: _nullTask()
+**
+** Description: Null task assigned to TASKDEF entries that are unused.
+**
+** Parameters:	PTASKPARM	p		Unused.
+**
+** Returns:		void 
+**
+******************************************************************************/
+void _cpuTask(PTASKPARM p)
+{
+	uint32_t		divisor;
+
+	divisor = _idleCount - _busyCount;
+
+	if (divisor == 0) {
+		_cpuPct = 100;
+	}
+	else {
+		_cpuPct = (_busyCount * 100) / divisor;
+	}
+
+	// Reset counters...
+	_busyCount = 0;
+	_idleCount = 0;
+}
+
+/******************************************************************************
+**
+** Name: _rtcISR()
+**
+** Description: The RTC interrupt handler.
+**
+** Parameters:	N/A
+**
+** Returns:		void 
+**
+******************************************************************************/
+void _rtcISR()
+{
+	_tickCount++;
+
+	if (_tickCount == RTC_INTERRUPT_PRESCALER) {
+	    /*
+	    ** The RTC is incremented every 1 ms,
+		** it is used to drive the real time clock
+		** for the scheduler...
+	    */
+		_realTimeClock++;
+
+		_tickCount = 0;
+	}
+
+	/*
+	 * Run the tick task, defaults to the nullTick() function.
+	 *
+	 * This must be a very fast operation, as it is outside of
+	 * the scheduler's control. Also, there can be only 1 tick task...
+	 */
+	signalBusy();
+	_tickTask();
 }
 
 /******************************************************************************
@@ -108,6 +222,31 @@ timer_t _getScheduledTime(timer_t startTime, timer_t requestedDelay)
 
 /******************************************************************************
 **
+** Name: getCPUPercentage()
+**
+** Description: Returns the last recorded CPU percentage
+**
+** Parameters:	N/A
+**
+** Returns:		void 
+**
+******************************************************************************/
+int getCPUPercentage(char * pszBuffer)
+{
+	int		strLen;
+
+#ifdef TRACK_CPU_PCT
+	strLen = (int)strlen(_szCPUPct[_cpuPct]);
+	strcpy(pszBuffer, _szCPUPct[_cpuPct]);
+#else
+	strLen = 2;
+	strcpy(pszBuffer, "NA");
+#endif
+	return strLen;
+}
+
+/******************************************************************************
+**
 ** Name: initScheduler()
 **
 ** Description: Initialises the scheduler, must be called before any other
@@ -137,6 +276,28 @@ void initScheduler()
 		td->pParameter		= NULL;
 		td->run				= &_nullTask;
 	}
+
+#ifdef TRACK_CPU_PCT
+	registerTask(0x00, &_cpuTask);
+	scheduleTask(0x00, 1000, NULL);
+#endif
+}
+
+/******************************************************************************
+**
+** Name: registerTickTask()
+**
+** Description: Registers the scheduler tick task. This tick task is called 
+**				from the RTC ISR.
+**
+** Parameters:	void 	(* tickTask)	Pointer to the tick task function
+**
+** Returns:		void 
+**
+******************************************************************************/
+void registerTickTask(void (* tickTask)())
+{
+	_tickTask = tickTask;
 }
 
 /******************************************************************************
@@ -339,6 +500,8 @@ void schedule()
 	while (1) {
 		td = &taskDefs[i];
 		
+		signalIdle();
+
 		if (td->isAllocated) {
 			if (td->isScheduled && (_realTimeClock >= td->scheduledTime)) {
 				/*
@@ -348,14 +511,12 @@ void schedule()
 				*/
 				td->isScheduled = 0;
 				
-				signalCPUTrackingStart();
+				signalBusy();
 
 				/*
 				** Run the task...
 				*/
 				td->run(td->pParameter);
-
-				signalCPUTrackingEnd();
 			}
 		}
 		

@@ -16,10 +16,12 @@ body {
 .btn {
 	background-color: DodgerBlue; /* Blue background */
 	border: none; /* Remove borders */
+	border-radius: 10px;
 	color: white; /* White text */
 	padding: 12px 16px; /* Some padding */
 	font-size: 16px; /* Set a font size */
 	cursor: pointer; /* Mouse pointer on hover */
+	vertical-align: middle;
   }
 
 /* Darker background on mouse-over */
@@ -27,59 +29,37 @@ body {
 	background-color: RoyalBlue;
 }
 
-fieldset {
-	display: block;
-	-webkit-margin-start: 0px;
-	-webkit-margin-end: 0px;
-	-webkit-padding-before: 0em;
-	-webkit-padding-start: 0em;
-	-webkit-padding-end: 0em;
-	-webkit-padding-after: 0em;
-	border: 0px;
-	border-image-source: initial;
-	border-image-slice: initial;
-	border-image-width: initial;
-	border-image-outset: initial;
-	border-image-repeat: initial;
-	min-width: -webkit-min-content;
+.pretty-table {
+	width: 800px;
+	margin-left: auto;
+	margin-right: auto;
+	border: 0px solid rgb(83, 162, 243);
+	border-radius: 10px;
+	background: aliceblue;
+}
+
+.table-heading {
+	border: 0px solid rgb(83, 162, 243);
+	color: black;
+	margin: 20px;
+	width: 25%;
 	padding: 30px;
 }
 
-.table-left {
-	margin-left: 0px;
-	margin-right: autu;
+.column-heading {
 	border: 0px solid rgb(83, 162, 243);
+	color: black;
+	margin: 20px;
+	width: 25%;
+	padding: 30px;
 }
 
-td, th {
+.table-cell {
 	border: 0px solid rgb(83, 162, 243);
-}
-
-.ghost-input, p {
-	display: block;
-	font-weight: 300;
-	width: 100%;
-	font-size: 25px;
-	border: 0px;
-	outline: none;
-	width: 100%;
-	-webkit-box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	box-sizing: border-box;
-	color: #4b545f;
-	background: #fff;
-	font-family: Open Sans, Verdana;
-	padding: 10px 15px;
-	margin: 30px 0px;
-	-webkit-transition: all 0.1s ease-in-out;
-	-moz-transition: all 0.1s ease-in-out;
-	-ms-transition: all 0.1s ease-in-out;
-	-o-transition: all 0.1s ease-in-out;
-	transition: all 0.1s ease-in-out;
-}
-
-.ghost-input:focus {
-	border-bottom: 1px solid #ddd;
+	color: darkred;
+	margin: 20px;
+	width: 25%;
+	padding: 30px;
 }
 
 .ghost-button {
@@ -99,18 +79,26 @@ td, th {
 	border: 2px solid #515151;
 }
 
-p {
-	color: #E64A19;
-}
-
-.button-frame {
+.pretty-frame {
 	border: 3px navy;
 	border-radius: 10px;
-	background: lightblue;
+	background: aliceblue;
+	vertical-align: middle;
+	padding: 15px;
 }
 
-.centred-div {
-	text-align: cemter;
+.centred-outer {
+	position: relative;
+	text-align: center;
 	width: 800px;
-	margin: 0 auto;
+	height: 120px;
+	margin: auto;
+}
+
+.centred-inner {
+	position: absolute;
+	top: 50%; left: 50%;
+	transform: translate(-50%,-50%);
+	width: 800px;
+	height: 80px;
 }

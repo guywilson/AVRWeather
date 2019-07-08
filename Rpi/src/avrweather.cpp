@@ -227,6 +227,7 @@ void processResponse(uint8_t * response, int responseLength)
 {
 	RXMSGSTRUCT			msg;
 	char				szTPH[80];
+	char				szCPU[8];
 	char 				szTemperature[20];
 	char 				szPressure[20];
 	char 				szHumidity[20];
@@ -376,6 +377,9 @@ void processResponse(uint8_t * response, int responseLength)
 			break;
 
 		case RX_RSP_PING:
+			memcpy(szCPU, msg.frame.data, msg.frame.frameLength - 3);
+			szCPU[msg.frame.frameLength - 3] = 0;
+			cout << "CPU = " << szCPU << "%" << endl;
 			break;
 	}
 }
