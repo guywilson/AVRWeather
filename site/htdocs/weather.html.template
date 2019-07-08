@@ -3,12 +3,12 @@
         <title>Weather in Greenwich</title>
     </head>
     <body>
+        <h1 style="text-align:center"><b>Weather in Greenwich</b></h1>
         <div>
-            <h1 style="text-align:center"><b>Weather in Greenwich</b></h1>
             <iframe id="weatherFrame" title="Weather Frame" width="1024" height="800" src="<SITE>"></iframe>
         </div>
         <div>
-            <p>Updated <TIME></p>
+            <p>Site updated: <TIME></p>
         </div>
     </body>
 </html>

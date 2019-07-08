@@ -1,105 +1,104 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="utf-8">
-<title>Current Weather</title>
-<link rel="stylesheet" type="text/css" href="/css/style.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<link href='https://fonts.googleapis.com/css?family=Open+Sans:300'
-	rel='stylesheet' type='text/css'>
-</head>
-<body>
-	<h1 style="text-align: center">Current Weather</h1>
-	<div class="centred-outer">
-		<div class="centred-inner">
-		<p class="pretty-frame" style="line-height: 1.5">
-			<button class="btn" onclick="getHREF('weather')"><i class="fa fa-cloud"></i> Current</button>
-			<button class="btn" onclick="getHREF('24h')"><i class="fa fa-line-chart"></i> Last 24h</button>
-			<button class="btn" onclick="getHREF('7d')"><i class="fa fa-line-chart"></i> Last 7d</button>
-			<button class="btn" onclick="getHREF('28d')"><i class="fa fa-line-chart"></i> Last 28d</button>
-		</p>
-		</div>
+	<head>
+		<meta charset="utf-8">
+		<title>Current Weather</title>
+		<link rel="stylesheet" type="text/css" href="/css/style.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+		<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans:300">
+	</head>
+	<body>
+		<h1 style="text-align: center">Current Weather</h1>
+		<div class="centred-outer">
+			<div class="centred-inner">
+			<p class="pretty-frame" style="line-height: 1.5">
+				<button class="btn" onclick="getHREF('weather')"><i class="fa fa-cloud"></i> Current</button>
+				<button class="btn" onclick="getHREF('24h')"><i class="fa fa-line-chart"></i> Last 24h</button>
+				<button class="btn" onclick="getHREF('7d')"><i class="fa fa-line-chart"></i> Last 7d</button>
+				<button class="btn" onclick="getHREF('28d')"><i class="fa fa-line-chart"></i> Last 28d</button>
+			</p>
+			</div>
 
-		<script>
-			function getHREF(ref) {
-				if (ref == 'weather') {
-					window.location.href = "/";
+			<script>
+				function getHREF(ref) {
+					if (ref == 'weather') {
+						window.location.href = "/";
+					}
+					else if (ref == '24h') {
+						window.location.href = "/charts?period=24h";
+					}
+					else if (ref == '7d') {
+						window.location.href = "/charts?period=7d";
+					}
+					else if (ref == '28d') {
+						window.location.href = "/charts?period=28d";
+					}
 				}
-				else if (ref == '24h') {
-					window.location.href = "/charts?period=24h";
-				}
-				else if (ref == '7d') {
-					window.location.href = "/charts?period=7d";
-				}
-				else if (ref == '28d') {
-					window.location.href = "/charts?period=28d";
-				}
-			}
-		</script>
-	</div>
-	<div class="centred-outer">
-		<table class="pretty-table">
-			<tr>
-				<th></th>
-				<th class="table-heading" style="text-align: center"><font size="6"><b>Min</b></font></th>
-				<th class="table-heading" style="text-align: center"><font size="6"><b>Now</b></font></th>
-				<th class="table-heading" style="text-align: center"><font size="6"><b>Max</b></font></th>
-			</tr>
-			<tr>
-				<td class="column-heading" style="text-align: left"><font size="6"><b>T (°C)</b></font></td>
-				<td class="table-cell" style="text-align: center"><% if(minTemperature !== null){
-					%>
-						<%= minTemperature %> 
-					<% } %>
-				</td>
-				<td class="table-cell" style="text-align: center"><% if(avgTemperature !== null){
-					%>
-						<font size="12"><b><%= avgTemperature %></b></font>
-					<% } %>
-				</td>
-				<td class="table-cell" style="text-align: center"><% if(maxTemperature !== null){
-					%>
-						<%= maxTemperature %> 
-					<% } %>
-				</td>
-			</tr>
-			<tr>
-				<td class="column-heading" style="text-align: left"><font size="6"><b>P (mBar)</b></font></td>
-				<td class="table-cell" style="text-align: center"><% if(minPressure !== null){ 
-					%>
-						<%= minPressure %> 
-					<% } %>
-				</td>
-				<td  class="table-cell"style="text-align: center"><% if(avgPressure !== null){ 
-					%>
-						<font size="12"><b><%= avgPressure %></b></font>
-					<% } %>
-				</td>
-				<td class="table-cell" style="text-align: center"><% if(maxPressure !== null){ 
-					%>
-						<%= maxPressure %> 
-					<% } %>
-				</td>
-			</tr>
-			<tr>
-				<td class="column-heading" style="text-align: left"><font size="6"><b>H (%RH)</b></font></td>
-				<td class="table-cell" style="text-align: center"><% if(minHumidity !== null){ 
-					%>
-						<%= minHumidity %> 
-					<% } %>
-				</td>
-				<td class="table-cell" style="text-align: center"><% if(avgHumidity !== null){ 
-					%>
-						<font size="12"><b><%= avgHumidity %></b></font>
-					<% } %>
-				</td>
-				<td class="table-cell" style="text-align: center"><% if(maxHumidity !== null){ 
-					%>
-						<%= maxHumidity %> 
-					<% } %>
-				</td>
-			</tr>
-		</table>
-	</div>
-</body>
+			</script>
+		</div>
+		<div class="centred-outer">
+			<table class="pretty-table">
+				<tr>
+					<th></th>
+					<th class="table-heading" style="text-align: center"><font size="6"><b>Min</b></font></th>
+					<th class="table-heading" style="text-align: center"><font size="6"><b>Now</b></font></th>
+					<th class="table-heading" style="text-align: center"><font size="6"><b>Max</b></font></th>
+				</tr>
+				<tr>
+					<td class="column-heading" style="text-align: left"><font size="6"><b>T (°C)</b></font></td>
+					<td class="table-cell" style="text-align: center"><% if(minTemperature !== null){
+						%>
+							<%= minTemperature %> 
+						<% } %>
+					</td>
+					<td class="table-cell" style="text-align: center"><% if(avgTemperature !== null){
+						%>
+							<font size="12"><b><%= avgTemperature %></b></font>
+						<% } %>
+					</td>
+					<td class="table-cell" style="text-align: center"><% if(maxTemperature !== null){
+						%>
+							<%= maxTemperature %> 
+						<% } %>
+					</td>
+				</tr>
+				<tr>
+					<td class="column-heading" style="text-align: left"><font size="6"><b>P (mBar)</b></font></td>
+					<td class="table-cell" style="text-align: center"><% if(minPressure !== null){ 
+						%>
+							<%= minPressure %> 
+						<% } %>
+					</td>
+					<td  class="table-cell"style="text-align: center"><% if(avgPressure !== null){ 
+						%>
+							<font size="12"><b><%= avgPressure %></b></font>
+						<% } %>
+					</td>
+					<td class="table-cell" style="text-align: center"><% if(maxPressure !== null){ 
+						%>
+							<%= maxPressure %> 
+						<% } %>
+					</td>
+				</tr>
+				<tr>
+					<td class="column-heading" style="text-align: left"><font size="6"><b>H (%RH)</b></font></td>
+					<td class="table-cell" style="text-align: center"><% if(minHumidity !== null){ 
+						%>
+							<%= minHumidity %> 
+						<% } %>
+					</td>
+					<td class="table-cell" style="text-align: center"><% if(avgHumidity !== null){ 
+						%>
+							<font size="12"><b><%= avgHumidity %></b></font>
+						<% } %>
+					</td>
+					<td class="table-cell" style="text-align: center"><% if(maxHumidity !== null){ 
+						%>
+							<%= maxHumidity %> 
+						<% } %>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</body>
 </html>

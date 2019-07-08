@@ -1,48 +1,49 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="utf-8">
-<title>Weather Charts</title>
-<link rel="stylesheet" type="text/css" href="/css/style.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<link href='https://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
-<script
-	src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
-</head>
-<body>
-	<h1 style="text-align: center">Weather Charts</h1>
-	<div class="centred-outer">
-		<div class="centred-inner">
-		<p class="pretty-frame">
-			<button class="btn" onclick="getHREF('weather')"><i class="fa fa-cloud"></i> Current</button>
-			<button class="btn" onclick="getHREF('24h')"><i class="fa fa-line-chart"></i> Last 24h</button>
-			<button class="btn" onclick="getHREF('7d')"><i class="fa fa-line-chart"></i> Last 7d</button>
-			<button class="btn" onclick="getHREF('28d')"><i class="fa fa-line-chart"></i> Last 28d</button>
-		</p>
-		</div>
-
-		<script>
-			function getHREF(ref) {
-				if (ref == 'weather') {
-					window.location.href = "/";
-				}
-				else if (ref == '24h') {
-					window.location.href = "/charts?period=24h";
-				}
-				else if (ref == '7d') {
-					window.location.href = "/charts?period=7d";
-				}
-				else if (ref == '28d') {
-					window.location.href = "/charts?period=28d";
-				}
-			}
+	<head>
+		<meta charset="utf-8">
+		<title>Weather Charts</title>
+		<link rel="stylesheet" type="text/css" href="/css/style.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+		<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans:300">
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js">
 		</script>
-	</div>
-	<div class="centred-div">
-		<p class="pretty-frame">
-			<canvas id="temperatureChart" width="1600" height="1200"></canvas>
-		</p>
-		<script>
+	</head>
+	<body>
+		<h1 style="text-align: center">Weather Charts</h1>
+		<div class="centred-outer">
+			<div class="centred-inner">
+			<p class="pretty-frame">
+				<button class="btn" onclick="getHREF('weather')"><i class="fa fa-cloud"></i> Current</button>
+				<button class="btn" onclick="getHREF('24h')"><i class="fa fa-line-chart"></i> Last 24h</button>
+				<button class="btn" onclick="getHREF('7d')"><i class="fa fa-line-chart"></i> Last 7d</button>
+				<button class="btn" onclick="getHREF('28d')"><i class="fa fa-line-chart"></i> Last 28d</button>
+			</p>
+			</div>
+
+			<script>
+				function getHREF(ref) {
+					if (ref == 'weather') {
+						window.location.href = "/";
+					}
+					else if (ref == '24h') {
+						window.location.href = "/charts?period=24h";
+					}
+					else if (ref == '7d') {
+						window.location.href = "/charts?period=7d";
+					}
+					else if (ref == '28d') {
+						window.location.href = "/charts?period=28d";
+					}
+				}
+			</script>
+		</div>
+		<div class="centred-div">
+			<p class="pretty-frame">
+				<canvas id="temperatureChart" width="1600" height="1200"></canvas>
+			</p>
+			<script>
 				var ctxTemp = document.getElementById('temperatureChart');
 
 				new Chart(ctxTemp, {
@@ -66,9 +67,9 @@
 					},
 					options: {
 						responsive: true,
-                		legend: {
-                    		position: 'bottom',
-                		},
+						legend: {
+							position: 'bottom',
+						},
 						scales: {
 							xAxes: [{
 									display: true,
@@ -89,7 +90,7 @@
 										suggestedMax: 30
 									}
 								}]
-                		},
+						},
 						title: {
 							display: true,
 							text: '<%= chartTempTitle %>'
@@ -97,11 +98,11 @@
 					}
 					
 				});
-		</script>
-		<p class="pretty-frame">
-			<canvas id="pressureChart" width="1600" height="1200"></canvas>
-		</p>
-		<script>
+			</script>
+			<p class="pretty-frame">
+				<canvas id="pressureChart" width="1600" height="1200"></canvas>
+			</p>
+			<script>
 				var ctxPressure = document.getElementById('pressureChart');
 
 				new Chart(ctxPressure, {
@@ -125,9 +126,9 @@
 					},
 					options: {
 						responsive: true,
-                		legend: {
-                    		position: 'bottom',
-                		},
+						legend: {
+							position: 'bottom',
+						},
 						scales: {
 							xAxes: [{
 									display: true,
@@ -148,7 +149,7 @@
 										suggestedMax: 1040
 									}
 								}]
-                		},
+						},
 						title: {
 							display: true,
 							text: '<%= chartPresTitle %>'
@@ -156,11 +157,11 @@
 					}
 					
 				});
-		</script>
-		<p class="pretty-frame">
-			<canvas id="humidityChart" width="1600" height="1200"></canvas>
-		</p>
-		<script>
+			</script>
+			<p class="pretty-frame">
+				<canvas id="humidityChart" width="1600" height="1200"></canvas>
+			</p>
+			<script>
 				var ctxHumidity = document.getElementById('humidityChart');
 
 				new Chart(ctxHumidity, {
@@ -184,9 +185,9 @@
 					},
 					options: {
 						responsive: true,
-                		legend: {
-                    		position: 'bottom',
-                		},
+						legend: {
+							position: 'bottom',
+						},
 						scales: {
 							xAxes: [{
 									display: true,
@@ -207,7 +208,7 @@
 										suggestedMax: 100
 									}
 								}]
-                		},
+						},
 						title: {
 							display: true,
 							text: '<%= chartHumiTitle %>'
@@ -215,6 +216,6 @@
 					}
 				});
 			</script>
-	</div>
-</body>
+		</div>
+	</body>
 </html>
