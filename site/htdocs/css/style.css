@@ -81,6 +81,11 @@
 	padding: 15px;
 }
 
+.paragraph {
+	text-align: left;
+	margin-left: 0px
+}
+
 .div-left {
 	margin-left: 0px;
 	margin-right: auto;

@@ -7,7 +7,7 @@
     <body>
         <h1 style="text-align:center"><b>Weather in Greenwich</b></h1>
         <div class="div-left">
-            <iframe id="weatherFrame" title="Weather Frame" width="900px" height="900px" src="<SITE>"></iframe>
+            <iframe style="border: 0" width="900px" height="900px" src="<SITE>"></iframe>
         </div>
         <div class="div-left">
             <p>Site updated: <TIME></p>
