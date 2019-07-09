@@ -6,10 +6,10 @@
     </head>
     <body>
         <h1 style="text-align:center"><b>Weather in Greenwich</b></h1>
-        <div class="centred-outer">
-            <iframe id="weatherFrame" title="Weather Frame" width="1024" height="800" src="<SITE>"></iframe>
+        <div class="div-left">
+            <iframe id="weatherFrame" title="Weather Frame" width="900px" height="900px" src="<SITE>"></iframe>
         </div>
-        <div>
+        <div class="div-left">
             <p>Site updated: <TIME></p>
         </div>
     </body>

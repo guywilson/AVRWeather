@@ -2,12 +2,6 @@
   Styles from this codepen:
   https://codepen.io/official_naveen/pen/rgknI
 */
-body {
-	width: 800px;
-	margin: 0 auto;
-	font-family: 'Open Sans', sans-serif;
-}
-
 .container {
 	width: 800px;
 	margin: 0 auto;
@@ -85,6 +79,17 @@ body {
 	background: aliceblue;
 	vertical-align: middle;
 	padding: 15px;
+}
+
+.div-left {
+	margin-left: 0px;
+	margin-right: auto;
+	border: none;
+}
+
+.frame {
+	width: 900px;
+	height: 900px;
 }
 
 .centred-outer {
