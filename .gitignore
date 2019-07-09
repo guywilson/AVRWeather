@@ -14,3 +14,5 @@ site-uploader/lib/commons-net-3.6.jar
 site-uploader/build/com/guy/siteupload/siteUpload.class
 site-uploader/site.properties
 .vscode/launch.json
+web-app/package-lock.json
+web-app/package.json

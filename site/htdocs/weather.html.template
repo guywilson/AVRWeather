@@ -1,6 +1,7 @@
 <html>
     <head>
         <title>Weather in Greenwich</title>
+		<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans:300">
     </head>
     <body>
         <h1 style="text-align:center"><b>Weather in Greenwich</b></h1>
