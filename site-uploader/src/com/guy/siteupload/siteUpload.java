@@ -46,7 +46,8 @@ public class siteUpload
 			String username = prop.getProperty("ftp.username");
 			String password = prop.getProperty("ftp.password");
 			String wd = prop.getProperty("ftp.wd");
-			String filename = prop.getProperty("ftp.filename");
+			String remoteFile = prop.getProperty("ftp.filename");
+			String localFile = prop.getProperty("local.filename");
 
 			InputStream is = null;
 			
@@ -114,8 +115,11 @@ public class siteUpload
             SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
             String now = df.format(new Date());
 			
-			FileInputStream fs = new FileInputStream(new File("../site/htdocs/" + prop.getProperty("ftp.filename") + ".template"));
-
+			/*
+			** Read the html template file...
+			*/
+			File inputFile = new File(localFile + ".template");
+			FileInputStream fs = new FileInputStream(inputFile);
 			byte[] weatherBuffer = fs.readAllBytes();
 
 			fs.close();
@@ -127,15 +131,6 @@ public class siteUpload
 
 			weatherStr = weatherStr.replaceAll("<TIME>", now);
 			weatherStr = weatherStr.replaceAll("<SITE>", "http://" + ipAddr + ":4080");
-
-			/*
-			** Write out the updated html file...
-			*/
-			File outputFile = new File("../site/htdocs/" + prop.getProperty("ftp.filename"));
-			FileOutputStream os = new FileOutputStream(outputFile);
-		    os.write(weatherStr.getBytes());
-
-			os.close();
 			
 			try {
 				/*
@@ -171,7 +166,7 @@ public class siteUpload
 				ftp.enterLocalPassiveMode();
 				
 				ByteArrayInputStream in = new ByteArrayInputStream(weatherStr.getBytes());
-				success = ftp.storeFile(filename, in);
+				success = ftp.storeFile(remoteFile, in);
 				if (!success) {
 					ftp.logout();
 					ftp.disconnect();
