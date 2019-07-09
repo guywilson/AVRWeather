@@ -13,7 +13,7 @@
 
 using namespace std;
 
-//#define LOG_RXTX
+#define LOG_RXTX
 
 PFRAME				_pFrameMem = NULL;
 int					_size = 0;
@@ -379,7 +379,9 @@ void processResponse(uint8_t * response, int responseLength)
 		case RX_RSP_PING:
 			memcpy(szCPU, msg.frame.data, msg.frame.frameLength - 3);
 			szCPU[msg.frame.frameLength - 3] = 0;
+#ifdef LOG_RXTX
 			cout << "CPU = " << szCPU << "%" << endl;
+#endif
 			break;
 	}
 }
