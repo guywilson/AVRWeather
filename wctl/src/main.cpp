@@ -18,7 +18,7 @@
 #include "avrweather.h"
 #include "currenttime.h"
 
-//#define LOG_RXTX
+#define LOG_RXTX
 
 using namespace std;
 
