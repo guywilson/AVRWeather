@@ -127,7 +127,7 @@ void WebConnector::post(const char * pszHost, const int port, const char * pszPa
 	strcat(message, pszBody);
 
     /* What are we going to send? */
-    printf("Request:\n%s\n", message);
+//    printf("Request:\n%s\n", message);
 
     /* create the socket */
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -206,7 +206,7 @@ void WebConnector::post(const char * pszHost, const int port, const char * pszPa
     close(sockfd);
 
     /* process response */
-    printf("Response:\n%s\n",response);
+//    printf("Response:\n%s\n",response);
 
     free(message);
 }
@@ -226,7 +226,7 @@ void WebConnector::postAvgTPH(bool save, char * pszTemperature, char * pszPressu
 		pszPressure,
 		pszHumidity);
 
-	cout << "Posting Avg TPH JSON: " << endl << szBody << endl << endl;
+//	cout << "Posting Avg TPH JSON: " << endl << szBody << endl << endl;
 
 	post(this->szHost, this->port, WEB_PATH_AVG, szBody);
 }
@@ -246,6 +246,8 @@ void WebConnector::postMinTPH(bool save, char * pszTemperature, char * pszPressu
 		pszPressure,
 		pszHumidity);
 
+//	cout << "Posting Min TPH JSON: " << endl << szBody << endl << endl;
+
 	post(this->szHost, this->port, WEB_PATH_MIN, szBody);
 }
 
@@ -263,6 +265,8 @@ void WebConnector::postMaxTPH(bool save, char * pszTemperature, char * pszPressu
 		pszTemperature,
 		pszPressure,
 		pszHumidity);
+
+//	cout << "Posting Max TPH JSON: " << endl << szBody << endl << endl;
 
 	post(this->szHost, this->port, WEB_PATH_MAX, szBody);
 }
