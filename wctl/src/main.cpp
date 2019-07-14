@@ -163,6 +163,14 @@ void * txCmdThread(void * pArgs)
 			}
 		}
 
+#ifdef LOG_RXTX
+		printf("About to send[%d]: ", dataLength);
+		for (i = 0;i < dataLength;i++) {
+			printf("[0x%02X]", data[i]);
+		}
+		printf("\n");
+#endif
+
 		/*
 		** Send cmd frame...
 		*/
