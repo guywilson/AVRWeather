@@ -1,18 +1,14 @@
-/build/
-/ADC Mock Values.xlsx
-/MAV
-/MAV.c
-/MAV.h
-/avrw.hex
-/avrw.s
-/web-app/node_modules/
-
-Rpi/.gitignore
+avr/build/
+avr/avrw.hex
+avr/avrw.s
+wctl/.gitignore
+wctl/build/
 site/htdocs/weather.html
 site-uploader/jar/site-uploader.jar
 site-uploader/lib/commons-net-3.6.jar
-site-uploader/build/com/guy/siteupload/siteUpload.class
+site-uploader/build/
 site-uploader/site.properties
 .vscode/launch.json
+web-app/node_modules/
 web-app/package-lock.json
 web-app/package.json
