@@ -22,7 +22,7 @@ CPP=g++
 LINKER=g++
 
 # C compiler flags (Release)
-CPPFLAGS=-c -O3 -fpermissive -fPIC -Wall -std=c++11
+CPPFLAGS=-c -O1 -fpermissive -fPIC -Wall -std=c++11
 
 # Object files 
 OBJFILES=$(BUILD)/main.o $(BUILD)/serial.o $(BUILD)/avrweather.o $(BUILD)/currenttime.o $(BUILD)/csvhelper.o $(BUILD)/webconnect.o $(BUILD)/exception.o
