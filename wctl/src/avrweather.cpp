@@ -253,9 +253,12 @@ void processResponse(uint8_t * response, int responseLength)
 			strcpy(szPressure, strtok(NULL, ";"));
 			strcpy(szHumidity, strtok(NULL, ";"));
 
-			try {
-				web.postAvgTPH(avgSave, &szTemperature[2], &szPressure[2], &szHumidity[2]);
+			cout << "Got Temp: " << szTemperature << " Pressure: " << szPressure << " Humidity: " << szHumidity << endl;
 
+			try {
+				cout << "Posting to web server..." << endl;
+				web.postAvgTPH(avgSave, &szTemperature[2], &szPressure[2], &szHumidity[2]);
+				cout << "Posted to web server" << endl;
 				avgCount++;
 
 				/*
