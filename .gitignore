@@ -14,3 +14,6 @@ web-app/package-lock.json
 web-app/package.json
 .DS_Store
 wctl/webconfig.cfg
+weather_site/db.sqlite3
+weather_site/weather_site/__pycache__/
+weather_site/weather/__pycache__/
