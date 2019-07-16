@@ -12,3 +12,4 @@ site-uploader/site.properties
 web-app/node_modules/
 web-app/package-lock.json
 web-app/package.json
+.DS_Store
