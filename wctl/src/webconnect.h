@@ -1,9 +1,9 @@
 #ifndef _INCL_WEBCONNECT
 #define _INCL_WEBCONNECT
 
-#define WEB_PATH_AVG		"/api/avg-tph"
-#define WEB_PATH_MIN		"/api/min-tph"
-#define WEB_PATH_MAX		"/api/max-tph"
+#define WEB_PATH_AVG		"/weather/api/avg-tph"
+#define WEB_PATH_MIN		"/weather/api/min-tph"
+#define WEB_PATH_MAX		"/weather/api/max-tph"
 
 class WebConnector
 {

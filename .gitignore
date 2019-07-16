@@ -13,3 +13,4 @@ web-app/node_modules/
 web-app/package-lock.json
 web-app/package.json
 .DS_Store
+wctl/webconfig.cfg
