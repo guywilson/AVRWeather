@@ -1,9 +1,9 @@
 #ifndef _INCL_WEBCONNECT
 #define _INCL_WEBCONNECT
 
-#define WEB_PATH_AVG		"/weather/api/avg-tph"
-#define WEB_PATH_MIN		"/weather/api/min-tph"
-#define WEB_PATH_MAX		"/weather/api/max-tph"
+#define WEB_PATH_AVG		"avg-tph"
+#define WEB_PATH_MIN		"min-tph"
+#define WEB_PATH_MAX		"max-tph"
 
 class WebConnector
 {
@@ -17,6 +17,7 @@ public:
 private:
 	char			szHost[256];
 	int				port;
+	char			szBasePath[128];
 
 	WebConnector();
 
