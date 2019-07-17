@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.clickjacking import xframe_options_exempt
 from .models import TPH
 
 minTemperature = None
@@ -17,6 +18,7 @@ minHumidity = None
 avgHumidity = None
 maxHumidity = None
 
+@xframe_options_exempt
 def index(request):
     global minTemperature
     global avgTemperature
@@ -46,6 +48,7 @@ def index(request):
 
     return HttpResponse(template.render(context, request))
 
+@xframe_options_exempt
 def charts(request):
     template = loader.get_template('weather/charts.html')
     period = request.GET.get('period', '24h')
