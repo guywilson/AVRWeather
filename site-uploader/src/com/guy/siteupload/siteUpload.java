@@ -133,7 +133,7 @@ public class SiteUpload
 			String weatherStr = new String(weatherBuffer);
 
 			weatherStr = weatherStr.replaceAll("<TIME>", now);
-			weatherStr = weatherStr.replaceAll("<SITE>", (isSecure ? "https://" : "http://") + ipAddr + targetPort + targetBase);
+			weatherStr = weatherStr.replaceAll("<SITE>", (isSecure ? "https://" : "http://") + ipAddr + ":" + targetPort + targetBase);
 			
 			try {
 				/*

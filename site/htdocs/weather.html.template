@@ -4,7 +4,7 @@
     </head>
     <body>
         <div>
-            <iframe style="border: none" width="900px" height="900px" src="<SITE>/weather"></iframe>
+            <iframe style="border: none" width="900px" height="900px" src="<SITE>"></iframe>
         </div>
         <div>
             <p>Site updated: <TIME></p>
