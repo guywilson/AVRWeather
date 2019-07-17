@@ -28,7 +28,7 @@ public class SiteUpload
 			Properties prop = new Properties();
 
 			try {
-				InputStream propertiesIS = siteUpload.class.getClassLoader().getResourceAsStream("site.properties");
+				InputStream propertiesIS = SiteUpload.class.getClassLoader().getResourceAsStream("site.properties");
 				prop.load(propertiesIS);
 				propertiesIS.close();
 			}
