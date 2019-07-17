@@ -13,7 +13,7 @@
 
 #define INT_LENGTH				10
 
-#define TEST_WEB
+//#define TEST_WEB
 
 #ifdef TEST_WEB
 int main(void)
