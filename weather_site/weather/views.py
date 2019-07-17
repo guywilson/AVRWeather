@@ -124,7 +124,7 @@ def jsonAvgData(request):
         avgPressure = sentTPH.pressure
         avgHumidity = sentTPH.humidity
 
-        if dct['save']:
+        if dct['save'] == 'true':
             sentTPH.save()
 
     return HttpResponse(json.dumps("OK"))
@@ -151,7 +151,7 @@ def jsonMinData(request):
         minPressure = sentTPH.pressure
         minHumidity = sentTPH.humidity
         
-        if dct['save']:
+        if dct['save'] == 'true':
             sentTPH.save()
 
     return HttpResponse(json.dumps("OK"))
@@ -178,7 +178,7 @@ def jsonMaxData(request):
         maxPressure = sentTPH.pressure
         maxHumidity = sentTPH.humidity
         
-        if dct['save']:
+        if dct['save'] == 'true':
             sentTPH.save()
 
     return HttpResponse(json.dumps("OK"))

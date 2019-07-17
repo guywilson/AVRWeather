@@ -13,28 +13,31 @@
 
 #define INT_LENGTH				10
 
-//#define TEST_WEB
+#define TEST_WEB
 
 #ifdef TEST_WEB
 int main(void)
 {
 	int				i = 0;
+	char			szTemperature[8];
+	char			szPressure[8];
+	char			szHumidity[8];
 
-	char *	temp[24] = {
+	const char * 	temp[24] = {
 						"19.54", "21.43", "20.87", "20.46", "20.87", "21.23",
 						"19.54", "21.43", "20.87", "20.46", "20.87", "21.23",
 						"19.54", "21.43", "20.87", "20.46", "20.87", "21.23",
 						"19.54", "21.43", "20.87", "20.46", "20.87", "21.23"
 	};
 
-	char *	pres[24] = {
+	const char * 	pres[24] = {
 						"1008.25", "1009.65", "1009.78", "1010.01", "1011.25", "1011.34",
 						"1008.25", "1009.65", "1009.78", "1010.01", "1011.25", "1011.34",
 						"1008.25", "1009.65", "1009.78", "1010.01", "1011.25", "1011.34",
 						"1008.25", "1009.65", "1009.78", "1010.01", "1011.25", "1011.34"
 	};
 
-	char *	humi[24] = {
+	const char *	humi[24] = {
 						"57.25", "58.54", "58.54", "59.25", "59.87", "60.03",
 						"57.25", "58.54", "58.54", "59.25", "59.87", "60.03",
 						"57.25", "58.54", "58.54", "59.25", "59.87", "60.03",
@@ -45,7 +48,11 @@ int main(void)
 		WebConnector & web = WebConnector::getInstance();
 
 		for (i = 0;i < 24;i++) {
-			web.postAvgTPH(true, temp[i], pres[i], humi[i]);
+			strcpy(szTemperature, temp[i]);
+			strcpy(szPressure, pres[i]);
+			strcpy(szHumidity, humi[i]);
+
+			web.postAvgTPH(false, szTemperature, szPressure, szHumidity);
 		}
 	}
 	catch (Exception * e) {
