@@ -16,6 +16,8 @@ class FilterHostMiddleware(object):
             '127.0.0.1',
             '1.0.0.127.in-addr.arpa',
             'localhost',
+            'weatherapp',
+            '86.132.224.254',
         ]
 
         host = request.META.get('HTTP_HOST')
