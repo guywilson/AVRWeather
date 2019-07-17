@@ -3,6 +3,7 @@ avr/avrw.hex
 avr/avrw.s
 wctl/.gitignore
 wctl/build/
+wctl/webconfig.cfg
 site/htdocs/weather.html
 site-uploader/jar/site-uploader.jar
 site-uploader/lib/commons-net-3.6.jar
@@ -13,7 +14,6 @@ web-app/node_modules/
 web-app/package-lock.json
 web-app/package.json
 .DS_Store
-wctl/webconfig.cfg
 weather_site/db.sqlite3
 weather_site/weather_site/__pycache__/
 weather_site/weather/__pycache__/
