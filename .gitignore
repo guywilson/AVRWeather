@@ -17,3 +17,4 @@ web-app/package.json
 weather_site/db.sqlite3
 weather_site/weather_site/__pycache__/
 weather_site/weather/__pycache__/
+weather_site/weather/middleware/__pycache__/

@@ -25,7 +25,7 @@ SECRET_KEY = '#%368h7w+h+=$d1!40*el^7jla)d)q71n&np12(s3#36__s%gq'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '1.0.0.127.in-addr.arpa', 'localhost', '192.168.0.60']
+#ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -41,6 +41,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'weather.middleware.filters.FilterHostMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
