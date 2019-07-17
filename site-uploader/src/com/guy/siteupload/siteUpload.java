@@ -15,7 +15,7 @@ import java.util.Properties;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 
-public class siteUpload
+public class SiteUpload
 {
 	/**
 	 * @param args
@@ -48,6 +48,9 @@ public class siteUpload
 			String wd = prop.getProperty("ftp.wd");
 			String remoteFile = prop.getProperty("ftp.filename");
 			String localFile = prop.getProperty("local.filename");
+			String targetPort = prop.getProperty("targeturl.port");
+			String targetBase = prop.getProperty("targeturl.base");
+			boolean isSecure = prop.getProperty("targeturl.issecure").equals("yes") ? true : false;
 
 			InputStream is = null;
 			
@@ -130,7 +133,7 @@ public class siteUpload
 			String weatherStr = new String(weatherBuffer);
 
 			weatherStr = weatherStr.replaceAll("<TIME>", now);
-			weatherStr = weatherStr.replaceAll("<SITE>", "http://" + ipAddr + ":4080");
+			weatherStr = weatherStr.replaceAll("<SITE>", (isSecure ? "https://" : "http://") + ipAddr + targetPort + targetBase);
 			
 			try {
 				/*
