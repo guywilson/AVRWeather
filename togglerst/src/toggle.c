@@ -27,7 +27,7 @@ int main(int argc, char * argv[])
 
     rc = gpioc_open();
 
-    if (rc < 0) {
+    if (rc == 0) {
         gpioc_setPinOff(pin);
         usleep(50L);
         gpioc_setPinOn(pin);
