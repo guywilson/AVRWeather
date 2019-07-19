@@ -28,7 +28,8 @@ int main(int argc, char * argv[])
     rc = gpioc_open();
 
     if (rc == 0) {
-        gpioc_pullDown(pin);
+        //gpioc_pullDown(pin);
+        gpioc_setPinOutput(pin);
 
         gpioc_setPinOn(pin);
         sleep(2);
