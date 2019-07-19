@@ -27,11 +27,13 @@ int main(int argc, char * argv[])
 
     rc = gpioc_open();
 
-    gpioc_setPinOff(pin);
+    if (rc < 0) {
+        gpioc_setPinOff(pin);
+        usleep(50L);
+        gpioc_setPinOn(pin);
 
-    usleep(50L);
-
-    gpioc_setPinOn(pin);
+        gpioc_close();
+    }
 
     return 0;
 }
