@@ -30,9 +30,9 @@ int main(int argc, char * argv[])
     if (rc == 0) {
         gpioc_pullDown(pin);
 
-        gpioc_setPinOff(pin);
-        sleep(2);
         gpioc_setPinOn(pin);
+        sleep(2);
+        gpioc_setPinOff(pin);
 
         gpioc_close();
     }
