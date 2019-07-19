@@ -25,15 +25,16 @@ int main(int argc, char * argv[])
 		return -1;
 	}
 
+    printf("Toggling pin %d\n", pin);
+
     rc = gpioc_open();
 
     if (rc == 0) {
-        //gpioc_pullDown(pin);
         gpioc_setPinOutput(pin);
 
-        gpioc_setPinOn(pin);
-        sleep(2);
         gpioc_setPinOff(pin);
+        usleep(100000);
+        gpioc_setPinOn(pin);
 
         gpioc_close();
     }
