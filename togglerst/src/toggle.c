@@ -39,5 +39,5 @@ int main(int argc, char * argv[])
         gpioc_close();
     }
 
-    return 0;
+    return rc;
 }
