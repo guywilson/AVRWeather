@@ -13,6 +13,8 @@
 
 using namespace std;
 
+#define AVG_MSGS_PER_MIN			3
+
 //#define LOG_RXTX
 
 PFRAME				_pFrameMem = NULL;
@@ -227,7 +229,6 @@ void processResponse(uint8_t * response, int responseLength)
 {
 	RXMSGSTRUCT			msg;
 	char				szTPH[80];
-	char				szCPU[8];
 	char 				szTemperature[20];
 	char 				szPressure[20];
 	char 				szHumidity[20];
@@ -253,18 +254,14 @@ void processResponse(uint8_t * response, int responseLength)
 			strcpy(szPressure, strtok(NULL, ";"));
 			strcpy(szHumidity, strtok(NULL, ";"));
 
-//			cout << "Got Temp: " << szTemperature << " Pressure: " << szPressure << " Humidity: " << szHumidity << endl;
-
 			try {
-//				cout << "Posting to web server..." << endl;
 				web.postAvgTPH(avgSave, &szTemperature[2], &szPressure[2], &szHumidity[2]);
-//				cout << "Posted to web server" << endl;
 				avgCount++;
 
 				/*
-				 * Save once an hour...
+				 * Save every 20 minutes...
 				 */
-				if (avgCount < 180) {
+				if (avgCount < (AVG_MSGS_PER_MIN * 20)) {
 					avgSave = false;
 				}
 				else {
@@ -380,11 +377,6 @@ void processResponse(uint8_t * response, int responseLength)
 			break;
 
 		case RX_RSP_PING:
-#ifdef LOG_RXTX
-			memcpy(szCPU, msg.frame.data, msg.frame.frameLength - 3);
-			szCPU[msg.frame.frameLength - 3] = 0;
-			cout << "CPU = " << szCPU << "%" << endl;
-#endif
 			break;
 	}
 }
