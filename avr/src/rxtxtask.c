@@ -6,6 +6,7 @@
 #include "serial_atmega328p.h"
 #include "taskdef.h"
 #include "adctask.h"
+#include "wdttask.h"
 #include "anemometer.h"
 #include "rainguage.h"
 #include "rxtxtask.h"
@@ -144,15 +145,13 @@ void RxTask(PTASKPARM p)
 			case RX_CMD_RAINGUAGE:
 				break;
 
+			case RX_CMD_WDT_DISABLE:
+				disableWDTReset();
+				txACK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), NULL, 0);
+				break;
+
 			case RX_CMD_PING:
-				valueLen = getCPUPercentage(&szBuffer[i]);
-
-				i += valueLen + 1;
-
-				// Null terminate string...
-				szBuffer[i++] = 0;
-
-				txACK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), szBuffer, i);
+				txACK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), NULL, 0);
 				break;
 
 			default:

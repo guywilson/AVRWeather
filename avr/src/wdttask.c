@@ -7,6 +7,8 @@
 #include "taskdef.h"
 #include "wdttask.h"
 
+uint8_t						resetWDT = 1;
+
 /*
 ** Reset the watchdog timer every 250ms, if the program fails
 ** and the scheduler stops, this will not be called and the
@@ -14,7 +16,9 @@
 */
 void wdtTask(PTASKPARM p)
 {
-	wdt_reset();
+	if (resetWDT) {
+		wdt_reset();
+	}
 
 	rescheduleTask(TASK_WDT, NULL);
 }

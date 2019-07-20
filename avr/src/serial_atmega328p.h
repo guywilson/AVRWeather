@@ -61,6 +61,7 @@
 #define RX_CMD_MIN_TPH				0x05
 #define RX_CMD_RESET_MINMAX_TPH		0x06
 #define RX_CMD_CPU_PERCENTAGE		0x07
+#define RX_CMD_WDT_DISABLE			0x08
 #define RX_CMD_PING					0x0F
 
 #define RX_RSP_AVG_TPH				(RX_CMD_AVG_TPH << 4)
@@ -70,6 +71,7 @@
 #define RX_RSP_MIN_TPH				(RX_CMD_MIN_TPH << 4)
 #define RX_RSP_RESET_MINMAX_TPH		(RX_CMD_RESET_MINMAX_TPH << 4)
 #define RX_RSP_CPU_PERENTAGE		(RX_CMD_CPU_PERCENTAGE << 4)
+#define RX_RSP_WDT_DISABLE			(RX_CMD_WDT_ENABLE << 4)
 #define RX_RSP_PING					(RX_CMD_PING << 4)
 
 typedef struct {
