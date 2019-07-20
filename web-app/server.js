@@ -35,7 +35,7 @@ app.set('view engine', 'ejs');
 /*
 ** Render landing page...
 */
-app.get('/', function (req, res) {
+app.get('/weather', function (req, res) {
 	res.render(
 			'index', 
 			{
@@ -54,7 +54,7 @@ app.get('/', function (req, res) {
 /*
 ** Render charts page...
 */
-app.get('/charts', function (req, res) {
+app.get('/weather/charts', function (req, res) {
 	var xLabels = [];
 	var tempReadings = [];
 	var pressureReadings = [];
@@ -170,7 +170,7 @@ app.get('/charts', function (req, res) {
 /*
 ** Handle API post for average TPH data...
 */
-app.post('/api/avg-tph', function(req, res) {
+app.post('/weather/api/avg-tph', function(req, res) {
 	timestamp = req.body.time;
 	doSave = req.body.save;
 	avgTemperature = req.body.temperature;
@@ -187,7 +187,7 @@ app.post('/api/avg-tph', function(req, res) {
 /*
 ** Handle API post for min TPH data...
 */
-app.post('/api/min-tph', function(req, res) {
+app.post('/weather/api/min-tph', function(req, res) {
 	timestamp = req.body.time;
 	doSave = req.body.save;
 	minTemperature = req.body.temperature;
@@ -204,7 +204,7 @@ app.post('/api/min-tph', function(req, res) {
 /*
 ** Handle API post for max TPH data...
 */
-app.post('/api/max-tph', function(req, res) {
+app.post('/weather/api/max-tph', function(req, res) {
 	timestamp = req.body.time;
 	doSave = req.body.save;
 	maxTemperature = req.body.temperature;
