@@ -259,6 +259,7 @@ int main(int argc, char *argv[])
 	int				err;
 	char			szPort[128];
 	char			szBaud[8];
+	char			szCommandBuffer[33];
 	char			szCommand[32];
 	int				i;
 
@@ -329,8 +330,16 @@ int main(int argc, char *argv[])
 	}
 
 	while (1) {
-		gets(szCommand);
+		fgets(szCommandBuffer, sizeof(szCommand), stdin);
 
+		i = 0;
+		while (szCommandBuffer[i] != '\n') {
+			szCommand[i] = szCommandBuffer[i];
+			i++;
+		}
+
+		szCommand[i] = 0;
+		
 		if (strncmp(szCommand, "disable-wd-reset", sizeof(szCommand)) == 0) {
 			FrameManager & frameMgr = FrameManager::getInstance();
 
