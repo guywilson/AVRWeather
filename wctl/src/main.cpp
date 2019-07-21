@@ -330,32 +330,32 @@ int main(int argc, char *argv[])
 	}
 
 	while (1) {
-		fgets(szCommandBuffer, sizeof(szCommand), stdin);
+		// fgets(szCommandBuffer, sizeof(szCommand), stdin);
 
-		i = 0;
-		while (szCommandBuffer[i] != '\n') {
-			szCommand[i] = szCommandBuffer[i];
-			i++;
-		}
+		// i = 0;
+		// while (szCommandBuffer[i] != '\n') {
+		// 	szCommand[i] = szCommandBuffer[i];
+		// 	i++;
+		// }
 
-		szCommand[i] = 0;
-		
-		if (strncmp(szCommand, "disable-wd-reset", sizeof(szCommand)) == 0) {
-			FrameManager & frameMgr = FrameManager::getInstance();
+		// szCommand[i] = 0;
 
-			PFRAME pFrame = frameMgr.allocFrame();
+		// if (strncmp(szCommand, "disable-wd-reset", sizeof(szCommand)) == 0) {
+		// 	FrameManager & frameMgr = FrameManager::getInstance();
 
-			pFrame->data[0] = MSG_CHAR_START;
-			pFrame->data[1] = 2;
-			pFrame->data[2] = getMsgID();
-			pFrame->data[3] = RX_CMD_WDT_DISABLE;
-			pFrame->data[4] = 0x00FF - ((pFrame->data[2] + pFrame->data[3]) & 0x00FF);
-			pFrame->data[5] = MSG_CHAR_END;
+		// 	PFRAME pFrame = frameMgr.allocFrame();
 
-			pFrame->dataLength = 6;
+		// 	pFrame->data[0] = MSG_CHAR_START;
+		// 	pFrame->data[1] = 2;
+		// 	pFrame->data[2] = getMsgID();
+		// 	pFrame->data[3] = RX_CMD_WDT_DISABLE;
+		// 	pFrame->data[4] = 0x00FF - ((pFrame->data[2] + pFrame->data[3]) & 0x00FF);
+		// 	pFrame->data[5] = MSG_CHAR_END;
 
-			txQueue.push(pFrame);
-		}
+		// 	pFrame->dataLength = 6;
+
+		// 	txQueue.push(pFrame);
+		// }
 
 		usleep(1000L);
 	}
