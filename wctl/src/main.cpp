@@ -42,7 +42,6 @@ void * txCmdThread(void * pArgs)
 	int					dataLength = 0;
 	int					writeLen;
 	int					bytesRead;
-	int					i;
 
 	SerialPort * 		port = (SerialPort *)pArgs;
 
@@ -164,6 +163,7 @@ void * txCmdThread(void * pArgs)
 		}
 
 #ifdef LOG_RXTX
+		int i;
 		printf("About to send[%d]: ", dataLength);
 		for (i = 0;i < dataLength;i++) {
 			printf("[0x%02X]", data[i]);
@@ -259,6 +259,7 @@ int main(int argc, char *argv[])
 	int				err;
 	char			szPort[128];
 	char			szBaud[8];
+	char			szCommand[32];
 	int				i;
 
 	if (argc > 1) {
@@ -328,6 +329,25 @@ int main(int argc, char *argv[])
 	}
 
 	while (1) {
+		gets(szCommand);
+
+		if (strncmp(szCommand, "disable-wd-reset", sizeof(szCommand)) == 0) {
+			FrameManager & frameMgr = FrameManager::getInstance();
+
+			PFRAME pFrame = frameMgr.allocFrame();
+
+			pFrame->data[0] = MSG_CHAR_START;
+			pFrame->data[1] = 2;
+			pFrame->data[2] = getMsgID();
+			pFrame->data[3] = RX_CMD_WDT_DISABLE;
+			pFrame->data[4] = 0x00FF - ((pFrame->data[2] + pFrame->data[3]) & 0x00FF);
+			pFrame->data[5] = MSG_CHAR_END;
+
+			pFrame->dataLength = 6;
+
+			txQueue.push(pFrame);
+		}
+
 		usleep(1000L);
 	}
 
