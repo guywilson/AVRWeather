@@ -84,7 +84,11 @@ static void resetAVRHandler(struct mg_connection * connection, int event, void *
 			pszMethod[message->method.len] = 0;
 
 			cout << "Got " << pszMethod << " request..." << endl;
-			cout << "Resetting AVR..." << endl;
+
+			if (strncmp(pszMethod, "POST", 4) == 0) {
+				cout << "Resetting AVR..." << endl;
+			}
+
 			free(pszMethod);
 
 			mg_printf(connection, "HTTP/1.0 200 OK");
