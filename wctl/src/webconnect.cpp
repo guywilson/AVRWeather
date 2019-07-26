@@ -67,9 +67,26 @@ int main(void)
 
 static void resetAVRHandler(struct mg_connection * connection, int event, void * p)
 {
+	struct http_message *			message;
+	char *							pszMethod;
+
 	switch (event) {
 		case MG_EV_HTTP_REQUEST:
+			message = (struct http_message *)p;
+
+			pszMethod = (char *)malloc(message->method.len + 1);
+
+			if (pszMethod == NULL) {
+				throw new Exception("Failed to allocate memory for method...");
+			}
+
+			memcpy(pszMethod, message->method.p, message->method.len);
+			pszMethod[message->method.len] = 0;
+
+			cout << "Got " << pszMethod << " request..." << endl;
 			cout << "Resetting AVR..." << endl;
+			free(pszMethod);
+
 			mg_printf(connection, "HTTP/1.0 200 OK");
 			connection->flags |= MG_F_SEND_AND_CLOSE;
 			break;
@@ -81,13 +98,39 @@ static void resetAVRHandler(struct mg_connection * connection, int event, void *
 
 static void nullHandler(struct mg_connection * connection, int event, void * p)
 {
-	const char * szMsg = "HTTP/1.0 200 OK\r\n\r\n[No handler registered for URI]";
+	struct http_message *	message;
+	const char * 			szMsg = "HTTP/1.0 200 OK\r\n\r\n[No handler registered for URI '%s']";
+	char *					pszMethod;
+	char *					pszURI;
 
 	switch (event) {
 		case MG_EV_HTTP_REQUEST:
-			cout << "Null Handler: Got request..." << endl;
-			mg_printf(connection, "%s", szMsg);
+			message = (struct http_message *)p;
+
+			pszMethod = (char *)malloc(message->method.len + 1);
+
+			if (pszMethod == NULL) {
+				throw new Exception("Failed to allocate memory for method...");
+			}
+
+			memcpy(pszMethod, message->method.p, message->method.len);
+			pszMethod[message->method.len] = 0;
+
+			pszURI = (char *)malloc(message->uri.len + 1);
+
+			if (pszURI == NULL) {
+				throw new Exception("Failed to allocate memory for URI...");
+			}
+
+			memcpy(pszURI, message->uri.p, message->uri.len);
+			pszURI[message->uri.len] = 0;
+
+			cout << "Null Handler: Got " << pszMethod << " request for '" << pszURI << "'" << endl;
+			mg_printf(connection, szMsg, pszURI);
 			connection->flags |= MG_F_SEND_AND_CLOSE;
+
+			free(pszMethod);
+			free(pszURI);
 			break;
 
 		default:
