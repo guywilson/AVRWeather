@@ -11,6 +11,10 @@
 #include "currenttime.h"
 #include "webconnect.h"
 
+extern "C" {
+#include "mongoose.h"
+}
+
 #define INT_LENGTH				10
 
 //#define TEST_WEB
@@ -61,6 +65,36 @@ int main(void)
 }
 #endif
 
+static void resetAVRHandler(struct mg_connection * connection, int event, void * p)
+{
+	switch (event) {
+		case MG_EV_HTTP_REQUEST:
+			cout << "Resetting AVR..." << endl;
+			mg_printf(connection, "HTTP/1.0 200 OK");
+			connection->flags |= MG_F_SEND_AND_CLOSE;
+			break;
+
+		default:
+			break;
+	}
+}
+
+static void nullHandler(struct mg_connection * connection, int event, void * p)
+{
+	const char * szMsg = "HTTP/1.0 200 OK\r\n\r\n[No handler registered for URI]";
+
+	switch (event) {
+		case MG_EV_HTTP_REQUEST:
+			cout << "Null Handler: Got request..." << endl;
+			mg_printf(connection, "%s", szMsg);
+			connection->flags |= MG_F_SEND_AND_CLOSE;
+			break;
+
+		default:
+			break;
+	}
+}
+
 void WebConnector::queryConfig()
 {
 	FILE *		fptr;
@@ -100,6 +134,11 @@ void WebConnector::queryConfig()
 			pszToken = strtok(NULL, "=\n\r ");
 
 			strcpy(this->szBasePath, pszToken);
+		}
+		else if (strcmp(pszToken, "listenport") == 0) {
+			pszToken = strtok(NULL, "=\n\r ");
+
+			strcpy(this->szListenPort, pszToken);
 		}
 		else {
 			pszToken = strtok(NULL, "=\n\r ");
@@ -295,7 +334,46 @@ void WebConnector::postMaxTPH(bool save, char * pszTemperature, char * pszPressu
 	post(this->szHost, this->port, szPath, szBody);
 }
 
+void WebConnector::setupListener()
+{
+	struct mg_connection *	connection;
+
+	mg_mgr_init(&mgr, NULL);
+
+	cout << "Setting up listener on port " << szListenPort << endl;
+
+	connection = mg_bind(&mgr, szListenPort, nullHandler);
+
+	if (connection == NULL) {
+		throw new Exception("Faled to bind to address");
+	}
+
+	cout << "Bound default handler..." << endl;
+
+	/*
+	** Register URI handlers...
+	*/
+	mg_register_http_endpoint(connection, "/api/avr/reset-avr", resetAVRHandler);
+
+	cout << "Registered endpoint handlers..." << endl;
+
+	mg_set_protocol_http_websocket(connection);
+}
+
+void WebConnector::listen()
+{
+	cout << "Listening..." << endl;
+
+	while (1) {
+		mg_mgr_poll(&mgr, 1000);
+	}
+
+	mg_mgr_free(&mgr);
+}
+
 WebConnector::WebConnector()
 {
 	queryConfig();
+
+	setupListener();
 }

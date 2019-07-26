@@ -17,8 +17,11 @@
 #include "exception.h"
 #include "avrweather.h"
 #include "currenttime.h"
+#include "mongoose.h"
+#include "webconnect.h"
 
 //#define LOG_RXTX
+#define WEB_LISTENER_TEST
 
 using namespace std;
 
@@ -230,11 +233,13 @@ void * txCmdThread(void * pArgs)
 
 void cleanup(void)
 {
+#ifndef WEB_LISTENER_TEST
 	pthread_kill(tidTxCmd, SIGKILL);
 
 	pthread_mutex_destroy(&txLock);
 
     delete port;
+#endif
 }
 
 void handleSignal(int sigNum)
@@ -259,8 +264,6 @@ int main(int argc, char *argv[])
 	int				err;
 	char			szPort[128];
 	char			szBaud[8];
-	char			szCommandBuffer[33];
-	char			szCommand[32];
 	int				i;
 
 	if (argc > 1) {
@@ -297,6 +300,7 @@ int main(int argc, char *argv[])
 	/*
 	 * Open the serial port...
 	 */
+#ifndef WEB_LISTENER_TEST
 	try {
 		port = new SerialPort(szPort, SerialPort::mapBaudRate(atoi(szBaud)));
 	}
@@ -328,37 +332,44 @@ int main(int argc, char *argv[])
 	else {
 		printf("Thread txCmdThread() created successfully\n");
 	}
+#endif
 
-	while (1) {
-		// fgets(szCommandBuffer, sizeof(szCommand), stdin);
+	// struct mg_mgr			mgr;
+	// struct mg_connection *	connection;
+	// char					szListenPort[128];
 
-		// i = 0;
-		// while (szCommandBuffer[i] != '\n') {
-		// 	szCommand[i] = szCommandBuffer[i];
-		// 	i++;
-		// }
+	// strcpy(szListenPort, "3000");
 
-		// szCommand[i] = 0;
+	// mg_mgr_init(&mgr, NULL);
 
-		// if (strncmp(szCommand, "disable-wd-reset", sizeof(szCommand)) == 0) {
-		// 	FrameManager & frameMgr = FrameManager::getInstance();
+	// cout << "Setting up listener on port " << szListenPort << endl;
 
-		// 	PFRAME pFrame = frameMgr.allocFrame();
+	// connection = mg_bind(&mgr, szListenPort, nullHandler);
 
-		// 	pFrame->data[0] = MSG_CHAR_START;
-		// 	pFrame->data[1] = 2;
-		// 	pFrame->data[2] = getMsgID();
-		// 	pFrame->data[3] = RX_CMD_WDT_DISABLE;
-		// 	pFrame->data[4] = 0x00FF - ((pFrame->data[2] + pFrame->data[3]) & 0x00FF);
-		// 	pFrame->data[5] = MSG_CHAR_END;
+	// if (connection == NULL) {
+	// 	throw new Exception("Faled to bind to address");
+	// }
+	
+	// cout << "Bound default handler..." << endl;
 
-		// 	pFrame->dataLength = 6;
+	// /*
+	// ** Register URI handlers...
+	// */
+	// mg_register_http_endpoint(connection, "/api/avr/reset-avr", resetAVRHandler);
 
-		// 	txQueue.push(pFrame);
-		// }
+	// cout << "Registered endpoint handlers..." << endl;
 
-		usleep(1000L);
-	}
+	// mg_set_protocol_http_websocket(connection);
+
+	// while (1) {
+	// 	mg_mgr_poll(&mgr, 1000);
+	// }
+
+	// mg_mgr_free(&mgr);
+
+	WebConnector & web = WebConnector::getInstance();
+
+	web.listen();
 
 	printf("Cleaning up and exiting!\n");
 	

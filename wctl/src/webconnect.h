@@ -1,3 +1,5 @@
+#include "mongoose.h"
+
 #ifndef _INCL_WEBCONNECT
 #define _INCL_WEBCONNECT
 
@@ -17,7 +19,10 @@ public:
 private:
 	char			szHost[256];
 	int				port;
+	char			szListenPort[8];
 	char			szBasePath[128];
+
+	struct mg_mgr	mgr;
 
 	WebConnector();
 
@@ -28,10 +33,14 @@ private:
 					const char * pszPath,
 					char * pszBody);
 
+	void		setupListener();
+
 public:
-	void postAvgTPH(bool save, char * pszTemperature, char * pszPressure, char * pszHumidity);
-	void postMinTPH(bool save, char * pszTemperature, char * pszPressure, char * pszHumidity);
-	void postMaxTPH(bool save, char * pszTemperature, char * pszPressure, char * pszHumidity);
+	void		postAvgTPH(bool save, char * pszTemperature, char * pszPressure, char * pszHumidity);
+	void 		postMinTPH(bool save, char * pszTemperature, char * pszPressure, char * pszHumidity);
+	void 		postMaxTPH(bool save, char * pszTemperature, char * pszPressure, char * pszHumidity);
+
+	void		listen();
 };
 
 #endif

@@ -17,15 +17,20 @@ TARGET=wctl
 
 # C compiler
 CPP=g++
+C=gcc
 
 # Linker
 LINKER=g++
 
 # C compiler flags (Release)
 CPPFLAGS=-c -O1 -fpermissive -fPIC -Wall -std=c++11
+CFLAGS=-c -O1 -Wall
+
+# Mongoose compiler flags
+MGFLAGS=
 
 # Object files 
-OBJFILES=$(BUILD)/main.o $(BUILD)/serial.o $(BUILD)/avrweather.o $(BUILD)/currenttime.o $(BUILD)/csvhelper.o $(BUILD)/webconnect.o $(BUILD)/exception.o
+OBJFILES=$(BUILD)/main.o $(BUILD)/serial.o $(BUILD)/avrweather.o $(BUILD)/currenttime.o $(BUILD)/csvhelper.o $(BUILD)/webconnect.o $(BUILD)/exception.o $(BUILD)/mongoose.o
 
 # Target
 all: $(TARGET)
@@ -52,6 +57,9 @@ $(BUILD)/webconnect.o: $(SOURCE)/webconnect.cpp $(SOURCE)/webconnect.h $(SOURCE)
 
 $(BUILD)/exception.o: $(SOURCE)/exception.cpp $(SOURCE)/exception.h $(SOURCE)/types.h
 	$(CPP) $(CPPFLAGS) -o $(BUILD)/exception.o $(SOURCE)/exception.cpp
+
+$(BUILD)/mongoose.o: $(SOURCE)/mongoose.c
+	$(C) $(CFLAGS) $(MGFLAGS) -o $(BUILD)/mongoose.o $(SOURCE)/mongoose.c
 
 $(TARGET): $(OBJFILES)
 	$(LINKER) -lpthread -lstdc++ -o $(TARGET) $(OBJFILES)
