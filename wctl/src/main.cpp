@@ -334,39 +334,6 @@ int main(int argc, char *argv[])
 	}
 #endif
 
-	// struct mg_mgr			mgr;
-	// struct mg_connection *	connection;
-	// char					szListenPort[128];
-
-	// strcpy(szListenPort, "3000");
-
-	// mg_mgr_init(&mgr, NULL);
-
-	// cout << "Setting up listener on port " << szListenPort << endl;
-
-	// connection = mg_bind(&mgr, szListenPort, nullHandler);
-
-	// if (connection == NULL) {
-	// 	throw new Exception("Faled to bind to address");
-	// }
-	
-	// cout << "Bound default handler..." << endl;
-
-	// /*
-	// ** Register URI handlers...
-	// */
-	// mg_register_http_endpoint(connection, "/api/avr/reset-avr", resetAVRHandler);
-
-	// cout << "Registered endpoint handlers..." << endl;
-
-	// mg_set_protocol_http_websocket(connection);
-
-	// while (1) {
-	// 	mg_mgr_poll(&mgr, 1000);
-	// }
-
-	// mg_mgr_free(&mgr);
-
 	WebConnector & web = WebConnector::getInstance();
 
 	web.listen();
