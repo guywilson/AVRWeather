@@ -91,7 +91,7 @@ static void resetAVRHandler(struct mg_connection * connection, int event, void *
 
 			free(pszMethod);
 
-			mg_printf(connection, "HTTP/1.0 200 OK");
+			mg_printf(connection, "HTTP/1.1 200 OK");
 			connection->flags |= MG_F_SEND_AND_CLOSE;
 			break;
 
@@ -103,7 +103,7 @@ static void resetAVRHandler(struct mg_connection * connection, int event, void *
 static void nullHandler(struct mg_connection * connection, int event, void * p)
 {
 	struct http_message *	message;
-	const char * 			szMsg = "HTTP/1.0 200 OK\r\n\r\n[No handler registered for URI '%s']";
+	const char * 			szMsg = "HTTP/1.1 200 OK\r\n\r\n[No handler registered for URI '%s']";
 	char *					pszMethod;
 	char *					pszURI;
 
@@ -383,8 +383,6 @@ void WebConnector::postMaxTPH(bool save, char * pszTemperature, char * pszPressu
 
 void WebConnector::setupListener()
 {
-	struct mg_connection *	connection;
-
 	mg_mgr_init(&mgr, NULL);
 
 	cout << "Setting up listener on port " << szListenPort << endl;
@@ -396,13 +394,6 @@ void WebConnector::setupListener()
 	}
 
 	cout << "Bound default handler..." << endl;
-
-	/*
-	** Register URI handlers...
-	*/
-	mg_register_http_endpoint(connection, "/api/avr/reset-avr", resetAVRHandler);
-
-	cout << "Registered endpoint handlers..." << endl;
 
 	mg_set_protocol_http_websocket(connection);
 }
@@ -418,9 +409,15 @@ void WebConnector::listen()
 	mg_mgr_free(&mgr);
 }
 
+void WebConnector::registerHandler(const char * pszURI, void (* handler)(struct mg_connection *, int, void *))
+{
+	mg_register_http_endpoint(connection, pszURI, handler);
+}
+
 WebConnector::WebConnector()
 {
 	queryConfig();
-
 	setupListener();
+
+	registerHandler("/api/avr/reset-avr", resetAVRHandler);
 }

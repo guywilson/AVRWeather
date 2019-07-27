@@ -32,6 +32,194 @@ pthread_mutex_t 	txLock;
 
 pthread_t			tidTxCmd;
 
+static void avrCommandHandler(struct mg_connection * connection, int event, void * p)
+{
+	struct http_message *			message;
+	char *							pszMethod;
+	char *							pszURI;
+	char							szCmdValue[32];
+	int								rtn;
+	uint8_t							cmdCode;
+	bool							isSerialCommand = false;
+
+	switch (event) {
+		case MG_EV_HTTP_REQUEST:
+			message = (struct http_message *)p;
+
+			pszMethod = (char *)malloc(message->method.len + 1);
+
+			if (pszMethod == NULL) {
+				throw new Exception("Failed to allocate memory for method...");
+			}
+
+			memcpy(pszMethod, message->method.p, message->method.len);
+			pszMethod[message->method.len] = 0;
+
+			pszURI = (char *)malloc(message->uri.len + 1);
+
+			if (pszURI == NULL) {
+				throw new Exception("Failed to allocate memory for URI...");
+			}
+
+			memcpy(pszURI, message->uri.p, message->uri.len);
+			pszURI[message->uri.len] = 0;
+
+			cout << "Got " << pszMethod << " request for '" << pszURI << "'" << endl;
+
+			if (strncmp(pszMethod, "GET", 4) == 0) {
+				rtn = mg_get_http_var(&message->query_string, "command", szCmdValue, 32);
+
+				if (rtn < 0) {
+					throw new Exception("Failed to find form variable 'command'");
+				}
+
+				cout << "Got command: " << szCmdValue << endl;
+
+				if (strncmp(szCmdValue, "disable-wd-reset", sizeof(szCmdValue)) == 0) {
+					cmdCode = RX_CMD_WDT_DISABLE;
+					isSerialCommand = true;
+				}
+				else if (strncmp(szCmdValue, "reset-min-max", sizeof(szCmdValue)) == 0) {
+					cmdCode = RX_CMD_RESET_MINMAX_TPH;
+					isSerialCommand = true;
+				}
+				else if (strncmp(szCmdValue, "reset-avr", sizeof(szCmdValue)) == 0) {
+					isSerialCommand = false;
+				}
+				else {
+					cmdCode = RX_CMD_PING;
+					isSerialCommand = true;
+				}
+
+				if (isSerialCommand) {
+					FrameManager & frameMgr = FrameManager::getInstance();
+
+					PFRAME pf = frameMgr.allocFrame();
+					pf->data[0] = MSG_CHAR_START;
+					pf->data[1] = 2;
+					pf->data[2] = getMsgID();
+					pf->data[3] = cmdCode;
+					pf->data[4] = 0x00FF - ((pf->data[2] + pf->data[3]) & 0x00FF);
+					pf->data[5] = MSG_CHAR_END;
+
+					pf->dataLength = 6;
+
+					txQueue.push(pf);
+				}
+			}
+
+			free(pszMethod);
+			free(pszURI);
+
+			mg_printf(connection, "HTTP/1.0 200 OK");
+			connection->flags |= MG_F_SEND_AND_CLOSE;
+			break;
+
+		default:
+			break;
+	}
+}
+
+static void avrViewHandler(struct mg_connection * connection, int event, void * p)
+{
+	struct http_message *			message;
+	char *							pszMethod;
+	char *							pszURI;
+
+	switch (event) {
+		case MG_EV_HTTP_REQUEST:
+			message = (struct http_message *)p;
+
+			pszMethod = (char *)malloc(message->method.len + 1);
+
+			if (pszMethod == NULL) {
+				throw new Exception("Failed to allocate memory for method...");
+			}
+
+			memcpy(pszMethod, message->method.p, message->method.len);
+			pszMethod[message->method.len] = 0;
+
+			pszURI = (char *)malloc(message->uri.len + 1);
+
+			if (pszURI == NULL) {
+				throw new Exception("Failed to allocate memory for URI...");
+			}
+
+			memcpy(pszURI, message->uri.p, message->uri.len);
+			pszURI[message->uri.len] = 0;
+
+			cout << "Got " << pszMethod << " request for '" << pszURI << "'" << endl;
+	
+			if (strncmp(pszMethod, "GET", 3) == 0) {
+				struct mg_serve_http_opts opts = { .document_root = "./resources/html" };
+
+				cout << "Serving file '" << pszURI << "'" << endl;
+
+				mg_serve_http(connection, message, opts);
+			}
+
+			free(pszMethod);
+			free(pszURI);
+
+			mg_printf(connection, "HTTP/1.0 200 OK");
+			connection->flags |= MG_F_SEND_AND_CLOSE;
+			break;
+
+		default:
+			break;
+	}
+}
+
+static void cssHandler(struct mg_connection * connection, int event, void * p)
+{
+	struct http_message *			message;
+	char *							pszMethod;
+	char *							pszURI;
+
+	switch (event) {
+		case MG_EV_HTTP_REQUEST:
+			message = (struct http_message *)p;
+
+			pszMethod = (char *)malloc(message->method.len + 1);
+
+			if (pszMethod == NULL) {
+				throw new Exception("Failed to allocate memory for method...");
+			}
+
+			memcpy(pszMethod, message->method.p, message->method.len);
+			pszMethod[message->method.len] = 0;
+
+			pszURI = (char *)malloc(message->uri.len + 1);
+
+			if (pszURI == NULL) {
+				throw new Exception("Failed to allocate memory for URI...");
+			}
+
+			memcpy(pszURI, message->uri.p, message->uri.len);
+			pszURI[message->uri.len] = 0;
+
+			cout << "Got " << pszMethod << " request for '" << pszURI << "'" << endl;
+
+			if (strncmp(pszMethod, "GET", 3) == 0) {
+				struct mg_serve_http_opts opts = { .document_root = "./resources" };
+
+				cout << "Serving file '" << pszURI << "'" << endl;
+
+				mg_serve_http(connection, message, opts);
+			}
+
+			free(pszMethod);
+			free(pszURI);
+
+			mg_printf(connection, "HTTP/1.0 200 OK");
+			connection->flags |= MG_F_SEND_AND_CLOSE;
+			break;
+
+		default:
+			break;
+	}
+}
+
 void * txCmdThread(void * pArgs)
 {
 	PFRAME				pTxFrame;
@@ -261,7 +449,6 @@ void handleSignal(int sigNum)
 
 int main(int argc, char *argv[])
 {
-	int				err;
 	char			szPort[128];
 	char			szBaud[8];
 	int				i;
@@ -309,6 +496,8 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
+	int				err;
+
 	err = pthread_mutex_init(&txLock, NULL);
 
 	if (err != 0) {
@@ -336,9 +525,13 @@ int main(int argc, char *argv[])
 
 	WebConnector & web = WebConnector::getInstance();
 
+	web.registerHandler("/avr/cmd", avrViewHandler);
+	web.registerHandler("/avr/cmd/post", avrCommandHandler);
+	web.registerHandler("/css", cssHandler);
+
 	web.listen();
 
-	printf("Cleaning up and exiting!\n");
+	cout << "Cleaning up and exiting!" << endl;
 	
 	cleanup();
 
