@@ -15,6 +15,7 @@
 
 #include "serial.h"
 #include "exception.h"
+#include "framemgr.h"
 #include "avrweather.h"
 #include "currenttime.h"
 #include "mongoose.h"
@@ -84,6 +85,7 @@ static void avrCommandHandler(struct mg_connection * connection, int event, void
 					isSerialCommand = true;
 				}
 				else if (strncmp(szCmdValue, "reset-avr", sizeof(szCmdValue)) == 0) {
+					resetAVR();
 					isSerialCommand = false;
 				}
 				else {

@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <gpioc.h>
 
 #include "avrweather.h"
 #include "exception.h"
@@ -17,60 +18,27 @@ using namespace std;
 
 //#define LOG_RXTX
 
-PFRAME				_pFrameMem = NULL;
-int					_size = 0;
 uint8_t				_msgID = 0;
 
-FrameManager::FrameManager() : FrameManager(FRAME_MEM_SIZE)
+void resetAVR()
 {
+#ifdef __arm__
+	int		rc = 0;
+	int		pin = AVR_RESET_PIN;
+
+    rc = gpioc_open();
+
+    if (rc == 0) {
+        gpioc_setPinOutput(pin);
+
+        gpioc_setPinOff(pin);
+        usleep(100000);
+        gpioc_setPinOn(pin);
+
+        gpioc_close();
+    }
+#endif
 }
-
-FrameManager::FrameManager(int size)
-{
-	if (_pFrameMem == NULL) {
-		_size = size;
-
-		_pFrameMem = (PFRAME)malloc(sizeof(FRAME) * _size);
-
-		if (_pFrameMem == NULL) {
-			throw new Exception("Failed to allocate frame memory.");
-		}
-
-		memset(_pFrameMem, 0, sizeof(FRAME) * _size);
-	}
-}
-
-FrameManager::~FrameManager()
-{
-	free(_pFrameMem);
-}
-
-int FrameManager::getSize()
-{
-	return _size;
-}
-
-PFRAME FrameManager::allocFrame()
-{
-	PFRAME 		frame = NULL;
-	int			i;
-
-	for (i = 0;i < _size;i++) {
-		if (!_pFrameMem[i].isAllocated) {
-			frame = &_pFrameMem[i];
-			frame->isAllocated = 1;
-			break;
-		}
-	}
-
-	return frame;
-}
-
-void FrameManager::freeFrame(PFRAME pFrame)
-{
-	memset(pFrame, 0, sizeof(FRAME));
-}
-
 
 uint8_t getMsgID()
 {

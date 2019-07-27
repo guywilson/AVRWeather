@@ -30,7 +30,7 @@ CFLAGS=-c -O1 -Wall
 MGFLAGS=
 
 # Object files 
-OBJFILES=$(BUILD)/main.o $(BUILD)/serial.o $(BUILD)/avrweather.o $(BUILD)/currenttime.o $(BUILD)/csvhelper.o $(BUILD)/webconnect.o $(BUILD)/exception.o $(BUILD)/mongoose.o
+OBJFILES=$(BUILD)/main.o $(BUILD)/serial.o $(BUILD)/avrweather.o $(BUILD)/currenttime.o $(BUILD)/csvhelper.o $(BUILD)/framemgr.o $(BUILD)/webconnect.o $(BUILD)/exception.o $(BUILD)/mongoose.o
 
 # Target
 all: $(TARGET)
@@ -52,6 +52,9 @@ $(BUILD)/currenttime.o: $(SOURCE)/currenttime.cpp $(SOURCE)/currenttime.h
 $(BUILD)/csvhelper.o: $(SOURCE)/csvhelper.cpp $(SOURCE)/csvhelper.h $(SOURCE)/exception.h
 	$(CPP) $(CPPFLAGS) -o $(BUILD)/csvhelper.o $(SOURCE)/csvhelper.cpp
 
+$(BUILD)/framemgr.o: $(SOURCE)/framemgr.cpp $(SOURCE)/framemgr.h $(SOURCE)/exception.h
+	$(CPP) $(CPPFLAGS) -o $(BUILD)/framemgr.o $(SOURCE)/framemgr.cpp
+
 $(BUILD)/webconnect.o: $(SOURCE)/webconnect.cpp $(SOURCE)/webconnect.h $(SOURCE)/exception.h $(SOURCE)/currenttime.h
 	$(CPP) $(CPPFLAGS) -o $(BUILD)/webconnect.o $(SOURCE)/webconnect.cpp
 
@@ -62,7 +65,7 @@ $(BUILD)/mongoose.o: $(SOURCE)/mongoose.c
 	$(C) $(CFLAGS) $(MGFLAGS) -o $(BUILD)/mongoose.o $(SOURCE)/mongoose.c
 
 $(TARGET): $(OBJFILES)
-	$(LINKER) -lpthread -lstdc++ -o $(TARGET) $(OBJFILES)
+	$(LINKER) -lpthread -lgpioc -lstdc++ -o $(TARGET) $(OBJFILES)
 
 test: webtest
 

@@ -77,7 +77,7 @@
 #define RX_RSP_WDT_DISABLE			(RX_CMD_WDT_DISABLE << 4)
 #define RX_RSP_PING					(RX_CMD_PING << 4)
 
-#define FRAME_MEM_SIZE				16
+#define AVR_RESET_PIN				12
 
 typedef struct {
 	uint8_t			data[MAX_REQUEST_MESSAGE_LENGTH];
@@ -119,31 +119,7 @@ RXMSGSTRUCT;
 
 typedef RXMSGSTRUCT *	PRXMSGSTRUCT;
 
-class FrameManager
-{
-public:
-	static FrameManager & getInstance()
-	{
-		static FrameManager instance;
-		return instance;
-	}
-
-private:
-	FrameManager();
-
-	PFRAME			_pFrameMem = NULL;
-	int				_size;
-
-public:
-	FrameManager(int size);
-	~FrameManager();
-
-	PFRAME			allocFrame();
-	void			freeFrame(PFRAME pFrame);
-
-	int				getSize();
-};
-
+void 	resetAVR();
 uint8_t	getMsgID();
 int 	processFrame(PRXMSGSTRUCT pMsg, uint8_t * buffer, int bufferLength);
 void	processResponse(uint8_t * response, int responseLength);
