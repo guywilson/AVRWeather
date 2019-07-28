@@ -4,7 +4,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+
+extern “C” {
 #include <gpioc.h>
+}
 
 #include "avrweather.h"
 #include "exception.h"
