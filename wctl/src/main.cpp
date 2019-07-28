@@ -22,7 +22,7 @@
 #include "webconnect.h"
 
 //#define LOG_RXTX
-#define WEB_LISTENER_TEST
+//#define WEB_LISTENER_TEST
 
 using namespace std;
 
