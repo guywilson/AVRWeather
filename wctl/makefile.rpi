@@ -65,7 +65,7 @@ $(BUILD)/mongoose.o: $(SOURCE)/mongoose.c
 	$(C) $(CFLAGS) $(MGFLAGS) -o $(BUILD)/mongoose.o $(SOURCE)/mongoose.c
 
 $(TARGET): $(OBJFILES)
-	$(LINKER) -pthread -lgpioc -lstdc++ -o $(TARGET) $(OBJFILES)
+	$(LINKER) -pthread -lstdc++ -o $(TARGET) $(OBJFILES) -lgpioc
 
 test: webtest
 
