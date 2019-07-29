@@ -45,7 +45,7 @@ void resetAVR()
 
 uint8_t getMsgID()
 {
-	uint8_t			msgID;
+	uint8_t	msgID;
 
 	msgID = _msgID++;
 
