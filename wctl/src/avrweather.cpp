@@ -5,7 +5,7 @@
 #include <string.h>
 #include <time.h>
 
-extern “C” {
+extern "C" {
 #include <gpioc.h>
 }
 
