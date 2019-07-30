@@ -1,7 +1,7 @@
 #include <avr/interrupt.h>
 #include <avr/io.h>
+#include <scheduler.h>
 
-#include "sched/scheduler.h"
 #include "taskdef.h"
 
 #include "rtc_atmega328p.h"

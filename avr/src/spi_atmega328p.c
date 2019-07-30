@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include <avr/interrupt.h>
 
-#include "sched/scheduler.h"
+#include <scheduler.h>
 #include "taskdef.h"
 
 #define NUM_CHANNELS		2

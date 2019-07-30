@@ -2,7 +2,7 @@
 #include <stddef.h>
 #include <string.h>
 
-#include "sched/scheduler.h"
+#include <scheduler.h>
 #include "serial_atmega328p.h"
 #include "taskdef.h"
 #include "adctask.h"
@@ -125,18 +125,6 @@ void RxTask(PTASKPARM p)
 				break;
 
 			case RX_CMD_CPU_PERCENTAGE:
-				szBuffer[i++] = 'C';
-				szBuffer[i++] = ':';
-
-				valueLen = getCPUPercentage(&szBuffer[i]);
-
-				szBuffer[i + valueLen] = ';';
-				i += valueLen + 1;
-
-				// Null terminate string...
-				szBuffer[i++] = 0;
-
-				txACK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), szBuffer, i);
 				break;
 
 			case RX_CMD_ANEMOMETER:

@@ -1,8 +1,8 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>                // for _delay_ms()
+#include <schederr.h>
 
-#include "sched/schederr.h"
 #include "led_utils.h"
 
 #define ERR_ON_NOFREETASKS			2000

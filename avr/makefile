@@ -70,10 +70,10 @@ OBJDUMPFLAGS=-I $(SRC) -f -s -l -S
 SFLAGS=-C --mcu=$(DEVICE)
 
 # Scheduler object files
-SCHEDOBJ=$(BUILD)/scheduler.o
+#SCHEDOBJ=$(BUILD)/scheduler.o
 
 # Object files
-OBJFILES=$(SCHEDOBJ) $(BUILD)/led_utils.o $(BUILD)/heartbeat.o $(BUILD)/wdttask.o $(BUILD)/adctask.o $(BUILD)/anemometer.o $(BUILD)/rainguage.o $(BUILD)/wdt_atmega328p.o $(BUILD)/isr_atmega328p.o $(BUILD)/rtc_atmega328p.o $(BUILD)/serial_atmega328p.o $(BUILD)/adc_atmega328p.o $(BUILD)/extint_atmega328p.o $(BUILD)/pwm_atmega328p.o $(BUILD)/error_atmega328p.o $(BUILD)/rxtxtask.o $(BUILD)/main.o
+OBJFILES=$(BUILD)/led_utils.o $(BUILD)/heartbeat.o $(BUILD)/wdttask.o $(BUILD)/adctask.o $(BUILD)/anemometer.o $(BUILD)/rainguage.o $(BUILD)/wdt_atmega328p.o $(BUILD)/isr_atmega328p.o $(BUILD)/rtc_atmega328p.o $(BUILD)/serial_atmega328p.o $(BUILD)/adc_atmega328p.o $(BUILD)/extint_atmega328p.o $(BUILD)/pwm_atmega328p.o $(BUILD)/error_atmega328p.o $(BUILD)/rxtxtask.o $(BUILD)/main.o
 
 # Target
 all: $(TARGET)
@@ -83,8 +83,8 @@ all: $(TARGET)
 # Scheduler files
 #
 ###############################################################################
-$(BUILD)/scheduler.o: $(SCHEDSRC)/scheduler.c $(SCHEDSRC)/scheduler.h $(SCHEDSRC)/schederr.h
-	$(CC) $(CFLAGS) -o $(BUILD)/scheduler.o $(SCHEDSRC)/scheduler.c
+#$(BUILD)/scheduler.o: $(SCHEDSRC)/scheduler.c $(SCHEDSRC)/scheduler.h $(SCHEDSRC)/schederr.h
+#	$(CC) $(CFLAGS) -o $(BUILD)/scheduler.o $(SCHEDSRC)/scheduler.c
 
 ###############################################################################
 #
@@ -145,7 +145,7 @@ $(BUILD)/main.o: $(SRC)/main.c $(SCHEDSRC)/scheduler.h $(SRC)/heartbeat.h $(SRC)
 #
 ###############################################################################
 $(BUILD)/$(ELF): $(OBJFILES)
-	$(LINKER) $(LFLAGS) -o $(BUILD)/$(ELF) $(OBJFILES) -lm
+	$(LINKER) $(LFLAGS) -o $(BUILD)/$(ELF) $(OBJFILES) -lm -lsched
 	$(OBJDUMP) $(OBJDUMPFLAGS) $(BUILD)/$(ELF) > $(PROJNAME).s
 
 ###############################################################################

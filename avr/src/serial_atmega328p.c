@@ -7,13 +7,12 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/setbaud.h>
+#include <scheduler.h>
+#include <schederr.h>
 
-#include "sched/scheduler.h"
-#include "sched/schederr.h"
 #include "rtc_atmega328p.h"
 #include "taskdef.h"
 #include "rxtxmsgdef.h"
-#include "sched/schederr.h"
 #include "serial_atmega328p.h"
 
 #define enableTxInterrupt()			UCSR0B |= _BV(UDRIE0)

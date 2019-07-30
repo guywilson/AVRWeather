@@ -3,7 +3,7 @@
 #include <string.h>
 #include <avr/wdt.h>
 
-#include "sched/scheduler.h"
+#include <scheduler.h>
 #include "taskdef.h"
 #include "wdttask.h"
 

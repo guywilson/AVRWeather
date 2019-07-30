@@ -2,9 +2,9 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <avr/pgmspace.h>
+#include <scheduler.h>
+#include <schederr.h>
 
-#include "sched/scheduler.h"
-#include "sched/schederr.h"
 #include "taskdef.h"
 #include "heartbeat.h"
 #include "adctask.h"
@@ -64,7 +64,7 @@ int main(void)
 	 */
 	turnOn(LED_ONBOARD);
 
-	initScheduler();
+	initScheduler(6);
 
 	registerTask(TASK_WDT, &wdtTask);
 	registerTask(TASK_HEARTBEAT, &HeartbeatTask);
