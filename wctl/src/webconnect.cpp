@@ -10,6 +10,7 @@
 #include "exception.h"
 #include "currenttime.h"
 #include "webconnect.h"
+#include "avrweather.h"
 
 extern "C" {
 #include "mongoose.h"
@@ -87,6 +88,7 @@ static void resetAVRHandler(struct mg_connection * connection, int event, void *
 
 			if (strncmp(pszMethod, "POST", 4) == 0) {
 				cout << "Resetting AVR..." << endl;
+				resetAVR();
 			}
 
 			free(pszMethod);
