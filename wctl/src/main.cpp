@@ -84,6 +84,10 @@ static void avrCommandHandler(struct mg_connection * connection, int event, void
 					cmdCode = RX_CMD_RESET_MINMAX_TPH;
 					isSerialCommand = true;
 				}
+				else if (strncmp(szCmdValue, "get-scheduler-version", sizeof(szCmdValue)) == 0) {
+					cmdCode = RX_CMD_GET_SCHED_VERSION;
+					isSerialCommand = true;
+				}
 				else if (strncmp(szCmdValue, "reset-avr", sizeof(szCmdValue)) == 0) {
 					resetAVR();
 					isSerialCommand = false;
