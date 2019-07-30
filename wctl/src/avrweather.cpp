@@ -352,7 +352,7 @@ void processResponse(uint8_t * response, int responseLength)
 
 		case RX_RSP_GET_SCHED_VERSION:
 			memcpy(szResponse, msg.frame.data, msg.frame.frameLength - 3);
-			szResponse[msg.frame.frameLength] = 0;
+			szResponse[msg.frame.frameLength - 3] = 0;
 			cout << "Scheduler version [" << szResponse << "]" << endl;
 			break;
 
