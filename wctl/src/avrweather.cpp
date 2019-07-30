@@ -199,7 +199,7 @@ int processFrame(PRXMSGSTRUCT pMsg, uint8_t * buffer, int bufferLength)
 void processResponse(uint8_t * response, int responseLength)
 {
 	RXMSGSTRUCT			msg;
-	char				szTPH[80];
+	char				szResponse[80];
 	char 				szTemperature[20];
 	char 				szPressure[20];
 	char 				szHumidity[20];
@@ -219,9 +219,9 @@ void processResponse(uint8_t * response, int responseLength)
 
 	switch (msg.frame.response) {
 		case RX_RSP_AVG_TPH:
-			memcpy(szTPH, msg.frame.data, msg.frame.frameLength - 3);
+			memcpy(szResponse, msg.frame.data, msg.frame.frameLength - 3);
 
-			strcpy(szTemperature, strtok(szTPH, ";"));
+			strcpy(szTemperature, strtok(szResponse, ";"));
 			strcpy(szPressure, strtok(NULL, ";"));
 			strcpy(szHumidity, strtok(NULL, ";"));
 
@@ -263,9 +263,9 @@ void processResponse(uint8_t * response, int responseLength)
 			break;
 
 		case RX_RSP_MAX_TPH:
-			memcpy(szTPH, msg.frame.data, msg.frame.frameLength - 3);
+			memcpy(szResponse, msg.frame.data, msg.frame.frameLength - 3);
 
-			strcpy(szTemperature, strtok(szTPH, ";"));
+			strcpy(szTemperature, strtok(szResponse, ";"));
 			strcpy(szPressure, strtok(NULL, ";"));
 			strcpy(szHumidity, strtok(NULL, ";"));
 
@@ -301,9 +301,9 @@ void processResponse(uint8_t * response, int responseLength)
 			break;
 
 		case RX_RSP_MIN_TPH:
-			memcpy(szTPH, msg.frame.data, msg.frame.frameLength - 3);
+			memcpy(szResponse, msg.frame.data, msg.frame.frameLength - 3);
 
-			strcpy(szTemperature, strtok(szTPH, ";"));
+			strcpy(szTemperature, strtok(szResponse, ";"));
 			strcpy(szPressure, strtok(NULL, ";"));
 			strcpy(szHumidity, strtok(NULL, ";"));
 
@@ -348,6 +348,12 @@ void processResponse(uint8_t * response, int responseLength)
 			break;
 
 		case RX_RSP_WDT_DISABLE:
+			break;
+
+		case RX_RSP_GET_SCHED_VERSION:
+			memcpy(szResponse, msg.frame.data, msg.frame.frameLength - 3);
+			szResponse[msg.frame.frameLength] = 0;
+			cout << "Scheduler version [" << szResponse << "]" << endl;
 			break;
 
 		case RX_RSP_PING:

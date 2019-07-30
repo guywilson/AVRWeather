@@ -138,6 +138,13 @@ void RxTask(PTASKPARM p)
 				txACK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), NULL, 0);
 				break;
 
+			case RX_CMD_GET_SCHED_VERSION:
+				strcpy(szBuffer, getSchedulerVersion());
+				i = strlen(szBuffer);
+				
+				txACK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), szBuffer, i);
+				break;
+
 			case RX_CMD_PING:
 				txACK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), NULL, 0);
 				break;
