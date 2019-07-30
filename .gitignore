@@ -20,3 +20,4 @@ weather_site/weather/__pycache__/
 weather_site/weather/middleware/__pycache__/
 togglerst/build/
 togglerst/toggle
+.vscode/c_cpp_properties.json
