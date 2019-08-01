@@ -1,77 +1,23 @@
 # AVRWeather
 
-avrw - Real Time Weather Station Controller
--------------------------------------------
+Split into the following sub-projects:
 
-Written in C and built using the avr-gcc toolset.
+avr
+---
 
-Based around a real-time scheduler, suitable for any number of real-time control systems. The scheduler uses a real-time clock driven by a timer interrupt, in this implementation on the Atmega328p, the real-time clock is incremented every millisecond. The scheduler can handle upto 16 scheduled tasks.
+Runs on an Arduino Uno (Atmega328p), written in C and built using the avr-gcc toolset. This uses the real-time scheduler from my RTScheduler repo.
 
-The scheduler API consists of the following functions:
+wctl
+----
 
-/*  
-** Initialise the scheduler  
-** Must be called before any other scheduler API functions  
-*/  
-void initScheduler();
+Runs on a Raspberry Pi, written in C++ and talks to the avr software running on the Arduino via serial over USB. This will query the Arduino for waether data and post this to the web-app webserver.
 
-/*  
-** Register a task with the scheduler  
-** A task must be registered with the scheduler before it can be scheduled  
-**  
-** taskID			The unique ID of the task  
-** ptr_to_task_func	Address of the task function, must be of the form  
-**					void task(PTASKPARM) where PTASKPARM is a pointer  
-**					to a user defined type defined as void * in scheduler.h  
-*/  
-void registerTask(uint16_t taskID, ptr_to_task_func(PTASKPARM));
+web-app
+-------
 
-/*  
-** De-register a previously registered task  
-**  
-** taskID			The unique ID of the task  
-*/  
-void deregisterTask(uint16_t taskID);
+Runs on another Raspberry Pi, written in Nodejs and using a PostgreSQL database to store weather data (for drawing graphs)
 
-/*   
-** Schedule a task to run in the specified offset time from now  
-** Time is specified in scheduler clock ticks, typically milliseconds  
-** but depends on the real-time clock interrupt frequency  
-**  
-** taskID			The unique ID of the task  
-** time				Number of clock ticks from now to run the task  
-**					timer_t is system defined as appropriate, e.g. uint32_t  
-** task_parms		Pointer to the TASKPARM for the task  
-*/  
-void scheduleTask(uint16_t taskID, timer_t time, PTASKPARM task_parms);
+weather-site
+------------
 
-/*  
-** Reschedule a task to run again with the same time delay as  
-** specified when scheduled with scheduleTask()  
-**  
-** taskID			The unique ID of the task  
-** task_parms		Pointer to the TASKPARM for the task  
-*/  
-void rescheduleTask(uint16_t taskID, PTASKPARMS task_parms);
-
-/*  
-** Unschedule a previously scheduled task  
-**  
-** taskID			The unique ID of the task  
-*/  
-void unscheduleTask(uint16_t taskID);
-
-/*  
-** Start the scheduling loop, should never return  
-** should be the last call from main()  
-*/  
-void startScheduler();
-
-The weather station takes inputs from sensors for temperature (ADC), air pressure (ADC), humidity (ADC), wind speed (EXTINT), rainfall (EXTINT).
-
-The weather station controller transmits weather data every 5 seconds over the microcontroller serial port, on an Arduino board, this is typically mapped to a USB port. Format of the weather data is as follows (all data to 2 decimal places):
-
-<t:[temperature in degrees centigrade]><p:[pressure in miilibars]><h:[humidity in % relative humidity]><w:[wind speed in kph]><r:[rainfall in mm/hour]>newline
-
-Example
-<t:25.39><p:987.68><h:45.67><w:22.54><r:0.00>newline
+The same as web-app, but written in Python with the Django framework
