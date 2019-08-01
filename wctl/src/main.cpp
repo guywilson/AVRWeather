@@ -15,7 +15,7 @@
 
 #include "serial.h"
 #include "exception.h"
-#include "framemgr.h"
+#include "queuemgr.h"
 #include "avrweather.h"
 #include "currenttime.h"
 #include "mongoose.h"
@@ -26,11 +26,7 @@
 
 using namespace std;
 
-queue<PFRAME>		txQueue;
 SerialPort *		port;
-
-pthread_mutex_t 	txLock;
-
 pthread_t			tidTxCmd;
 
 static void avrCommandHandler(struct mg_connection * connection, int event, void * p)
@@ -98,19 +94,11 @@ static void avrCommandHandler(struct mg_connection * connection, int event, void
 				}
 
 				if (isSerialCommand) {
-					FrameManager & frameMgr = FrameManager::getInstance();
+					QueueMgr & qmgr = QueueMgr::getInstance();
 
-					PFRAME pf = frameMgr.allocFrame();
-					pf->data[0] = MSG_CHAR_START;
-					pf->data[1] = 2;
-					pf->data[2] = getMsgID();
-					pf->data[3] = cmdCode;
-					pf->data[4] = 0x00FF - ((pf->data[2] + pf->data[3]) & 0x00FF);
-					pf->data[5] = MSG_CHAR_END;
+					TxFrame * pFrame = new TxFrame(NULL, 0, cmdCode);
 
-					pf->dataLength = 6;
-
-					txQueue.push(pf);
+					qmgr.pushTx(pFrame);
 				}
 			}
 
@@ -228,7 +216,7 @@ static void cssHandler(struct mg_connection * connection, int event, void * p)
 
 void * txCmdThread(void * pArgs)
 {
-	PFRAME				pTxFrame;
+	TxFrame *			pTxFrame;
 	uint32_t			txCount = 0;
 	uint32_t			txAvgTPH = 0;
 	uint32_t			txMinTPH = 1;
@@ -236,13 +224,12 @@ void * txCmdThread(void * pArgs)
 	uint32_t			txResetMinMax;
 	bool				go = true;
 	uint8_t				data[MAX_REQUEST_MESSAGE_LENGTH];
-	int					dataLength = 0;
 	int					writeLen;
 	int					bytesRead;
 
 	SerialPort * 		port = (SerialPort *)pArgs;
 
-	CurrentTime & 		time = CurrentTime::getInstance();
+	CurrentTime 		time;
 
 	/*
 	** Calculate seconds to midnight...
@@ -256,14 +243,7 @@ void * txCmdThread(void * pArgs)
 			/*
 			** Next TX packet is a request for TPH data...
 			*/
-			data[0] = MSG_CHAR_START;
-			data[1] = 2;
-			data[2] = getMsgID();
-			data[3] = RX_CMD_AVG_TPH;
-			data[4] = 0x00FF - ((data[2] + data[3]) & 0x00FF);
-			data[5] = MSG_CHAR_END;
-
-			dataLength = 6;
+			pTxFrame = new TxFrame(NULL, 0, RX_CMD_AVG_TPH);
 
 			/*
 			** Schedule next tx in 20 seconds...
@@ -274,14 +254,7 @@ void * txCmdThread(void * pArgs)
 			/*
 			** Next TX packet is a request for TPH data...
 			*/
-			data[0] = MSG_CHAR_START;
-			data[1] = 2;
-			data[2] = getMsgID();
-			data[3] = RX_CMD_MIN_TPH;
-			data[4] = 0x00FF - ((data[2] + data[3]) & 0x00FF);
-			data[5] = MSG_CHAR_END;
-
-			dataLength = 6;
+			pTxFrame = new TxFrame(NULL, 0, RX_CMD_MIN_TPH);
 
 			/*
 			** Schedule next tx in 20 seconds...
@@ -292,14 +265,7 @@ void * txCmdThread(void * pArgs)
 			/*
 			** Next TX packet is a request for TPH data...
 			*/
-			data[0] = MSG_CHAR_START;
-			data[1] = 2;
-			data[2] = getMsgID();
-			data[3] = RX_CMD_MAX_TPH;
-			data[4] = 0x00FF - ((data[2] + data[3]) & 0x00FF);
-			data[5] = MSG_CHAR_END;
-
-			dataLength = 6;
+			pTxFrame = new TxFrame(NULL, 0, RX_CMD_MAX_TPH);
 
 			/*
 			** Schedule next tx in 20 seconds...
@@ -310,14 +276,7 @@ void * txCmdThread(void * pArgs)
 			/*
 			** Next TX packet is a request to reset min & max values...
 			*/
-			data[0] = MSG_CHAR_START;
-			data[1] = 2;
-			data[2] = getMsgID();
-			data[3] = RX_CMD_RESET_MINMAX_TPH;
-			data[4] = 0x00FF - ((data[2] + data[3]) & 0x00FF);
-			data[5] = MSG_CHAR_END;
-
-			dataLength = 6;
+			pTxFrame = new TxFrame(NULL, 0, RX_CMD_RESET_MINMAX_TPH);
 
 			/*
 			** Schedule next tx in 24 hours...
@@ -325,37 +284,19 @@ void * txCmdThread(void * pArgs)
 			txResetMinMax = txCount + 86400;
 		}
 		else {
-			pthread_mutex_lock(&txLock);
-
 			/*
 			** If there is something in the queue, send it next...
 			*/
-			if (!txQueue.empty()) {
-				pTxFrame = txQueue.front();
-				txQueue.pop();
-				pthread_mutex_unlock(&txLock);
+			QueueMgr & qmgr = QueueMgr::getInstance();
 
-				memcpy(data, pTxFrame->data, pTxFrame->dataLength);
-
-				dataLength = pTxFrame->dataLength;
-
-				FrameManager & fm = FrameManager::getInstance();
-				fm.freeFrame(pTxFrame);
+			if (!qmgr.isTxQueueEmpty()) {
+				pTxFrame = qmgr.popTx();
 			}
 			else {
-				pthread_mutex_unlock(&txLock);
-
 				/*
 				** Default is to send a ping...
 				*/
-				data[0] = MSG_CHAR_START;
-				data[1] = 2;
-				data[2] = getMsgID();
-				data[3] = RX_CMD_PING;
-				data[4] = 0x00FF - ((data[2] + data[3]) & 0x00FF);
-				data[5] = MSG_CHAR_END;
-
-				dataLength = 6;
+				pTxFrame = new TxFrame(NULL, 0, RX_CMD_PING);
 			}
 		}
 
@@ -372,12 +313,14 @@ void * txCmdThread(void * pArgs)
 		** Send cmd frame...
 		*/
 		try {
-			writeLen = port->send(data, dataLength);
+			writeLen = port->send(pTxFrame->getFrame(), pTxFrame->getFrameLength());
 		}
 		catch (Exception * e) {
 			cout << "Error writing to port: " << e->getMessage() << endl;
 			continue;
 		}
+
+		delete pTxFrame;
 
 #ifdef LOG_RXTX
 		printf("TX[%d]: ", writeLen);
@@ -429,8 +372,6 @@ void cleanup(void)
 {
 #ifndef WEB_LISTENER_TEST
 	pthread_kill(tidTxCmd, SIGKILL);
-
-	pthread_mutex_destroy(&txLock);
 
     delete port;
 #endif
@@ -502,18 +443,11 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
-	int				err;
-
-	err = pthread_mutex_init(&txLock, NULL);
-
-	if (err != 0) {
-		printf("\nCan't create Tx mutex :[%s]", strerror(err));
-		return -1;
-	}
-
 	/**************************************************************************
 	** Create threads...
 	**************************************************************************/
+
+	int				err;
 
 	/*
 	 * Start cmd thread...

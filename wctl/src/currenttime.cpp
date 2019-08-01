@@ -11,20 +11,12 @@ CurrentTime::CurrentTime()
 	updateTime();
 }
 
-time_t CurrentTime::updateTime()
+void CurrentTime::updateTime()
 {
 	time_t				t;
 
 	t = time(0);
-
-	return updateTime(&t);
-}
-
-time_t CurrentTime::updateTime(time_t * t)
-{
-	this->localTime = localtime(t);
-
-	return *t;
+	this->localTime = localtime(&t);
 }
 
 char * CurrentTime::getTimeStamp()

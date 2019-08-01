@@ -316,7 +316,7 @@ void WebConnector::postAvgTPH(bool save, char * pszTemperature, char * pszPressu
 	char				szBody[128];
 	char				szPath[256];
 
-	CurrentTime & time = CurrentTime::getInstance();
+	CurrentTime time;
 
 	sprintf(
 		szBody,
@@ -340,7 +340,7 @@ void WebConnector::postMinTPH(bool save, char * pszTemperature, char * pszPressu
 	char				szBody[128];
 	char				szPath[256];
 
-	CurrentTime & time = CurrentTime::getInstance();
+	CurrentTime time;
 
 	sprintf(
 		szBody,
@@ -364,7 +364,7 @@ void WebConnector::postMaxTPH(bool save, char * pszTemperature, char * pszPressu
 	char				szBody[128];
 	char				szPath[256];
 
-	CurrentTime & time = CurrentTime::getInstance();
+	CurrentTime time;
 
 	sprintf(
 		szBody,

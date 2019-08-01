@@ -5,23 +5,15 @@
 
 class CurrentTime
 {
-public:
-	static CurrentTime & getInstance()
-	{
-		static CurrentTime instance;
-		return instance;
-	}
-
 private:
-	CurrentTime();
-
 	struct tm *		localTime;
 	char			szTimeStr[20];
 
-
 public:
-	time_t			updateTime();
-	time_t			updateTime(time_t * t);
+	CurrentTime();
+
+	void			updateTime();
+	void			updateTime(time_t * t);
 
 	char *			getTimeStamp();
 

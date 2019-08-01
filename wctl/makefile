@@ -30,7 +30,7 @@ CFLAGS=-c -O1 -Wall
 MGFLAGS=
 
 # Object files 
-OBJFILES=$(BUILD)/main.o $(BUILD)/serial.o $(BUILD)/avrweather.o $(BUILD)/currenttime.o $(BUILD)/csvhelper.o $(BUILD)/framemgr.o $(BUILD)/webconnect.o $(BUILD)/exception.o $(BUILD)/mongoose.o
+OBJFILES=$(BUILD)/main.o $(BUILD)/serial.o $(BUILD)/avrweather.o $(BUILD)/currenttime.o $(BUILD)/csvhelper.o $(BUILD)/queuemgr.o $(BUILD)/webconnect.o $(BUILD)/exception.o $(BUILD)/mongoose.o
 
 # Target
 all: $(TARGET)
@@ -52,8 +52,8 @@ $(BUILD)/currenttime.o: $(SOURCE)/currenttime.cpp $(SOURCE)/currenttime.h
 $(BUILD)/csvhelper.o: $(SOURCE)/csvhelper.cpp $(SOURCE)/csvhelper.h $(SOURCE)/exception.h
 	$(CPP) $(CPPFLAGS) -o $(BUILD)/csvhelper.o $(SOURCE)/csvhelper.cpp
 
-$(BUILD)/framemgr.o: $(SOURCE)/framemgr.cpp $(SOURCE)/framemgr.h $(SOURCE)/exception.h
-	$(CPP) $(CPPFLAGS) -o $(BUILD)/framemgr.o $(SOURCE)/framemgr.cpp
+$(BUILD)/queuemgr.o: $(SOURCE)/queuemgr.cpp $(SOURCE)/queuemgr.h $(SOURCE)/exception.h $(SOURCE)/avrweather.h
+	$(CPP) $(CPPFLAGS) -o $(BUILD)/queuemgr.o $(SOURCE)/queuemgr.cpp
 
 $(BUILD)/webconnect.o: $(SOURCE)/webconnect.cpp $(SOURCE)/webconnect.h $(SOURCE)/exception.h $(SOURCE)/currenttime.h
 	$(CPP) $(CPPFLAGS) -o $(BUILD)/webconnect.o $(SOURCE)/webconnect.cpp
