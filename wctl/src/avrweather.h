@@ -156,49 +156,9 @@ public:
 	}
 };
 
-typedef struct {
-	uint8_t			data[MAX_REQUEST_MESSAGE_LENGTH];
-	int				dataLength;
-
-	uint8_t			isAllocated = 0;
-}
-FRAME;
-
-typedef FRAME *	PFRAME;
-
-typedef struct {
-	uint8_t			start;
-	uint8_t			frameLength;
-	uint8_t			msgID;
-	uint8_t			response;
-	uint8_t			responseType;
-
-	uint8_t			errorCode;
-
-	uint8_t			data[MAX_DATA_LENGTH];
-
-	uint8_t			checksum;
-	uint8_t			end;
-}
-RXMSGFRAME;
-
-typedef RXMSGFRAME *	PRXMSGFRAME;
-
-typedef struct {
-	RXMSGFRAME		frame;
-
-	uint16_t		frameChecksumTotal;
-	uint8_t			rxErrorCode;
-
-	time_t			timeStamp;
-}
-RXMSGSTRUCT;
-
-typedef RXMSGSTRUCT *	PRXMSGSTRUCT;
-
 void 		resetAVR();
 RxFrame * 	send_receive(TxFrame * pTxFrame);
-int 		processFrame(PRXMSGSTRUCT pMsg, uint8_t * buffer, int bufferLength);
+void		printFrame(uint8_t * buffer, int bufferLength);
 void		processResponse(uint8_t * response, int responseLength);
 
 #endif
