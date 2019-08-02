@@ -20,18 +20,13 @@ using namespace std;
 
 #define AVG_MSGS_PER_MIN			3
 
-//#define LOG_RXTX
+#define LOG_RXTX
 
 uint8_t				_msgID = 0;
 
 Frame::Frame()
 {
 	this->isAllocated = true;
-}
-
-Frame::~Frame()
-{
-	free(this->buffer);
 }
 
 void Frame::initialise(uint8_t * frame, int frameLength)
@@ -104,7 +99,6 @@ uint8_t Frame::getChecksum()
 
 TxFrame::TxFrame(uint8_t * data, int dataLength, uint8_t cmdCode) : Frame()
 {
-	uint8_t *		frame;
 	int				i;
 	int				checksumTotal = 0;
 	int				frameLength;
@@ -129,10 +123,15 @@ TxFrame::TxFrame(uint8_t * data, int dataLength, uint8_t cmdCode) : Frame()
 		checksumTotal += frame[i + 4];
 	}
 
-	frame[5 + dataLength] = (uint8_t)(0x00FF - (checksumTotal & 0x00FF));
-	frame[6 + dataLength] = MSG_CHAR_END;
+	frame[4 + dataLength] = (uint8_t)(0x00FF - (checksumTotal & 0x00FF));
+	frame[5 + dataLength] = MSG_CHAR_END;
 
 	initialise(frame, frameLength);
+}
+
+TxFrame::~TxFrame()
+{
+	free(frame);
 }
 
 uint8_t TxFrame::getCmdCode()
@@ -238,6 +237,12 @@ void printFrame(uint8_t * buffer, int bufferLength)
 	int					i = 0;
 	int					count = 0;
 	uint8_t				b;
+
+	printf("RX[%d]: ", bufferLength);
+	for (i = 0;i < bufferLength;i++) {
+		printf("[0x%02X]", buffer[i]);
+	}
+	printf("\n");
 
 	while (count < bufferLength) {
 		b = buffer[count++];
@@ -350,124 +355,131 @@ void processResponse(uint8_t * response, int responseLength)
 	printFrame(response, responseLength);
 #endif
 
-	switch (pFrame->getResponseCode()) {
-		case RX_RSP_AVG_TPH:
-			memcpy(szResponse, pFrame->getData(), pFrame->getDataLength());
+	if (pFrame->isACK()) {
+		switch (pFrame->getResponseCode()) {
+			case RX_RSP_AVG_TPH:
+				memcpy(szResponse, pFrame->getData(), pFrame->getDataLength());
 
-			delete pFrame;
+				delete pFrame;
 
-			strcpy(szTemperature, strtok(szResponse, ";"));
-			strcpy(szPressure, strtok(NULL, ";"));
-			strcpy(szHumidity, strtok(NULL, ";"));
+				strcpy(szTemperature, strtok(szResponse, ";"));
+				strcpy(szPressure, strtok(NULL, ";"));
+				strcpy(szHumidity, strtok(NULL, ";"));
 
-			try {
-				web.postAvgTPH(avgSave, &szTemperature[2], &szPressure[2], &szHumidity[2]);
-				avgCount++;
+				try {
+					web.postAvgTPH(avgSave, &szTemperature[2], &szPressure[2], &szHumidity[2]);
+					avgCount++;
 
-				/*
-				 * Save every 20 minutes...
-				 */
-				if (avgCount < (AVG_MSGS_PER_MIN * 20)) {
-					avgSave = false;
+					/*
+					* Save every 20 minutes...
+					*/
+					if (avgCount < (AVG_MSGS_PER_MIN * 20)) {
+						avgSave = false;
+					}
+					else {
+						avgSave = true;
+						avgCount = 0;
+					}
 				}
-				else {
-					avgSave = true;
-					avgCount = 0;
+				catch (Exception * e) {
+					cout << "Caught exception posting to web server: " << e->getMessage() << endl;
+					cout << "Writing to local CSV instead" << endl;
+					printf("Values: %s, \"AVG\", %s, %s, %s\n", time.getTimeStamp(), &szTemperature[2], &szPressure[2], &szHumidity[2]);
+
+					vector<string> avgRecord = {time.getTimeStamp(), "AVG", &szTemperature[2], &szPressure[2], &szHumidity[2]};
+
+					CSVHelper & csvAvg = CSVHelper::getInstance();
+
+					csvAvg.writeRecord(5, avgRecord);
 				}
-			}
-			catch (Exception * e) {
-				cout << "Caught exception posting to web server: " << e->getMessage() << endl;
-				cout << "Writing to local CSV instead" << endl;
+				break;
 
-				vector<string> avgRecord = {time.getTimeStamp(), "AVG", &szTemperature[2], &szPressure[2], &szHumidity[2]};
+			case RX_RSP_MAX_TPH:
+				memcpy(szResponse, pFrame->getData(), pFrame->getDataLength());
 
-				CSVHelper & csvAvg = CSVHelper::getInstance();
+				delete pFrame;
 
-				csvAvg.writeRecord(5, avgRecord);
-			}
-			break;
+				strcpy(szTemperature, strtok(szResponse, ";"));
+				strcpy(szPressure, strtok(NULL, ";"));
+				strcpy(szHumidity, strtok(NULL, ";"));
 
-		case RX_RSP_MAX_TPH:
-			memcpy(szResponse, pFrame->getData(), pFrame->getDataLength());
+				try {
+					if (time.getHour() == 23 && time.getMinute() == 59 && time.getSecond() >= 30) {
+						maxSave = true;
+					}
 
-			delete pFrame;
+					web.postMaxTPH(maxSave, &szTemperature[2], &szPressure[2], &szHumidity[2]);
 
-			strcpy(szTemperature, strtok(szResponse, ";"));
-			strcpy(szPressure, strtok(NULL, ";"));
-			strcpy(szHumidity, strtok(NULL, ";"));
-
-			try {
-				if (time.getHour() == 23 && time.getMinute() == 59 && time.getSecond() >= 30) {
-					maxSave = true;
+					maxSave = false;
 				}
+				catch (Exception * e) {
+					cout << "Caught exception posting to web server: " << e->getMessage() << endl;
+					cout << "Writing to local CSV instead" << endl;
 
-				web.postMaxTPH(maxSave, &szTemperature[2], &szPressure[2], &szHumidity[2]);
+					vector<string> maxRecord = {time.getTimeStamp(), "MAX", &szTemperature[2], &szPressure[2], &szHumidity[2]};
 
-				maxSave = false;
-			}
-			catch (Exception * e) {
-				cout << "Caught exception posting to web server: " << e->getMessage() << endl;
-				cout << "Writing to local CSV instead" << endl;
+					CSVHelper & csvMax = CSVHelper::getInstance();
 
-				vector<string> maxRecord = {time.getTimeStamp(), "MAX", &szTemperature[2], &szPressure[2], &szHumidity[2]};
-
-				CSVHelper & csvMax = CSVHelper::getInstance();
-
-				csvMax.writeRecord(5, maxRecord);
-			}
-			break;
-
-		case RX_RSP_MIN_TPH:
-			memcpy(szResponse, pFrame->getData(), pFrame->getDataLength());
-
-			delete pFrame;
-
-			strcpy(szTemperature, strtok(szResponse, ";"));
-			strcpy(szPressure, strtok(NULL, ";"));
-			strcpy(szHumidity, strtok(NULL, ";"));
-
-			try {
-				if (time.getHour() == 23 && time.getMinute() == 59 && time.getSecond() >= 30) {
-					minSave = true;
+					csvMax.writeRecord(5, maxRecord);
 				}
+				break;
 
-				web.postMinTPH(minSave, &szTemperature[2], &szPressure[2], &szHumidity[2]);
+			case RX_RSP_MIN_TPH:
+				memcpy(szResponse, pFrame->getData(), pFrame->getDataLength());
 
-				minSave = false;
-			}
-			catch (Exception * e) {
-				cout << "Caught exception posting to web server: " << e->getMessage() << endl;
-				cout << "Writing to local CSV instead" << endl;
+				delete pFrame;
 
-				vector<string> minRecord = {time.getTimeStamp(), "MIN", &szTemperature[2], &szPressure[2], &szHumidity[2]};
+				strcpy(szTemperature, strtok(szResponse, ";"));
+				strcpy(szPressure, strtok(NULL, ";"));
+				strcpy(szHumidity, strtok(NULL, ";"));
 
-				CSVHelper & csvMin = CSVHelper::getInstance();
+				try {
+					if (time.getHour() == 23 && time.getMinute() == 59 && time.getSecond() >= 30) {
+						minSave = true;
+					}
 
-				csvMin.writeRecord(5, minRecord);
-			}
-			break;
+					web.postMinTPH(minSave, &szTemperature[2], &szPressure[2], &szHumidity[2]);
 
-		case RX_RSP_RESET_MINMAX_TPH:
-			break;
+					minSave = false;
+				}
+				catch (Exception * e) {
+					cout << "Caught exception posting to web server: " << e->getMessage() << endl;
+					cout << "Writing to local CSV instead" << endl;
 
-		case RX_RSP_ANEMOMETER:
-			break;
+					vector<string> minRecord = {time.getTimeStamp(), "MIN", &szTemperature[2], &szPressure[2], &szHumidity[2]};
 
-		case RX_RSP_RAINGUAGE:
-			break;
+					CSVHelper & csvMin = CSVHelper::getInstance();
 
-		case RX_RSP_WDT_DISABLE:
-			break;
+					csvMin.writeRecord(5, minRecord);
+				}
+				break;
 
-		case RX_RSP_GET_SCHED_VERSION:
-			memcpy(szResponse, pFrame->getData(), pFrame->getDataLength());
-			szResponse[pFrame->getDataLength() + 1] = 0;
-			cout << "Scheduler version [" << szResponse << "]" << endl;
+			case RX_RSP_RESET_MINMAX_TPH:
+				break;
 
-			qmgr.pushRx(pFrame);
-			break;
+			case RX_RSP_ANEMOMETER:
+				break;
 
-		case RX_RSP_PING:
-			break;
+			case RX_RSP_RAINGUAGE:
+				break;
+
+			case RX_RSP_WDT_DISABLE:
+				break;
+
+			case RX_RSP_GET_SCHED_VERSION:
+				memcpy(szResponse, pFrame->getData(), pFrame->getDataLength());
+				szResponse[pFrame->getDataLength() + 1] = 0;
+				cout << "Scheduler version [" << szResponse << "]" << endl;
+
+				qmgr.pushRx(pFrame);
+				break;
+
+			case RX_RSP_PING:
+				break;
+		}
+	}
+	else {
+		printf("NAK received with error code [0x%02X]\n", pFrame->getErrorCode());
+		delete pFrame;
 	}
 }

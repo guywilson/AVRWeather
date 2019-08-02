@@ -26,12 +26,12 @@ char * CurrentTime::getTimeStamp()
 	sprintf(
 		this->szTimeStr,
 		"%d-%02d-%02d %02d:%02d:%02d",
-		localTime->tm_year + 1900,
-		localTime->tm_mon + 1,
-		localTime->tm_mday,
-		localTime->tm_hour,
-		localTime->tm_min,
-		localTime->tm_sec);
+		getYear(),
+		getMonth(),
+		getDay(),
+		getHour(),
+		getMinute(),
+		getSecond());
 
 	return this->szTimeStr;
 }

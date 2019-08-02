@@ -46,6 +46,7 @@
 #define MSG_NAK_INVALID_CHECKSUM	0x02
 #define MSG_NAK_DATA_ERROR			0x04
 #define MSG_NAK_DATA_OVERRUN		0x08
+#define MSG_NAK_NO_END_CHAR			0x10
 
 #define RX_STATE_START				0x01
 #define RX_STATE_LENGTH				0x02
@@ -98,7 +99,7 @@ protected:
 
 public:
 	Frame();
-	virtual ~Frame();
+	virtual ~Frame() {}
 
 	bool		getIsAllocated();
 
@@ -119,8 +120,12 @@ public:
 
 class TxFrame : public Frame
 {
+private:
+	uint8_t *	frame;
+	
 public:
 	TxFrame(uint8_t * data, int dataLength, uint8_t cmdCode);
+	~TxFrame();
 
 	uint8_t		getCmdCode();
 

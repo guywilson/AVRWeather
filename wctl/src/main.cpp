@@ -21,7 +21,7 @@
 #include "webconnect.h"
 #include "views.h"
 
-//#define LOG_RXTX
+#define LOG_RXTX
 //#define WEB_LISTENER_TEST
 
 using namespace std;
@@ -117,9 +117,9 @@ void * txCmdThread(void * pArgs)
 
 #ifdef LOG_RXTX
 		int i;
-		printf("About to send[%d]: ", dataLength);
-		for (i = 0;i < dataLength;i++) {
-			printf("[0x%02X]", data[i]);
+		printf("About to send[%d]: ", pTxFrame->getFrameLength());
+		for (i = 0;i < pTxFrame->getFrameLength();i++) {
+			printf("[0x%02X]", pTxFrame->getFrameByteAt(i));
 		}
 		printf("\n");
 #endif
@@ -135,15 +135,15 @@ void * txCmdThread(void * pArgs)
 			continue;
 		}
 
-		delete pTxFrame;
-
 #ifdef LOG_RXTX
 		printf("TX[%d]: ", writeLen);
 		for (i = 0;i < writeLen;i++) {
-			printf("[0x%02X]", data[i]);
+			printf("[0x%02X]", pTxFrame->getFrameByteAt(i));
 		}
 		printf("\n");
 #endif
+
+		delete pTxFrame;
 
 		/*
 		** Sleep for 100ms to give the Arduino
@@ -166,9 +166,6 @@ void * txCmdThread(void * pArgs)
 		** Process response...
 		*/
 		if (bytesRead) {
-#ifdef LOG_RXTX
-			printf("RX[%d]: ", bytesRead);
-#endif
 			processResponse(data, bytesRead);
 		}
 

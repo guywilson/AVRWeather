@@ -249,7 +249,7 @@ void handleRxComplete(uint8_t b)
 
 		case RX_STATE_END:
 			if (b != MSG_CHAR_END) {
-				pMsgStruct->rxErrorCode = MSG_NAK_NO_END_CHAR;
+				pMsgStruct->rxErrorCode = b;
 			}
 
 			state = RX_STATE_START;
