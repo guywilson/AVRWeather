@@ -165,6 +165,7 @@ public:
 
 void 		resetAVR();
 RxFrame * 	send_receive(TxFrame * pTxFrame);
+void 		fire_forget(TxFrame * pTxFrame);
 void		printFrame(uint8_t * buffer, int bufferLength);
 void		processResponse(uint8_t * response, int responseLength);
 

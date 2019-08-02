@@ -15,9 +15,11 @@ void avrCommandHandler(struct mg_connection * connection, int event, void * p)
 	char *							pszMethod;
 	char *							pszURI;
 	char							szCmdValue[32];
+	char							szVersion[64];
 	int								rtn;
 	uint8_t							cmdCode;
 	bool							isSerialCommand = false;
+	bool							isRenderable = false;
 
 	switch (event) {
 		case MG_EV_HTTP_REQUEST:
@@ -63,6 +65,7 @@ void avrCommandHandler(struct mg_connection * connection, int event, void * p)
 				else if (strncmp(szCmdValue, "get-scheduler-version", sizeof(szCmdValue)) == 0) {
 					cmdCode = RX_CMD_GET_SCHED_VERSION;
 					isSerialCommand = true;
+					isRenderable = true;
 				}
 				else if (strncmp(szCmdValue, "reset-avr", sizeof(szCmdValue)) == 0) {
 					resetAVR();
@@ -74,19 +77,30 @@ void avrCommandHandler(struct mg_connection * connection, int event, void * p)
 				}
 
 				if (isSerialCommand) {
-					QueueMgr & qmgr = QueueMgr::getInstance();
+					TxFrame * pTxFrame = new TxFrame(NULL, 0, cmdCode);
+					
+					if (isRenderable) {
+						RxFrame * pRxFrame = send_receive(pTxFrame);
+						
+						memcpy(szVersion, pRxFrame->getData(), pRxFrame->getDataLength());
+						szVersion[pRxFrame->getDataLength()] = 0;
 
-					TxFrame * pFrame = new TxFrame(NULL, 0, cmdCode);
-
-					qmgr.pushTx(pFrame);
+						mg_printf(connection, "HTTP/1.1 200 OK\n\n Version [%s]", szVersion);
+						connection->flags |= MG_F_SEND_AND_CLOSE;
+					}
+					else {
+						fire_forget(pTxFrame);
+					}
 				}
 			}
 
 			free(pszMethod);
 			free(pszURI);
 
-			mg_printf(connection, "HTTP/1.0 200 OK");
-			connection->flags |= MG_F_SEND_AND_CLOSE;
+			if (!isRenderable) {
+				mg_printf(connection, "HTTP/1.1 200 OK");
+				connection->flags |= MG_F_SEND_AND_CLOSE;
+			}
 			break;
 
 		default:

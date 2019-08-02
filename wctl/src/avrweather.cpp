@@ -229,6 +229,12 @@ RxFrame * send_receive(TxFrame * pTxFrame)
 	return pRxFrame;
 }
 
+void fire_forget(TxFrame * pTxFrame)
+{
+	QueueMgr & mgr = QueueMgr::getInstance();
+	mgr.pushTx(pTxFrame);
+}
+
 void printFrame(uint8_t * buffer, int bufferLength)
 {
 	int 				state = RX_STATE_START;
