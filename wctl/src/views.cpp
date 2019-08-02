@@ -85,6 +85,8 @@ void avrCommandHandler(struct mg_connection * connection, int event, void * p)
 						memcpy(szVersion, pRxFrame->getData(), pRxFrame->getDataLength());
 						szVersion[pRxFrame->getDataLength()] = 0;
 
+						delete pRxFrame;
+						
 						mg_printf(connection, "HTTP/1.1 200 OK\n\n Version [%s]", szVersion);
 						connection->flags |= MG_F_SEND_AND_CLOSE;
 					}
