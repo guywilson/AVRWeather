@@ -5,13 +5,24 @@
 
 class SerialPort
 {
+public:
+    static SerialPort & getInstance() {
+        static SerialPort instance;
+        return instance;
+    }
+
 private:
 	int					fd;
-	struct termios		t;
+	struct termios		new_settings;
+	struct termios		old_settings;
+
+	SerialPort();
 
 public:
-						SerialPort(char * pszPort, int baudRate);
 						~SerialPort();
+
+	void 				openPort(char * pszPort, int baudRate, bool isBlocking);
+	void				closePort();
 
 	static int 			mapBaudRate(int speed);
 

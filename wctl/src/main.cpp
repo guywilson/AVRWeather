@@ -25,7 +25,6 @@
 
 using namespace std;
 
-SerialPort *		port;
 pthread_t			tidTxCmd;
 
 void * txCmdThread(void * pArgs)
@@ -41,7 +40,7 @@ void * txCmdThread(void * pArgs)
 	int					writeLen;
 	int					bytesRead;
 
-	SerialPort * 		port = (SerialPort *)pArgs;
+	SerialPort & port = SerialPort::getInstance();
 
 	CurrentTime 		time;
 
@@ -127,10 +126,15 @@ void * txCmdThread(void * pArgs)
 		** Send cmd frame...
 		*/
 		try {
-			writeLen = port->send(pTxFrame->getFrame(), pTxFrame->getFrameLength());
+			writeLen = port.send(pTxFrame->getFrame(), pTxFrame->getFrameLength());
 		}
 		catch (Exception * e) {
 			cout << "Error writing to port: " << e->getMessage() << endl;
+			continue;
+		}
+
+		if (writeLen < pTxFrame->getFrameLength()) {
+			cout << "ERROR: Written [" << writeLen << "] bytes, but sent [" << pTxFrame->getFrameLength() << "] bytes." << endl;
 			continue;
 		}
 
@@ -154,7 +158,7 @@ void * txCmdThread(void * pArgs)
 		** Read response frame...
 		*/
 		try {
-			bytesRead = port->receive(data, MAX_REQUEST_MESSAGE_LENGTH);
+			bytesRead = port.receive(data, MAX_REQUEST_MESSAGE_LENGTH);
 		}
 		catch (Exception * e) {
 			cout << "Error reading port: " << e->getMessage() << endl;
@@ -179,12 +183,11 @@ void * txCmdThread(void * pArgs)
 	return NULL;
 }
 
+
 void cleanup(void)
 {
 #ifndef WEB_LISTENER_TEST
 	pthread_kill(tidTxCmd, SIGKILL);
-
-    delete port;
 #endif
 }
 
@@ -245,25 +248,25 @@ int main(int argc, char *argv[])
 	/*
 	 * Open the serial port...
 	 */
+	SerialPort & port = SerialPort::getInstance();
+
 #ifndef WEB_LISTENER_TEST
 	try {
-		port = new SerialPort(szPort, SerialPort::mapBaudRate(atoi(szBaud)));
+		port.openPort(szPort, SerialPort::mapBaudRate(atoi(szBaud)), false);
 	}
 	catch (Exception * e) {
 		cout << "Failed to open serial port " << e->getMessage() << endl;
 		return -1;
 	}
 
-	/**************************************************************************
-	** Create threads...
-	**************************************************************************/
-
-	int				err;
+	cout << "Opened serial port..." << endl;
 
 	/*
-	 * Start cmd thread...
+	 * Start threads...
 	 */
-	err = pthread_create(&tidTxCmd, NULL, &txCmdThread, port);
+	int	err;
+
+	err = pthread_create(&tidTxCmd, NULL, &txCmdThread, NULL);
 
 	if (err != 0) {
 		printf("ERROR! Can't create txCmdThread() :[%s]\n", strerror(err));
@@ -284,6 +287,8 @@ int main(int argc, char *argv[])
 
 	cout << "Cleaning up and exiting!" << endl;
 	
+	port.closePort();
+
 	cleanup();
 
 	return 0;

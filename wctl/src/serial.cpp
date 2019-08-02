@@ -13,15 +13,37 @@
 #include "exception.h"
 #include "avrweather.h"
 
-SerialPort::SerialPort(char * pszPort, int baudRate)
+SerialPort::SerialPort()
+{	
+}
+
+SerialPort::~SerialPort()
 {
-	int			rc;
+	/*
+	 * Set the old port parameters...
+	 */
+	if ((tcsetattr(fd, TCSANOW, &old_settings)) != 0) {
+        printf("Error setting old attributes\n");
+	}
+
+	closePort();
+}
+
+void SerialPort::openPort(char * pszPort, int baudRate, bool isBlocking)
+{
 	char		szExceptionText[1024];
+	int			flags;
+
+	flags = O_RDWR | O_NOCTTY | O_NDELAY;
+
+	if (!isBlocking) {
+		flags |= O_NONBLOCK;
+	}
 
 	/*
 	 * Open the serial port...
 	 */
-	fd = open(pszPort, O_RDWR | O_NOCTTY | O_NONBLOCK);
+	fd = open(pszPort, flags);
 
 	if (fd < 0) {
 		sprintf(szExceptionText, "Error opening %s: %s", pszPort, strerror(errno));
@@ -31,57 +53,43 @@ SerialPort::SerialPort(char * pszPort, int baudRate)
 	/*
 	 * Get current port parameters...
 	 */
-	tcgetattr(fd, &t);
+	tcgetattr(fd, &new_settings);
 
-	t.c_iflag = IGNBRK;
-	t.c_oflag = 0;
-	t.c_lflag = 0;
-	t.c_cflag = (CS8 | CREAD | CLOCAL);
+	old_settings = new_settings;
 
-//	t.c_cflag &= ~PARENB;   					/* Disables the Parity Enable bit(PARENB),So No Parity   */
-//	t.c_cflag &= ~CSTOPB;   					/* CSTOPB = 2 Stop bits,here it is cleared so 1 Stop bit */
-//	t.c_cflag &= ~CSIZE;	 					/* Clears the mask for setting the data size             */
-//	t.c_cflag |=  CS8;      					/* Set the data bits = 8                                 */
-//
-//	t.c_cflag &= ~CRTSCTS;       				/* No Hardware flow Control                         	 */
-//	t.c_cflag |= CREAD | CLOCAL; 				/* Enable receiver,Ignore Modem Control lines            */
-//
-//
-//	t.c_iflag &= ~(IXON | IXOFF | IXANY);		/* Disable XON/XOFF flow control both i/p and o/p        */
-//	t.c_iflag &= ~(ICANON|ECHO|ECHOE|ISIG);		/* Non Cannonical mode                                   */
-//
-//	t.c_oflag &= ~OPOST;						/* No Output Processing                                  */
+	new_settings.c_iflag = IGNBRK;
+	new_settings.c_oflag = 0;
+	new_settings.c_lflag = 0;
+	new_settings.c_cflag = (CS8 | CREAD | CLOCAL);
 
-	t.c_cc[VMIN]  = 6;							/* Read minimum 6 characters                             */
-	t.c_cc[VTIME] = 0;  						/* No wait                                               */
+	new_settings.c_cc[VMIN]  = 6;							// Read minimum 6 characters
+	new_settings.c_cc[VTIME] = 0;  						// Do not wait...
 
 	/*
 	 * Set the baud rate...
 	 */
-	cfsetispeed(&t, baudRate);
-	cfsetospeed(&t, baudRate);
+	cfsetispeed(&new_settings, baudRate);
+	cfsetospeed(&new_settings, baudRate);
 
 	/*
 	 * Set the new port parameters...
 	 */
-	if ((tcsetattr(fd, TCSANOW, &t)) != 0) {
+	if ((tcsetattr(fd, TCSANOW, &new_settings)) != 0) {
 		close(fd);
-
-		sprintf(szExceptionText, "Error setting attributes");
-        throw new Exception(szExceptionText);
+        throw new Exception("Error setting attributes");
 	}
 
-	/*
-	 * Set blocking read...
-	 */
-	rc = fcntl(fd, F_GETFL, 0);
+	if (!isBlocking) {
+		int rc;
+		rc = fcntl(fd, F_GETFL, 0);
 
-	if (rc != -1) {
-		fcntl(fd, F_SETFL, rc & ~O_NONBLOCK);
+		if (rc != -1) {
+			fcntl(fd, F_SETFL, rc & ~O_NONBLOCK);
+		}
 	}
 }
 
-SerialPort::~SerialPort()
+void SerialPort::closePort()
 {
 	close(fd);
 }
