@@ -20,8 +20,6 @@ using namespace std;
 
 #define AVG_MSGS_PER_MIN			3
 
-#define LOG_RXTX
-
 uint8_t				_msgID = 0;
 
 Frame::Frame()

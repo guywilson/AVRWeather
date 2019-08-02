@@ -21,7 +21,6 @@
 #include "webconnect.h"
 #include "views.h"
 
-#define LOG_RXTX
 //#define WEB_LISTENER_TEST
 
 using namespace std;

@@ -1,6 +1,8 @@
 #ifndef _INCL_AVRWEATHER
 #define _INCL_AVRWEATHER
 
+//#define LOG_RXTX
+
 /*
 ** Request frame (6 - 80 bytes)
 ** <START><LENGTH><MSG_ID><CMD><DATA (0 - 74)><CHECKSUM><END>
