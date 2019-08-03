@@ -371,7 +371,7 @@ void processResponse(uint8_t * response, int responseLength)
 				strcpy(szHumidity, strtok(NULL, ";"));
 
 				try {
-					web.postAvgTPH(avgSave, &szTemperature[2], &szPressure[2], &szHumidity[2]);
+					web.postTPH(WEB_PATH_AVG, avgSave, &szTemperature[2], &szPressure[2], &szHumidity[2]);
 					avgCount++;
 
 					/*
@@ -412,7 +412,7 @@ void processResponse(uint8_t * response, int responseLength)
 						maxSave = true;
 					}
 
-					web.postMaxTPH(maxSave, &szTemperature[2], &szPressure[2], &szHumidity[2]);
+					web.postTPH(WEB_PATH_MAX, avgSave, &szTemperature[2], &szPressure[2], &szHumidity[2]);
 
 					maxSave = false;
 				}
@@ -442,7 +442,7 @@ void processResponse(uint8_t * response, int responseLength)
 						minSave = true;
 					}
 
-					web.postMinTPH(minSave, &szTemperature[2], &szPressure[2], &szHumidity[2]);
+					web.postTPH(WEB_PATH_MIN, avgSave, &szTemperature[2], &szPressure[2], &szHumidity[2]);
 
 					minSave = false;
 				}

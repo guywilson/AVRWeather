@@ -311,10 +311,10 @@ void WebConnector::post(const char * pszHost, const int port, const char * pszPa
     free(message);
 }
 
-void WebConnector::postAvgTPH(bool save, char * pszTemperature, char * pszPressure, char * pszHumidity)
+void WebConnector::postTPH(const char * pszPathSuffix, bool save, char * pszTemperature, char * pszPressure, char * pszHumidity)
 {
 	char				szBody[128];
-	char				szPath[256];
+	char				szWebPath[256];
 
 	CurrentTime time;
 
@@ -327,60 +327,10 @@ void WebConnector::postAvgTPH(bool save, char * pszTemperature, char * pszPressu
 		pszPressure,
 		pszHumidity);
 
-//	cout << "Posting Avg TPH JSON: " << endl << szBody << endl << endl;
+	strcpy(szWebPath, this->szBasePath);
+	strcat(szWebPath, pszPathSuffix);
 
-	strcpy(szPath, this->szBasePath);
-	strcat(szPath, WEB_PATH_AVG);
-
-	post(this->szHost, this->port, szPath, szBody);
-}
-
-void WebConnector::postMinTPH(bool save, char * pszTemperature, char * pszPressure, char * pszHumidity)
-{
-	char				szBody[128];
-	char				szPath[256];
-
-	CurrentTime time;
-
-	sprintf(
-		szBody,
-		"{\n\t\"time\": \"%s\",\n\t\"save\": \"%s\",\n\t\"temperature\": \"%s\",\n\t\"pressure\": \"%s\",\n\t\"humidity\": \"%s\"\n}",
-		time.getTimeStamp(),
-		save ? "true" : "false",
-		pszTemperature,
-		pszPressure,
-		pszHumidity);
-
-//	cout << "Posting Min TPH JSON: " << endl << szBody << endl << endl;
-
-	strcpy(szPath, this->szBasePath);
-	strcat(szPath, WEB_PATH_MIN);
-
-	post(this->szHost, this->port, szPath, szBody);
-}
-
-void WebConnector::postMaxTPH(bool save, char * pszTemperature, char * pszPressure, char * pszHumidity)
-{
-	char				szBody[128];
-	char				szPath[256];
-
-	CurrentTime time;
-
-	sprintf(
-		szBody,
-		"{\n\t\"time\": \"%s\",\n\t\"save\": \"%s\",\n\t\"temperature\": \"%s\",\n\t\"pressure\": \"%s\",\n\t\"humidity\": \"%s\"\n}",
-		time.getTimeStamp(),
-		save ? "true" : "false",
-		pszTemperature,
-		pszPressure,
-		pszHumidity);
-
-//	cout << "Posting Max TPH JSON: " << endl << szBody << endl << endl;
-
-	strcpy(szPath, this->szBasePath);
-	strcat(szPath, WEB_PATH_MAX);
-
-	post(this->szHost, this->port, szPath, szBody);
+	post(this->szHost, this->port, szWebPath, szBody);
 }
 
 void WebConnector::setupListener()

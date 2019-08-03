@@ -37,9 +37,7 @@ private:
 	void		setupListener();
 
 public:
-	void		postAvgTPH(bool save, char * pszTemperature, char * pszPressure, char * pszHumidity);
-	void 		postMinTPH(bool save, char * pszTemperature, char * pszPressure, char * pszHumidity);
-	void 		postMaxTPH(bool save, char * pszTemperature, char * pszPressure, char * pszHumidity);
+	void		postTPH(const char * pszPathSuffix, bool save, char * pszTemperature, char * pszPressure, char * pszHumidity);
 
 	void		registerHandler(const char * pszURI, void (* handler)(struct mg_connection *, int, void *));
 	
