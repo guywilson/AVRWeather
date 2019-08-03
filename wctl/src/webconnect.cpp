@@ -207,7 +207,7 @@ void WebConnector::post(const char * pszHost, const int port, const char * pszPa
     int					message_size;
     char *				message;
     char				response[4096];
-    const char *		pszMsgTemplate = "POST %s HTTP/1.0\r\nContent-Type: application/json\r\nContent-Length: %ld\r\n\r\n";
+    const char *		pszMsgTemplate = "POST %s HTTP/1.1\r\nContent-Type: application/json\r\nContent-Length: %ld\r\n\r\n";
 
      /* How big is the message? */
     message_size = 0;
@@ -225,9 +225,6 @@ void WebConnector::post(const char * pszHost, const int port, const char * pszPa
     /* fill in the parameters */
 	sprintf(message, pszMsgTemplate, pszPath, strlen(pszBody));
 	strcat(message, pszBody);
-
-    /* What are we going to send? */
-//    printf("Request:\n%s\n", message);
 
     /* create the socket */
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -304,9 +301,6 @@ void WebConnector::post(const char * pszHost, const int port, const char * pszPa
 
     /* close the socket */
     close(sockfd);
-
-    /* process response */
-//    printf("Response:\n%s\n",response);
 
     free(message);
 }
