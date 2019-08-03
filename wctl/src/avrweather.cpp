@@ -15,6 +15,7 @@ extern "C" {
 #include "webconnect.h"
 #include "currenttime.h"
 #include "csvhelper.h"
+#include "logger.h"
 
 using namespace std;
 
@@ -242,19 +243,21 @@ void printFrame(uint8_t * buffer, int bufferLength)
 	int					count = 0;
 	uint8_t				b;
 
-	printf("RX[%d]: ", bufferLength);
+	Logger & log = Logger::getInstance();
+
+	log.logDebugNoCR("RX[%d]: ", bufferLength);
 	for (i = 0;i < bufferLength;i++) {
-		printf("[0x%02X]", buffer[i]);
+		log.logDebugNoCR("[0x%02X]", buffer[i]);
 	}
-	printf("\n");
+	log.newline();
 
 	while (count < bufferLength) {
 		b = buffer[count++];
 
 		switch (state) {
 			case RX_STATE_START:
-				printf("[S]");
-				printf("[0x%02X]", b);
+				log.logDebugNoCR("[S]");
+				log.logDebugNoCR("[0x%02X]", b);
 
 				if (b == MSG_CHAR_START) {
 					state = RX_STATE_LENGTH;
@@ -262,15 +265,15 @@ void printFrame(uint8_t * buffer, int bufferLength)
 				break;
 
 			case RX_STATE_LENGTH:
-				printf("[L]");
-				printf("[%d]", b);
+				log.logDebugNoCR("[L]");
+				log.logDebugNoCR("[%d]", b);
 
 				state = RX_STATE_MSGID;
 				break;
 
 			case RX_STATE_MSGID:
-				printf("[M]");
-				printf("[0x%02X]", b);
+				log.logDebugNoCR("[M]");
+				log.logDebugNoCR("[0x%02X]", b);
 
 				state = RX_STATE_RESPONSE;
 				break;
@@ -284,7 +287,7 @@ void printFrame(uint8_t * buffer, int bufferLength)
 
 			case RX_STATE_RESPTYPE:
 				if (b == MSG_CHAR_ACK) {
-					printf("[ACK]");
+					log.logDebugNoCR("[ACK]");
 
 					if (buffer[1] > 3) {
 						state = RX_STATE_DATA;
@@ -295,13 +298,13 @@ void printFrame(uint8_t * buffer, int bufferLength)
 					}
 				}
 				else if (b == MSG_CHAR_NAK) {
-					printf("[NAK]");
+					log.logDebugNoCR("[NAK]");
 					state = RX_STATE_ERRCODE;
 				}
 				break;
 
 			case RX_STATE_DATA:
-				printf("%c", b);
+				log.logDebugNoCR("%c", b);
 				i++;
 
 				if (i == buffer[1] - 2) {
@@ -310,25 +313,25 @@ void printFrame(uint8_t * buffer, int bufferLength)
 				break;
 
 			case RX_STATE_ERRCODE:
-				printf("[E]");
-				printf("[0x%02X]", b);
+				log.logDebugNoCR("[E]");
+				log.logDebugNoCR("[0x%02X]", b);
 
 				state = RX_STATE_CHECKSUM;
 				break;
 
 			case RX_STATE_CHECKSUM:
-				printf("[C]");
-				printf("[0x%02X]", b);
+				log.logDebugNoCR("[C]");
+				log.logDebugNoCR("[0x%02X]", b);
 
 				state = RX_STATE_END;
 				break;
 
 			case RX_STATE_END:
-				printf("[N]");
-				printf("[0x%02X]", b);
+				log.logDebugNoCR("[N]");
+				log.logDebugNoCR("[0x%02X]", b);
 
 				if (b == MSG_CHAR_END) {
-					printf("\n");
+					log.newline();
 				}
 
 				state = RX_STATE_START;
@@ -355,9 +358,11 @@ void processResponse(uint8_t * response, int responseLength)
 	QueueMgr & qmgr = QueueMgr::getInstance();
 	RxFrame * pFrame = new RxFrame(response, responseLength);
 
-#ifdef LOG_RXTX
-	printFrame(response, responseLength);
-#endif
+	Logger & log = Logger::getInstance();
+
+	if (log.isLogLevel(LOG_LEVEL_DEBUG)) {
+		printFrame(response, responseLength);
+	}
 
 	if (pFrame->isACK()) {
 		switch (pFrame->getResponseCode()) {
@@ -386,9 +391,9 @@ void processResponse(uint8_t * response, int responseLength)
 					}
 				}
 				catch (Exception * e) {
-					cout << "Caught exception posting to web server: " << e->getMessage() << endl;
-					cout << "Writing to local CSV instead" << endl;
-					printf("Values: %s, \"AVG\", %s, %s, %s\n", time.getTimeStamp(), &szTemperature[2], &szPressure[2], &szHumidity[2]);
+					log.logError("Caught exception posting to web server: %s", e->getMessage().c_str());
+					log.logError("Writing to local CSV instead");
+					log.logInfo("Values: %s, \"AVG\", %s, %s, %s", time.getTimeStamp(), &szTemperature[2], &szPressure[2], &szHumidity[2]);
 
 					vector<string> avgRecord = {time.getTimeStamp(), "AVG", &szTemperature[2], &szPressure[2], &szHumidity[2]};
 
@@ -417,8 +422,8 @@ void processResponse(uint8_t * response, int responseLength)
 					maxSave = false;
 				}
 				catch (Exception * e) {
-					cout << "Caught exception posting to web server: " << e->getMessage() << endl;
-					cout << "Writing to local CSV instead" << endl;
+					log.logError("Caught exception posting to web server: %s", e->getMessage().c_str());
+					log.logError("Writing to local CSV instead");
 
 					vector<string> maxRecord = {time.getTimeStamp(), "MAX", &szTemperature[2], &szPressure[2], &szHumidity[2]};
 
@@ -447,8 +452,8 @@ void processResponse(uint8_t * response, int responseLength)
 					minSave = false;
 				}
 				catch (Exception * e) {
-					cout << "Caught exception posting to web server: " << e->getMessage() << endl;
-					cout << "Writing to local CSV instead" << endl;
+					log.logError("Caught exception posting to web server: %s", e->getMessage().c_str());
+					log.logError("Writing to local CSV instead");
 
 					vector<string> minRecord = {time.getTimeStamp(), "MIN", &szTemperature[2], &szPressure[2], &szHumidity[2]};
 
@@ -473,7 +478,7 @@ void processResponse(uint8_t * response, int responseLength)
 			case RX_RSP_GET_SCHED_VERSION:
 				memcpy(szResponse, pFrame->getData(), pFrame->getDataLength());
 				szResponse[pFrame->getDataLength() + 1] = 0;
-				cout << "Scheduler version [" << szResponse << "]" << endl;
+				log.logInfo("Scheduler version [%s]", szResponse);
 
 				qmgr.pushRx(pFrame);
 				break;
@@ -483,7 +488,7 @@ void processResponse(uint8_t * response, int responseLength)
 		}
 	}
 	else {
-		printf("NAK received with error code [0x%02X]\n", pFrame->getErrorCode());
+		log.logError("NAK received with error code [0x%02X]", pFrame->getErrorCode());
 		delete pFrame;
 	}
 }

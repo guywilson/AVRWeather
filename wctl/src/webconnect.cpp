@@ -11,6 +11,7 @@
 #include "currenttime.h"
 #include "webconnect.h"
 #include "avrweather.h"
+#include "logger.h"
 
 extern "C" {
 #include "mongoose.h"
@@ -71,6 +72,8 @@ static void resetAVRHandler(struct mg_connection * connection, int event, void *
 	struct http_message *			message;
 	char *							pszMethod;
 
+	Logger & log = Logger::getInstance();
+
 	switch (event) {
 		case MG_EV_HTTP_REQUEST:
 			message = (struct http_message *)p;
@@ -84,10 +87,10 @@ static void resetAVRHandler(struct mg_connection * connection, int event, void *
 			memcpy(pszMethod, message->method.p, message->method.len);
 			pszMethod[message->method.len] = 0;
 
-			cout << "Got " << pszMethod << " request..." << endl;
+			log.logInfo("Got %s request", pszMethod);
 
 			if (strncmp(pszMethod, "POST", 4) == 0) {
-				cout << "Resetting AVR..." << endl;
+				log.logInfo("Resetting AVR...");
 				resetAVR();
 			}
 
@@ -108,6 +111,8 @@ static void nullHandler(struct mg_connection * connection, int event, void * p)
 	const char * 			szMsg = "HTTP/1.1 200 OK\r\n\r\n[No handler registered for URI '%s']";
 	char *					pszMethod;
 	char *					pszURI;
+
+	Logger & log = Logger::getInstance();
 
 	switch (event) {
 		case MG_EV_HTTP_REQUEST:
@@ -131,7 +136,7 @@ static void nullHandler(struct mg_connection * connection, int event, void * p)
 			memcpy(pszURI, message->uri.p, message->uri.len);
 			pszURI[message->uri.len] = 0;
 
-			cout << "Null Handler: Got " << pszMethod << " request for '" << pszURI << "'" << endl;
+			log.logInfo("Null Handler: Got %s request for '%s'", pszMethod, pszURI);
 			mg_printf(connection, szMsg, pszURI);
 			connection->flags |= MG_F_SEND_AND_CLOSE;
 
@@ -329,9 +334,11 @@ void WebConnector::postTPH(const char * pszPathSuffix, bool save, char * pszTemp
 
 void WebConnector::setupListener()
 {
+	Logger & log = Logger::getInstance();
+
 	mg_mgr_init(&mgr, NULL);
 
-	cout << "Setting up listener on port " << szListenPort << endl;
+	log.logInfo("Setting up listener on port %s", szListenPort);
 
 	connection = mg_bind(&mgr, szListenPort, nullHandler);
 
@@ -339,14 +346,16 @@ void WebConnector::setupListener()
 		throw new Exception("Faled to bind to address");
 	}
 
-	cout << "Bound default handler..." << endl;
+	log.logInfo("Bound default handler...");
 
 	mg_set_protocol_http_websocket(connection);
 }
 
 void WebConnector::listen()
 {
-	cout << "Listening..." << endl;
+	Logger & log = Logger::getInstance();
+
+	log.logInfo("Listening...");
 
 	while (1) {
 		mg_mgr_poll(&mgr, 1000);

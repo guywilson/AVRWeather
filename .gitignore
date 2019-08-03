@@ -21,3 +21,4 @@ weather_site/weather/middleware/__pycache__/
 togglerst/build/
 togglerst/toggle
 .vscode/c_cpp_properties.json
+wctl/wctl.log

@@ -11,6 +11,7 @@
 #include <pthread.h>
 #include <time.h>
 #include <signal.h>
+#include <syslog.h>
 
 #include "serial.h"
 #include "exception.h"
@@ -20,12 +21,15 @@
 #include "mongoose.h"
 #include "webconnect.h"
 #include "views.h"
+#include "logger.h"
 
+#define LOG_LEVEL			LOG_LEVEL_INFO | LOG_LEVEL_ERROR | LOG_LEVEL_FATAL //| LOG_LEVEL_DEBUG
 //#define WEB_LISTENER_TEST
 
 using namespace std;
 
 pthread_t			tidTxCmd;
+int					pid_fd = -1;
 
 void * txCmdThread(void * pArgs)
 {
@@ -39,6 +43,9 @@ void * txCmdThread(void * pArgs)
 	uint8_t				data[MAX_REQUEST_MESSAGE_LENGTH];
 	int					writeLen;
 	int					bytesRead;
+	int 				i;
+
+	Logger & log = Logger::getInstance();
 
 	SerialPort & port = SerialPort::getInstance();
 
@@ -49,7 +56,7 @@ void * txCmdThread(void * pArgs)
 	*/
 	txResetMinMax = ((23 - time.getHour()) * 3600) + ((59 - time.getMinute()) * 60) + (59 - time.getMinute());
 
-	cout << "Seconds till midnight: " << txResetMinMax << endl;
+	log.logInfo("Seconds till midnight: %u", txResetMinMax);
 
 	while (go) {
 		if (txCount == txAvgTPH) {
@@ -113,15 +120,6 @@ void * txCmdThread(void * pArgs)
 			}
 		}
 
-#ifdef LOG_RXTX
-		int i;
-		printf("About to send[%d]: ", pTxFrame->getFrameLength());
-		for (i = 0;i < pTxFrame->getFrameLength();i++) {
-			printf("[0x%02X]", pTxFrame->getFrameByteAt(i));
-		}
-		printf("\n");
-#endif
-
 		/*
 		** Send cmd frame...
 		*/
@@ -138,13 +136,13 @@ void * txCmdThread(void * pArgs)
 			continue;
 		}
 
-#ifdef LOG_RXTX
-		printf("TX[%d]: ", writeLen);
-		for (i = 0;i < writeLen;i++) {
-			printf("[0x%02X]", pTxFrame->getFrameByteAt(i));
+		if (log.isLogLevel(LOG_LEVEL_DEBUG)) {
+			log.logDebugNoCR("TX[%d]: ", writeLen);
+			for (i = 0;i < writeLen;i++) {
+				log.logDebugNoCR("[0x%02X]", pTxFrame->getFrameByteAt(i));
+			}
+			log.newline();
 		}
-		printf("\n");
-#endif
 
 		delete pTxFrame;
 
@@ -189,17 +187,24 @@ void cleanup(void)
 #ifndef WEB_LISTENER_TEST
 	pthread_kill(tidTxCmd, SIGKILL);
 #endif
+
+	if (pid_fd != -1) {
+		lockf(pid_fd, F_ULOCK, 0);
+		close(pid_fd);
+	}
 }
 
 void handleSignal(int sigNum)
 {
+	Logger & log = Logger::getInstance();
+
 	switch (sigNum) {
 		case SIGINT:
-			printf("Detected SIGINT, cleaning up...\n");
+			log.logInfo("Detected SIGINT, cleaning up...");
 			break;
 
 		case SIGTERM:
-			printf("Detected SIGTERM, cleaning up...\n");
+			log.logInfo("Detected SIGTERM, cleaning up...");
 			break;
 	}
 
@@ -208,11 +213,111 @@ void handleSignal(int sigNum)
     exit(0);
 }
 
+int daemonise(char * pszAppName, char * pszPidFileName)
+{
+	pid_t pid = 0;
+	int fd;
+
+	/* Fork off the parent process */
+	pid = fork();
+
+	/* An error occurred */
+	if (pid < 0) {
+		exit(EXIT_FAILURE);
+	}
+
+	/* Success: Let the parent terminate */
+	if (pid > 0) {
+		exit(EXIT_SUCCESS);
+	}
+
+	/* On success: The child process becomes session leader */
+	if (setsid() < 0) {
+		exit(EXIT_FAILURE);
+	}
+
+	/* Ignore signal sent from child to parent process */
+	signal(SIGCHLD, SIG_IGN);
+
+	/* Fork off for the second time*/
+	pid = fork();
+
+	/* An error occurred */
+	if (pid < 0) {
+		exit(EXIT_FAILURE);
+	}
+
+	/* Success: Let the parent terminate */
+	if (pid > 0) {
+		exit(EXIT_SUCCESS);
+	}
+
+	/* Set new file permissions */
+	umask(0);
+
+	/* Change the working directory to the root directory */
+	/* or another appropriated directory */
+	chdir("/");
+
+	/* Close all open file descriptors */
+	for (fd = sysconf(_SC_OPEN_MAX); fd > 0; fd--) {
+		close(fd);
+	}
+
+	/* Reopen stdin (fd = 0), stdout (fd = 1), stderr (fd = 2) */
+	stdin = fopen("/dev/null", "r");
+	stdout = fopen("/dev/null", "w+");
+	stderr = fopen("/dev/null", "w+");
+
+	/* Try to write PID of daemon to lockfile */
+	if (pszPidFileName != NULL)
+	{
+		char str[256];
+		pid_fd = open(pszPidFileName, O_RDWR|O_CREAT, 0640);
+		if (pid_fd < 0) {
+			/* Can't open lockfile */
+			exit(EXIT_FAILURE);
+		}
+		if (lockf(pid_fd, F_TLOCK, 0) < 0) {
+			/* Can't lock file */
+			exit(EXIT_FAILURE);
+		}
+		/* Get current PID */
+		sprintf(str, "%d\n", getpid());
+		/* Write PID to lockfile */
+		write(pid_fd, str, strlen(str));
+	}
+
+	openlog(pszAppName, LOG_PID|LOG_CONS, LOG_DAEMON);
+	syslog(LOG_INFO, "Started %s", pszAppName);
+
+	return 0;
+}
+
+void printUsage(char * pszAppName)
+{
+	printf("\n Usage: %s [OPTIONS]\n\n", pszAppName);
+	printf("  Options:\n");
+	printf("   -h/?             Print this help\n");
+	printf("   -port device     Serial port device\n");
+	printf("   -baud baudrate   Serial port baud rate\n");
+	printf("   -d               Daemonise this application\n");
+	printf("   -log  filename   Write logs to the file\n");
+	printf("   -lock filename   PID lock file (only applicable with -d option))\n");
+	printf("\n");
+}
+
 int main(int argc, char *argv[])
 {
 	char			szPort[128];
 	char			szBaud[8];
+	char			szLockFileName[256];
+	char *			pszLogFileName = NULL;
+	char			szAppName[256];
 	int				i;
+	bool			isDaemonised = false;
+
+	strcpy(szAppName, argv[0]);
 
 	if (argc > 1) {
 		for (i = 1;i < argc;i++) {
@@ -223,28 +328,47 @@ int main(int argc, char *argv[])
 				else if (strcmp(&argv[i][1], "baud") == 0) {
 					strcpy(szBaud, &argv[++i][0]);
 				}
+				else if (argv[i][1] == 'd') {
+					isDaemonised = true;
+				}
+				else if (strcmp(&argv[i][1], "lock") == 0) {
+					strcpy(szLockFileName, &argv[++i][0]);
+				}
+				else if (strcmp(&argv[i][1], "log") == 0) {
+					pszLogFileName = strdup(&argv[++i][0]);
+				}
+				else if (argv[i][1] == 'h' || argv[i][1] == '?') {
+					printUsage(szAppName);
+					return 0;
+				}
 			}
 		}
 	}
 	else {
-		printf("Usage:\n");
-		printf("\twctl -port [serialPort] -baud [baudrate]\n\n");
+		printUsage(szAppName);
 		return -1;
+	}
+
+	Logger & log = Logger::getInstance();
+	log.initLogger(pszLogFileName, LOG_LEVEL);
+
+	if (isDaemonised) {
+		daemonise(szAppName, szLockFileName);
 	}
 
 	/*
 	 * Register signal handler for cleanup...
 	 */
 	if (signal(SIGINT, &handleSignal) == SIG_ERR) {
-		printf("Failed to register signal handler for SIGINT\n");
+		log.logError("Failed to register signal handler for SIGINT\n");
 		return -1;
 	}
 
 	if (signal(SIGTERM, &handleSignal) == SIG_ERR) {
-		printf("Failed to register signal handler for SIGTERM\n");
+		log.logError("Failed to register signal handler for SIGTERM\n");
 		return -1;
 	}
-
+	
 	/*
 	 * Open the serial port...
 	 */
@@ -255,11 +379,12 @@ int main(int argc, char *argv[])
 		port.openPort(szPort, SerialPort::mapBaudRate(atoi(szBaud)), false);
 	}
 	catch (Exception * e) {
-		cout << "Failed to open serial port " << e->getMessage() << endl;
+		log.logFatal("Failed to open serial port %s", e->getMessage().c_str());
+		syslog(LOG_ERR, "Failed to open serial port %s", e->getMessage().c_str());
 		return -1;
 	}
 
-	cout << "Opened serial port..." << endl;
+	log.logInfo("Opened serial port...");
 
 	/*
 	 * Start threads...
@@ -269,11 +394,11 @@ int main(int argc, char *argv[])
 	err = pthread_create(&tidTxCmd, NULL, &txCmdThread, NULL);
 
 	if (err != 0) {
-		printf("ERROR! Can't create txCmdThread() :[%s]\n", strerror(err));
+		log.logError("ERROR! Can't create txCmdThread() :[%s]\n", strerror(err));
 		return -1;
 	}
 	else {
-		printf("Thread txCmdThread() created successfully\n");
+		log.logInfo("Thread txCmdThread() created successfully\n");
 	}
 #endif
 
@@ -285,9 +410,10 @@ int main(int argc, char *argv[])
 
 	web.listen();
 
-	cout << "Cleaning up and exiting!" << endl;
+	log.logInfo("Cleaning up and exiting!");
 	
 	port.closePort();
+	log.closeLogger();
 
 	cleanup();
 
