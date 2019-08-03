@@ -13,6 +13,9 @@ public:
 
 private:
 	int					fd;
+	fd_set				fdSet;
+	struct timeval		tv;
+
 	struct termios		new_settings;
 	struct termios		old_settings;
 

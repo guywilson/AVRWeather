@@ -8,6 +8,8 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/ioctl.h>
+#include <sys/time.h>
+#include <sys/types.h>
 
 #include "serial.h"
 #include "exception.h"
@@ -31,8 +33,8 @@ SerialPort::~SerialPort()
 
 void SerialPort::openPort(char * pszPort, int baudRate, bool isBlocking)
 {
-	char		szExceptionText[1024];
-	int			flags;
+	char				szExceptionText[1024];
+	int					flags;
 
 	flags = O_RDWR | O_NOCTTY | O_NDELAY;
 
@@ -51,6 +53,12 @@ void SerialPort::openPort(char * pszPort, int baudRate, bool isBlocking)
     }
 
 	/*
+	** Set read timeout...
+	*/
+	tv.tv_sec = 3;
+	tv.tv_usec = 0;
+
+	/*
 	 * Get current port parameters...
 	 */
 	tcgetattr(fd, &new_settings);
@@ -63,7 +71,7 @@ void SerialPort::openPort(char * pszPort, int baudRate, bool isBlocking)
 	new_settings.c_cflag = (CS8 | CREAD | CLOCAL);
 
 	new_settings.c_cc[VMIN]  = 6;							// Read minimum 6 characters
-	new_settings.c_cc[VTIME] = 0;  						// Do not wait...
+	new_settings.c_cc[VTIME] = 0;  							// 3 sec wait...
 
 	/*
 	 * Set the baud rate...
@@ -109,25 +117,22 @@ int SerialPort::send(uint8_t * pBuffer, int writeLength)
 
 int SerialPort::receive(uint8_t * pBuffer, int requestedBytes)
 {
-	char	szExceptionText[256];
-	int		bytesRead;
-	int		errCount = 0;
+	int		bytesRead = 0;
+	int		rc;
 
-	bytesRead = read(fd, pBuffer, requestedBytes);
+	FD_ZERO(&fdSet);
+	FD_SET(fd, &fdSet);
 
-	while (bytesRead < 0 && errCount < 10) {
-		bytesRead = read(fd, pBuffer, requestedBytes);
+	rc = select(fd + 1, &fdSet, NULL, NULL, &tv);
 
-		if (bytesRead < 0) {
-			errCount++;
-		}
-
-		usleep(100000L);
+	if (rc == -1) {
+		throw new Exception("Error calling select()");
 	}
-
-	if (errCount) {
-		sprintf(szExceptionText, "Error reading from port: %s", strerror(errno));
-        throw new Exception(szExceptionText);
+	else if (rc == 0) {
+		printf("Read timeout occurred...");
+	}
+	else {
+		bytesRead = read(fd, pBuffer, requestedBytes);
 	}
 
 	return bytesRead;
