@@ -86,7 +86,7 @@ void avrCommandHandler(struct mg_connection * connection, int event, void * p)
 						szVersion[pRxFrame->getDataLength()] = 0;
 
 						delete pRxFrame;
-						
+
 						mg_printf(connection, "HTTP/1.1 200 OK\n\n Version [%s]", szVersion);
 						connection->flags |= MG_F_SEND_AND_CLOSE;
 					}
@@ -151,7 +151,7 @@ void avrViewHandler(struct mg_connection * connection, int event, void * p)
 			free(pszMethod);
 			free(pszURI);
 
-			mg_printf(connection, "HTTP/1.0 200 OK");
+			mg_printf(connection, "HTTP/1.1 200 OK");
 			connection->flags |= MG_F_SEND_AND_CLOSE;
 			break;
 
@@ -201,7 +201,7 @@ void cssHandler(struct mg_connection * connection, int event, void * p)
 			free(pszMethod);
 			free(pszURI);
 
-			mg_printf(connection, "HTTP/1.0 200 OK");
+			mg_printf(connection, "HTTP/1.1 200 OK");
 			connection->flags |= MG_F_SEND_AND_CLOSE;
 			break;
 
