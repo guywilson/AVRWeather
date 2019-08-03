@@ -412,7 +412,7 @@ void processResponse(uint8_t * response, int responseLength)
 						maxSave = true;
 					}
 
-					web.postTPH(WEB_PATH_MAX, avgSave, &szTemperature[2], &szPressure[2], &szHumidity[2]);
+					web.postTPH(WEB_PATH_MAX, maxSave, &szTemperature[2], &szPressure[2], &szHumidity[2]);
 
 					maxSave = false;
 				}
@@ -442,7 +442,7 @@ void processResponse(uint8_t * response, int responseLength)
 						minSave = true;
 					}
 
-					web.postTPH(WEB_PATH_MIN, avgSave, &szTemperature[2], &szPressure[2], &szHumidity[2]);
+					web.postTPH(WEB_PATH_MIN, minSave, &szTemperature[2], &szPressure[2], &szHumidity[2]);
 
 					minSave = false;
 				}
