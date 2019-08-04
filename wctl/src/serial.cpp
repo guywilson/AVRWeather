@@ -135,6 +135,9 @@ int SerialPort::receive(uint8_t * pBuffer, int requestedBytes)
 		bytesRead = read(fd, pBuffer, requestedBytes);
 	}
 
+	FD_ZERO(&fdSet);
+	FD_SET(fd, &fdSet);
+
 	return bytesRead;
 }
 

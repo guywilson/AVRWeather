@@ -23,8 +23,8 @@ C=gcc
 LINKER=g++
 
 # C compiler flags (Release)
-CPPFLAGS=-c -O1 -fpermissive -fPIC -Wall -std=c++11
-CFLAGS=-c -O1 -Wall
+CPPFLAGS=-c -fpermissive -fPIC -Wall -std=c++11
+CFLAGS=-c -Wall
 
 # Mongoose compiler flags
 MGFLAGS=

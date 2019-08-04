@@ -39,6 +39,7 @@ public:
     void        closeLogger();
 
     int         getLogLevel();
+    void        setLogLevel(int logLevel);
     bool        isLogLevel(int logLevel);
 
     void        newline();

@@ -41,6 +41,11 @@ int Logger::getLogLevel()
     return this->loggingLevel;
 }
 
+void Logger::setLogLevel(int logLevel)
+{
+    this->loggingLevel = logLevel;
+}
+
 bool Logger::isLogLevel(int logLevel)
 {
     return ((this->getLogLevel() & logLevel) == logLevel ? true : false);
