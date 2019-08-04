@@ -27,6 +27,8 @@ private:
 
     FILE *          lfp;
     int             loggingLevel;
+    char            buffer[512];
+    pthread_mutex_t mutex;
 
     CurrentTime     currentTime;
 

@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <syslog.h>
+#include <unistd.h>
+#include <pthread.h>
 
 #include "currenttime.h"
 #include "logger.h"
@@ -54,28 +56,33 @@ bool Logger::isLogLevel(int logLevel)
 int Logger::logMessage(int logLevel, bool addCR, const char * fmt, va_list args)
 {
     int         bytesWritten = 0;
-    char        szFormat[MAX_LOG_LENGTH + 25];
 
-    if (strlen(fmt) > MAX_LOG_LENGTH) {
-	    syslog(LOG_ERR, "Log line too long");
-        return -1;
-    }
-
-    if (addCR) {
-        strcpy(szFormat, "[");
-        strcat(szFormat, currentTime.getTimeStamp());
-        strcat(szFormat, "] ");
-        strcat(szFormat, fmt);
-        strcat(szFormat, "\n");
-    }
-    else {
-        strcpy(szFormat, fmt);
-    }
+	pthread_mutex_lock(&mutex);
 
     if (this->loggingLevel & logLevel) {
-        bytesWritten = vfprintf(this->lfp, szFormat, args);
+        if (strlen(fmt) > MAX_LOG_LENGTH) {
+            syslog(LOG_ERR, "Log line too long");
+            return -1;
+        }
+
+        if (addCR) {
+            strcpy(buffer, "[");
+            strcat(buffer, currentTime.getTimeStamp());
+            strcat(buffer, "] ");
+            strcat(buffer, fmt);
+            strcat(buffer, "\n");
+        }
+        else {
+            strcpy(buffer, fmt);
+        }
+
+        bytesWritten = vfprintf(this->lfp, buffer, args);
         fflush(this->lfp);
+
+        buffer[0] = 0;
     }
+
+	pthread_mutex_unlock(&mutex);
 
     return bytesWritten;
 }

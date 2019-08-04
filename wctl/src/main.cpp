@@ -147,12 +147,6 @@ void * txCmdThread(void * pArgs)
 		delete pTxFrame;
 
 		/*
-		** Sleep for 100ms to give the Arduino
-		** time to respond...
-		*/
-		usleep(100000L);
-
-		/*
 		** Read response frame...
 		*/
 		try {
@@ -173,9 +167,9 @@ void * txCmdThread(void * pArgs)
 		txCount++;
 
 		/*
-		** Sleep for 900 ms...
+		** Sleep for 1 second...
 		*/
-		usleep(900000L);
+		sleep(1);
 	}
 
 	return NULL;

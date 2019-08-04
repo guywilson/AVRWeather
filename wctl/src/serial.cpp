@@ -56,8 +56,8 @@ void SerialPort::openPort(char * pszPort, int baudRate, bool isBlocking)
 	/*
 	** Set read timeout...
 	*/
-	tv.tv_sec = 3;
-	tv.tv_usec = 0;
+	tv.tv_sec = 0;
+	tv.tv_usec = 200000;
 
 	/*
 	 * Get current port parameters...
@@ -71,8 +71,8 @@ void SerialPort::openPort(char * pszPort, int baudRate, bool isBlocking)
 	new_settings.c_lflag = 0;
 	new_settings.c_cflag = (CS8 | CREAD | CLOCAL);
 
-	new_settings.c_cc[VMIN]  = 6;							// Read minimum 6 characters
-	new_settings.c_cc[VTIME] = 0;  							// 3 sec wait...
+	new_settings.c_cc[VMIN]  = NUM_ACK_RSP_FRAME_BYTES;		// Read minimum 7 characters
+	new_settings.c_cc[VTIME] = 0;  							// wait...
 
 	/*
 	 * Set the baud rate...
