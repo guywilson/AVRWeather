@@ -57,7 +57,19 @@ void avrCommandHandler(struct mg_connection * connection, int event, void * p)
 
 				log.logInfo("Got command: %s", szCmdValue);
 
-				if (strncmp(szCmdValue, "disable-wd-reset", sizeof(szCmdValue)) == 0) {
+				if (strncmp(szCmdValue, "debug-logging-on", sizeof(szCmdValue)) == 0) {
+					int level = log.getLogLevel();
+					level |= LOG_LEVEL_DEBUG;
+					log.setLogLevel(level);
+					isSerialCommand = false;
+				}
+				else if (strncmp(szCmdValue, "debug-logging-off", sizeof(szCmdValue)) == 0) {
+					int level = log.getLogLevel();
+					level &= ~LOG_LEVEL_DEBUG;
+					log.setLogLevel(level);
+					isSerialCommand = false;
+				}
+				else if (strncmp(szCmdValue, "disable-wd-reset", sizeof(szCmdValue)) == 0) {
 					cmdCode = RX_CMD_WDT_DISABLE;
 					isSerialCommand = true;
 				}
