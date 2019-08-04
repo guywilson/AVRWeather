@@ -1,5 +1,7 @@
 #include <termios.h>
 
+#include "logger.h"
+
 #ifndef _INCL_SERIAL
 #define _INCL_SERIAL
 
@@ -19,6 +21,8 @@ private:
 	struct termios		new_settings;
 	struct termios		old_settings;
 
+	Logger & 			log = Logger::getInstance();
+	
 	SerialPort();
 
 public:

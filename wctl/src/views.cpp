@@ -7,6 +7,7 @@
 #include "exception.h"
 #include "avrweather.h"
 #include "queuemgr.h"
+#include "logger.h"
 #include "mongoose.h"
 
 void avrCommandHandler(struct mg_connection * connection, int event, void * p)
@@ -20,6 +21,8 @@ void avrCommandHandler(struct mg_connection * connection, int event, void * p)
 	uint8_t							cmdCode;
 	bool							isSerialCommand = false;
 	bool							isRenderable = false;
+
+	Logger & log = Logger::getInstance();
 
 	switch (event) {
 		case MG_EV_HTTP_REQUEST:
@@ -43,7 +46,7 @@ void avrCommandHandler(struct mg_connection * connection, int event, void * p)
 			memcpy(pszURI, message->uri.p, message->uri.len);
 			pszURI[message->uri.len] = 0;
 
-			cout << "Got " << pszMethod << " request for '" << pszURI << "'" << endl;
+			log.logInfo("Got %s request for '%s'", pszMethod, pszURI);
 
 			if (strncmp(pszMethod, "GET", 4) == 0) {
 				rtn = mg_get_http_var(&message->query_string, "command", szCmdValue, 32);
@@ -52,7 +55,7 @@ void avrCommandHandler(struct mg_connection * connection, int event, void * p)
 					throw new Exception("Failed to find form variable 'command'");
 				}
 
-				cout << "Got command: " << szCmdValue << endl;
+				log.logInfo("Got command: %s", szCmdValue);
 
 				if (strncmp(szCmdValue, "disable-wd-reset", sizeof(szCmdValue)) == 0) {
 					cmdCode = RX_CMD_WDT_DISABLE;
@@ -116,6 +119,8 @@ void avrViewHandler(struct mg_connection * connection, int event, void * p)
 	char *							pszMethod;
 	char *							pszURI;
 
+	Logger & log = Logger::getInstance();
+
 	switch (event) {
 		case MG_EV_HTTP_REQUEST:
 			message = (struct http_message *)p;
@@ -138,12 +143,12 @@ void avrViewHandler(struct mg_connection * connection, int event, void * p)
 			memcpy(pszURI, message->uri.p, message->uri.len);
 			pszURI[message->uri.len] = 0;
 
-			cout << "Got " << pszMethod << " request for '" << pszURI << "'" << endl;
+			log.logInfo("Got %s request for '%s'", pszMethod, pszURI);
 	
 			if (strncmp(pszMethod, "GET", 3) == 0) {
 				struct mg_serve_http_opts opts = { .document_root = "./resources/html" };
 
-				cout << "Serving file '" << pszURI << "'" << endl;
+				log.logInfo("Serving file '%s'", pszURI);
 
 				mg_serve_http(connection, message, opts);
 			}
@@ -166,6 +171,8 @@ void cssHandler(struct mg_connection * connection, int event, void * p)
 	char *							pszMethod;
 	char *							pszURI;
 
+	Logger & log = Logger::getInstance();
+
 	switch (event) {
 		case MG_EV_HTTP_REQUEST:
 			message = (struct http_message *)p;
@@ -188,12 +195,12 @@ void cssHandler(struct mg_connection * connection, int event, void * p)
 			memcpy(pszURI, message->uri.p, message->uri.len);
 			pszURI[message->uri.len] = 0;
 
-			cout << "Got " << pszMethod << " request for '" << pszURI << "'" << endl;
+			log.logInfo("Got %s request for '%s'", pszMethod, pszURI);
 
 			if (strncmp(pszMethod, "GET", 3) == 0) {
 				struct mg_serve_http_opts opts = { .document_root = "./resources" };
 
-				cout << "Serving file '" << pszURI << "'" << endl;
+				log.logInfo("Serving file '%s'", pszURI);
 
 				mg_serve_http(connection, message, opts);
 			}

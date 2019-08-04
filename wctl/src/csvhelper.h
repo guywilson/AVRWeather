@@ -2,6 +2,8 @@
 #include <vector>
 #include <stdio.h>
 
+#include "logger.h"
+
 using namespace std;
 
 #ifndef _INCL_CSVHELPER
@@ -19,6 +21,7 @@ public:
 private:
     FILE *          fptr = NULL;
     int             numColumns = 0;
+    Logger &        log = Logger::getInstance();
 
     CSVHelper();
 

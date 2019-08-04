@@ -7,6 +7,7 @@
 
 #include "exception.h"
 #include "csvhelper.h"
+#include "logger.h"
 
 using namespace std;
 
@@ -14,10 +15,12 @@ CSVHelper::CSVHelper()
 {
     vector<string>           header = {"TIME", "TYPE", "TEMPERATURE", "PRESSURE", "HUMIDITY"};
 
+    log = Logger::getInstance();
+
     fptr = fopen("./tph.csv", "at");
 
     if (fptr == NULL) {
-        cout << "Failed to open CSV file: " << strerror(errno) << endl;
+        log.logError("Failed to open CSV file: %s", strerror(errno));
         throw new Exception("Error opening CSV file");
     }
 
@@ -34,7 +37,7 @@ void CSVHelper::writeHeader(int numColumns, vector<string> & headerArray)
     int         i;
 
     if (headerArray.size() != (size_t)numColumns) {
-        cout << "Error: numColumns " << numColumns << " does not match array size " << headerArray.size() << endl;
+        log.logError("Error: numColumns %d does not match array size %d", numColumns, headerArray.size());
         throw new Exception("Array size does not match column count!");
     }
 
@@ -58,7 +61,7 @@ void CSVHelper::writeRecord(int valueCount, vector<string> & valueArray)
     int         i;
 
     if (valueCount != numColumns || valueArray.size() != (size_t)numColumns) {
-        cout << "Error: valueCount " << valueCount << " does not match columnCount " << numColumns << " previously specified" << endl;
+        log.logError("Error: valueCount %d does not match columnCount %d previously specified", valueCount, numColumns);
         throw new Exception("Num values does not match column count!");
     }
 

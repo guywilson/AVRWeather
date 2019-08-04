@@ -127,12 +127,12 @@ void * txCmdThread(void * pArgs)
 			writeLen = port.send(pTxFrame->getFrame(), pTxFrame->getFrameLength());
 		}
 		catch (Exception * e) {
-			cout << "Error writing to port: " << e->getMessage() << endl;
+			log.logError("Error writing to port: %s", e->getMessage().c_str());
 			continue;
 		}
 
 		if (writeLen < pTxFrame->getFrameLength()) {
-			cout << "ERROR: Written [" << writeLen << "] bytes, but sent [" << pTxFrame->getFrameLength() << "] bytes." << endl;
+			log.logError("ERROR: Written [%d] bytes, but sent [%d] bytes.", writeLen, pTxFrame->getFrameLength());
 			continue;
 		}
 
@@ -159,7 +159,7 @@ void * txCmdThread(void * pArgs)
 			bytesRead = port.receive(data, MAX_REQUEST_MESSAGE_LENGTH);
 		}
 		catch (Exception * e) {
-			cout << "Error reading port: " << e->getMessage() << endl;
+			log.logError("Error reading port: %s", e->getMessage().c_str());
 			continue;
 		}
 

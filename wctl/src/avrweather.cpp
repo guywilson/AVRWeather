@@ -279,8 +279,8 @@ void printFrame(uint8_t * buffer, int bufferLength)
 				break;
 
 			case RX_STATE_RESPONSE:
-				printf("[R]");
-				printf("[0x%02X]", b);
+				log.logDebugNoCR("[R]");
+				log.logDebugNoCR("[0x%02X]", b);
 
 				state = RX_STATE_RESPTYPE;
 				break;

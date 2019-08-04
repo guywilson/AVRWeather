@@ -14,9 +14,10 @@
 #include "serial.h"
 #include "exception.h"
 #include "avrweather.h"
+#include "logger.h"
 
 SerialPort::SerialPort()
-{	
+{
 }
 
 SerialPort::~SerialPort()
@@ -25,7 +26,7 @@ SerialPort::~SerialPort()
 	 * Set the old port parameters...
 	 */
 	if ((tcsetattr(fd, TCSANOW, &old_settings)) != 0) {
-        printf("Error setting old attributes\n");
+        log.logError("Error setting old attributes");
 	}
 
 	closePort();
@@ -129,7 +130,7 @@ int SerialPort::receive(uint8_t * pBuffer, int requestedBytes)
 		throw new Exception("Error calling select()");
 	}
 	else if (rc == 0) {
-		printf("Read timeout occurred...");
+		log.logInfo("Read timeout occurred...");
 	}
 	else {
 		bytesRead = read(fd, pBuffer, requestedBytes);
@@ -143,7 +144,8 @@ int SerialPort::receive(uint8_t * pBuffer, int requestedBytes)
 
 int SerialPort::mapBaudRate(int baud)
 {
-	int		baudConst = B9600;
+	int			baudConst = B9600;
+	Logger & 	log = Logger::getInstance();
 
 	switch (baud) {
 		case 50:
@@ -219,8 +221,8 @@ int SerialPort::mapBaudRate(int baud)
 			break;
 
 		default:
-			printf("Unsupported baud rate [%d], supported rates are 50, 75, 110, 134, 150, 200, 300, 600, 1200, 1800, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400\n", baud);
-			printf("Defaulting to 9600 baud\n");
+			log.logError("Unsupported baud rate [%d], supported rates are 50, 75, 110, 134, 150, 200, 300, 600, 1200, 1800, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400", baud);
+			log.logInfo("Defaulting to 9600 baud");
 			break;
 	}
 

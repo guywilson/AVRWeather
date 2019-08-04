@@ -8,6 +8,7 @@
 
 #include "wctlconfig.h"
 #include "exception.h"
+#include "logger.h"
 
 using namespace std;
 
@@ -24,6 +25,8 @@ void WCTLConfig::queryConfig()
     long int    fileLength;
 	int			i = 0;
 
+    Logger & log = Logger::getInstance();
+
 	fptr = fopen(CONFIG_NAME, "rt");
 
 	if (fptr == NULL) {
@@ -37,7 +40,7 @@ void WCTLConfig::queryConfig()
     fileLength = ftell(fptr);
     rewind(fptr);
 
-    config = (char *)malloc((fileLength + 1} * sizeof(char));
+    config = (char *)malloc((fileLength + 1) * sizeof(char));
 
     if (config == NULL) {
         throw new Exception("ERROR: failed to allocate config memory");
@@ -57,13 +60,13 @@ void WCTLConfig::queryConfig()
 	while (pszToken != NULL) {
         keys.push_back(pszToken);
 
-        cout << "Got key [" << pszToken << "] ";
+        log.logDebug("Got key [%s]", pszToken);
 
         pszToken = strtok(NULL, "=\n\r ");
 
         values.push_back(pszToken);
 
-        cout << "value [" << pszToken << "]" << endl;
+        log.logDebug("value [%s]", pszToken);
 
         pszToken = strtok(NULL, "=\n\r ");
 	}
