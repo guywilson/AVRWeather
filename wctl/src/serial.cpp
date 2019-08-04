@@ -16,6 +16,8 @@
 #include "avrweather.h"
 #include "logger.h"
 
+//#define SERIAL_ENABLE_SELECT
+
 SerialPort::SerialPort()
 {
 }
@@ -121,6 +123,7 @@ int SerialPort::receive(uint8_t * pBuffer, int requestedBytes)
 	int		bytesRead = 0;
 	int		rc;
 
+#ifdef SERIAL_ENABLE_SELECT
 	FD_ZERO(&fdSet);
 	FD_SET(fd, &fdSet);
 
@@ -133,11 +136,14 @@ int SerialPort::receive(uint8_t * pBuffer, int requestedBytes)
 		log.logInfo("Read timeout occurred...");
 	}
 	else {
+#endif
 		bytesRead = read(fd, pBuffer, requestedBytes);
+#ifdef SERIAL_ENABLE_SELECT
 	}
 
 	FD_ZERO(&fdSet);
 	FD_SET(fd, &fdSet);
+#endif
 
 	return bytesRead;
 }
