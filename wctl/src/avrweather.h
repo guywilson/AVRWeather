@@ -1,3 +1,5 @@
+#include "frame.h"
+
 #ifndef _INCL_AVRWEATHER
 #define _INCL_AVRWEATHER
 
@@ -87,81 +89,6 @@
 #define RX_RSP_PING					(RX_CMD_PING << 4)
 
 #define AVR_RESET_PIN				12
-
-class Frame
-{
-private:
-	bool			isAllocated;
-	uint8_t	*		buffer;
-	int				frameLength;
-
-protected:
-	uint8_t 		getMsgID();
-	void			initialise(uint8_t * frame, int frameLength);
-
-public:
-	Frame();
-	virtual ~Frame() {}
-
-	bool		getIsAllocated();
-
-	uint8_t *	getData();
-	int			getDataLength();
-
-	uint8_t *	getFrame();
-	uint8_t		getFrameByteAt(int index);
-	int			getFrameLength();
-
-	uint8_t		getMessageID();
-	uint8_t		getChecksum();
-	uint8_t		getLength();
-
-	virtual bool isRxFrame() = 0;
-	virtual bool isTxFrame() = 0;
-};
-
-class TxFrame : public Frame
-{
-private:
-	uint8_t *	frame;
-	
-public:
-	TxFrame(uint8_t * data, int dataLength, uint8_t cmdCode);
-	~TxFrame();
-
-	uint8_t		getCmdCode();
-
-	bool isRxFrame() {
-		return false;
-	}
-	bool isTxFrame() {
-		return true;
-	}
-};
-
-class RxFrame : public Frame
-{
-public:
-	RxFrame() : Frame() {}
-	RxFrame(uint8_t * frame, int frameLength);
-
-	uint8_t		getResponseCode();
-	bool		isACK();
-	bool		isNAK();
-	uint8_t		getErrorCode();
-	
-	uint8_t	*	getData();
-	int			getDataLength();
-
-	bool		isChecksumValid();
-
-	bool isRxFrame() {
-		return true;
-	}
-	bool isTxFrame() {
-		return false;
-	}
-};
 
 void 		resetAVR();
 RxFrame * 	send_receive(TxFrame * pTxFrame);

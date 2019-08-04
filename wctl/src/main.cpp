@@ -40,7 +40,8 @@ void * txCmdThread(void * pArgs)
 	uint32_t			txMaxTPH = 2;
 	uint32_t			txResetMinMax;
 	bool				go = true;
-	uint8_t				data[MAX_REQUEST_MESSAGE_LENGTH];
+	uint8_t				data[MAX_DATA_LENGTH];
+	uint8_t				frame[MAX_REQUEST_MESSAGE_LENGTH];
 	int					writeLen;
 	int					bytesRead;
 	int 				i;
@@ -50,6 +51,8 @@ void * txCmdThread(void * pArgs)
 	SerialPort & port = SerialPort::getInstance();
 
 	CurrentTime 		time;
+
+	sleep(1);
 
 	/*
 	** Calculate seconds to midnight...
@@ -63,7 +66,7 @@ void * txCmdThread(void * pArgs)
 			/*
 			** Next TX packet is a request for TPH data...
 			*/
-			pTxFrame = new TxFrame(NULL, 0, RX_CMD_AVG_TPH);
+			pTxFrame = new TxFrame(frame, sizeof(frame), NULL, 0, RX_CMD_AVG_TPH);
 
 			/*
 			** Schedule next tx in 20 seconds...
@@ -74,7 +77,7 @@ void * txCmdThread(void * pArgs)
 			/*
 			** Next TX packet is a request for TPH data...
 			*/
-			pTxFrame = new TxFrame(NULL, 0, RX_CMD_MIN_TPH);
+			pTxFrame = new TxFrame(frame, sizeof(frame), NULL, 0, RX_CMD_MIN_TPH);
 
 			/*
 			** Schedule next tx in 20 seconds...
@@ -85,7 +88,7 @@ void * txCmdThread(void * pArgs)
 			/*
 			** Next TX packet is a request for TPH data...
 			*/
-			pTxFrame = new TxFrame(NULL, 0, RX_CMD_MAX_TPH);
+			pTxFrame = new TxFrame(frame, sizeof(frame), NULL, 0, RX_CMD_MAX_TPH);
 
 			/*
 			** Schedule next tx in 20 seconds...
@@ -96,7 +99,7 @@ void * txCmdThread(void * pArgs)
 			/*
 			** Next TX packet is a request to reset min & max values...
 			*/
-			pTxFrame = new TxFrame(NULL, 0, RX_CMD_RESET_MINMAX_TPH);
+			pTxFrame = new TxFrame(frame, sizeof(frame), NULL, 0, RX_CMD_RESET_MINMAX_TPH);
 
 			/*
 			** Schedule next tx in 24 hours...
@@ -116,7 +119,7 @@ void * txCmdThread(void * pArgs)
 				/*
 				** Default is to send a ping...
 				*/
-				pTxFrame = new TxFrame(NULL, 0, RX_CMD_PING);
+				pTxFrame = new TxFrame(frame, sizeof(frame), NULL, 0, RX_CMD_PING);
 			}
 		}
 
@@ -388,11 +391,11 @@ int main(int argc, char *argv[])
 	err = pthread_create(&tidTxCmd, NULL, &txCmdThread, NULL);
 
 	if (err != 0) {
-		log.logError("ERROR! Can't create txCmdThread() :[%s]\n", strerror(err));
+		log.logError("ERROR! Can't create txCmdThread() :[%s]", strerror(err));
 		return -1;
 	}
 	else {
-		log.logInfo("Thread txCmdThread() created successfully\n");
+		log.logInfo("Thread txCmdThread() created successfully");
 	}
 #endif
 
