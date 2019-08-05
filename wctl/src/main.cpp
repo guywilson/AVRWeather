@@ -50,6 +50,8 @@ void * txCmdThread(void * pArgs)
 
 	SerialPort & port = SerialPort::getInstance();
 
+	log.logDebug("Got serial port instance [%ul]", &port);
+
 	CurrentTime 		time;
 
 	/*
@@ -182,7 +184,7 @@ void * rxRspThread(void * pArgs)
 
 	SerialPort & port = SerialPort::getInstance();
 
-	log.logDebug("Got SerialPort instance");
+	log.logDebug("Got serial port instance [%ul]", &port);
 
 	while (go) {
 		/*
