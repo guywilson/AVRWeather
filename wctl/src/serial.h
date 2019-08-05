@@ -15,9 +15,8 @@ public:
 
 private:
 	int					fd;
-	fd_set				fdSet;
-	struct timeval		tv;
 
+	int					expectedBytes;
 	struct termios		new_settings;
 	struct termios		old_settings;
 
@@ -42,6 +41,8 @@ public:
 	void				closePort();
 
 	void				setEmulationMode();
+
+	void				setExpectedBytes(int size);
 
 	static int 			mapBaudRate(int speed);
 

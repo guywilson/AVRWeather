@@ -52,6 +52,7 @@ static void _build_response_frame(char * data, int dataLength)
 SerialPort::SerialPort()
 {
 	isEmulationMode = false;
+	expectedBytes = 0;
 }
 
 SerialPort::~SerialPort()
@@ -86,12 +87,6 @@ void SerialPort::_openSerialPort(char * pszPort, int baudRate, bool isBlocking)
 		sprintf(szExceptionText, "Error opening %s: %s", pszPort, strerror(errno));
         throw new Exception(szExceptionText);
     }
-
-	/*
-	** Set read timeout...
-	*/
-	tv.tv_sec = 0;
-	tv.tv_usec = 200000;
 
 	/*
 	 * Get current port parameters...
@@ -149,6 +144,11 @@ void SerialPort::setEmulationMode()
 	isEmulationMode = true;
 }
 
+void SerialPort::setExpectedBytes(int size)
+{
+	this->expectedBytes = size;
+}
+
 int SerialPort::_send_serial(uint8_t * pBuffer, int writeLength)
 {
 	int		bytesWritten;
@@ -165,29 +165,22 @@ int SerialPort::_send_serial(uint8_t * pBuffer, int writeLength)
 int SerialPort::_receive_serial(uint8_t * pBuffer, int requestedBytes)
 {
 	int		bytesRead = 0;
-#ifdef SERIAL_ENABLE_SELECT
-	int		rc;
 
-	FD_ZERO(&fdSet);
-	FD_SET(fd, &fdSet);
+	bytesRead = read(fd, pBuffer, requestedBytes);
 
-	rc = select(fd + 1, &fdSet, NULL, NULL, &tv);
-
-	if (rc == -1) {
-		throw new Exception("Error calling select()");
-	}
-	else if (rc == 0) {
-		log.logInfo("Read timeout occurred...");
-	}
-	else {
-#endif
-		bytesRead = read(fd, pBuffer, requestedBytes);
-#ifdef SERIAL_ENABLE_SELECT
+	/*
+	** If we're expecting more bytes than we got
+	** then wait for a bit and try to receive some more...
+	*/
+	if (bytesRead < this->expectedBytes) {
+		usleep(150000L);
+		bytesRead += read(fd, &pBuffer[bytesRead], (requestedBytes - bytesRead));
 	}
 
-	FD_ZERO(&fdSet);
-	FD_SET(fd, &fdSet);
-#endif
+	/*
+	** Reset expected bytes...
+	*/
+	this->expectedBytes = 0;
 
 	return bytesRead;
 }

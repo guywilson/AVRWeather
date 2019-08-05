@@ -29,6 +29,7 @@
 using namespace std;
 
 pthread_t			tidTxCmd;
+pthread_t			tidRxRsp;
 int					pid_fd = -1;
 char				szAppName[256];
 
@@ -41,10 +42,8 @@ void * txCmdThread(void * pArgs)
 	uint32_t			txMaxTPH = 2;
 	uint32_t			txResetMinMax;
 	bool				go = true;
-	uint8_t				data[MAX_DATA_LENGTH];
 	uint8_t				frame[MAX_REQUEST_MESSAGE_LENGTH];
 	int					writeLen;
-	int					bytesRead;
 	int 				i;
 
 	Logger & log = Logger::getInstance();
@@ -52,8 +51,6 @@ void * txCmdThread(void * pArgs)
 	SerialPort & port = SerialPort::getInstance();
 
 	CurrentTime 		time;
-
-	sleep(1);
 
 	/*
 	** Calculate seconds to midnight...
@@ -69,6 +66,8 @@ void * txCmdThread(void * pArgs)
 			*/
 			pTxFrame = new TxFrame(frame, sizeof(frame), NULL, 0, RX_CMD_AVG_TPH);
 
+			port.setExpectedBytes(30);
+
 			/*
 			** Schedule next tx in 20 seconds...
 			*/
@@ -79,6 +78,8 @@ void * txCmdThread(void * pArgs)
 			** Next TX packet is a request for TPH data...
 			*/
 			pTxFrame = new TxFrame(frame, sizeof(frame), NULL, 0, RX_CMD_MIN_TPH);
+
+			port.setExpectedBytes(30);
 
 			/*
 			** Schedule next tx in 20 seconds...
@@ -91,6 +92,8 @@ void * txCmdThread(void * pArgs)
 			*/
 			pTxFrame = new TxFrame(frame, sizeof(frame), NULL, 0, RX_CMD_MAX_TPH);
 
+			port.setExpectedBytes(30);
+
 			/*
 			** Schedule next tx in 20 seconds...
 			*/
@@ -101,6 +104,8 @@ void * txCmdThread(void * pArgs)
 			** Next TX packet is a request to reset min & max values...
 			*/
 			pTxFrame = new TxFrame(frame, sizeof(frame), NULL, 0, RX_CMD_RESET_MINMAX_TPH);
+
+			port.setExpectedBytes(7);
 
 			/*
 			** Schedule next tx in 24 hours...
@@ -115,12 +120,16 @@ void * txCmdThread(void * pArgs)
 
 			if (!qmgr.isTxQueueEmpty()) {
 				pTxFrame = qmgr.popTx();
+
+				port.setExpectedBytes(7);
 			}
 			else {
 				/*
 				** Default is to send a ping...
 				*/
 				pTxFrame = new TxFrame(frame, sizeof(frame), NULL, 0, RX_CMD_PING);
+
+				port.setExpectedBytes(7);
 			}
 		}
 
@@ -150,6 +159,28 @@ void * txCmdThread(void * pArgs)
 
 		delete pTxFrame;
 
+		txCount++;
+
+		/*
+		** Sleep for 1 second...
+		*/
+		sleep(1);
+	}
+
+	return NULL;
+}
+
+void * rxRspThread(void * pArgs)
+{
+	bool				go = true;
+	int					bytesRead;
+	uint8_t				data[MAX_DATA_LENGTH];
+
+	Logger & log = Logger::getInstance();
+
+	SerialPort & port = SerialPort::getInstance();
+
+	while (go) {
 		/*
 		** Read response frame...
 		*/
@@ -167,18 +198,10 @@ void * txCmdThread(void * pArgs)
 		if (bytesRead) {
 			processResponse(data, bytesRead);
 		}
-
-		txCount++;
-
-		/*
-		** Sleep for 1 second...
-		*/
-		sleep(1);
 	}
 
 	return NULL;
 }
-
 
 void cleanup(void)
 {
@@ -399,6 +422,16 @@ int main(int argc, char *argv[])
 	}
 	else {
 		log.logInfo("Thread txCmdThread() created successfully");
+	}
+
+	err = pthread_create(&tidRxRsp, NULL, &rxRspThread, NULL);
+
+	if (err != 0) {
+		log.logError("ERROR! Can't create rxRspThread() :[%s]", strerror(err));
+		return -1;
+	}
+	else {
+		log.logInfo("Thread rxRspThread() created successfully");
 	}
 
 	WebConnector & web = WebConnector::getInstance();
