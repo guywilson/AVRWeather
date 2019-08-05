@@ -16,7 +16,7 @@
 #include "avrweather.h"
 #include "logger.h"
 
-//#define SERIAL_ENABLE_SELECT
+#define SERIAL_ENABLE_SELECT
 
 static uint8_t emulated_cmd_buffer[MAX_REQUEST_MESSAGE_LENGTH];
 static uint8_t emulated_rsp_buffer[MAX_RESPONSE_MESSAGE_LENGTH];
