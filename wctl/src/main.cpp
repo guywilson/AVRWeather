@@ -178,14 +178,20 @@ void * rxRspThread(void * pArgs)
 
 	Logger & log = Logger::getInstance();
 
+	log.logDebug("Got Logger instance");
+
 	SerialPort & port = SerialPort::getInstance();
+
+	log.logDebug("Got SerialPort instance");
 
 	while (go) {
 		/*
 		** Read response frame...
 		*/
 		try {
+			log.logDebug("Reading from port");
 			bytesRead = port.receive(data, MAX_RESPONSE_MESSAGE_LENGTH);
+			log.logDebug("Read %d bytes", bytesRead);
 		}
 		catch (Exception * e) {
 			log.logError("Error reading port: %s", e->getMessage().c_str());

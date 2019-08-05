@@ -168,6 +168,8 @@ int SerialPort::_receive_serial(uint8_t * pBuffer, int requestedBytes)
 
 	bytesRead = read(fd, pBuffer, requestedBytes);
 
+	log.logDebug("_receive_serial() - [1] Read %d bytes, expecting %d", bytesRead, expectedBytes);
+
 	/*
 	** If we're expecting more bytes than we got
 	** then wait for a bit and try to receive some more...
@@ -176,6 +178,8 @@ int SerialPort::_receive_serial(uint8_t * pBuffer, int requestedBytes)
 		if (bytesRead < this->expectedBytes) {
 			usleep(150000L);
 			bytesRead += read(fd, &pBuffer[bytesRead], (requestedBytes - bytesRead));
+
+			log.logDebug("_receive_serial() - [2] Read %d bytes", bytesRead);
 		}
 	}
 
