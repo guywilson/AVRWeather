@@ -194,9 +194,7 @@ void processResponse(uint8_t * response, int responseLength)
 	}
 
 	if (log.isLogLevel(LOG_LEVEL_DEBUG)) {
-		log.logDebug("Entering printFrame()");
 		printFrame(response, responseLength);
-		log.logDebug("Returned from printFrame()");
 	}
 
 	if (pFrame->isACK()) {
@@ -206,8 +204,6 @@ void processResponse(uint8_t * response, int responseLength)
 				memcpy(szResponse, pFrame->getData(), pFrame->getDataLength());
 
 				delete pFrame;
-
-				log.logDebug("Tokenising data...");
 
 				strcpy(szTemperature, strtok(szResponse, ";"));
 				strcpy(szPressure, strtok(NULL, ";"));
