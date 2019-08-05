@@ -24,12 +24,13 @@
 #include "logger.h"
 
 #define LOG_LEVEL			LOG_LEVEL_INFO | LOG_LEVEL_ERROR | LOG_LEVEL_FATAL //| LOG_LEVEL_DEBUG
-//#define WEB_LISTENER_TEST
+#define SERIAL_EMULATION
 
 using namespace std;
 
 pthread_t			tidTxCmd;
 int					pid_fd = -1;
+char				szAppName[256];
 
 void * txCmdThread(void * pArgs)
 {
@@ -285,9 +286,6 @@ int daemonise(char * pszAppName, char * pszPidFileName)
 		write(pid_fd, str, strlen(str));
 	}
 
-	openlog(pszAppName, LOG_PID|LOG_CONS, LOG_DAEMON);
-	syslog(LOG_INFO, "Started %s", pszAppName);
-
 	return 0;
 }
 
@@ -310,7 +308,6 @@ int main(int argc, char *argv[])
 	char			szBaud[8];
 	char			szLockFileName[256];
 	char *			pszLogFileName = NULL;
-	char			szAppName[256];
 	int				i;
 	bool			isDaemonised = false;
 
@@ -346,6 +343,9 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
+	openlog(szAppName, LOG_PID|LOG_CONS, LOG_DAEMON);
+	syslog(LOG_INFO, "Started %s", szAppName);
+
 	Logger & log = Logger::getInstance();
 	log.initLogger(pszLogFileName, LOG_LEVEL);
 
@@ -371,7 +371,10 @@ int main(int argc, char *argv[])
 	 */
 	SerialPort & port = SerialPort::getInstance();
 
-#ifndef WEB_LISTENER_TEST
+#ifdef SERIAL_EMULATION
+	port.setEmulationMode();
+#endif
+
 	try {
 		port.openPort(szPort, SerialPort::mapBaudRate(atoi(szBaud)), false);
 	}
@@ -397,7 +400,6 @@ int main(int argc, char *argv[])
 	else {
 		log.logInfo("Thread txCmdThread() created successfully");
 	}
-#endif
 
 	WebConnector & web = WebConnector::getInstance();
 
@@ -411,6 +413,7 @@ int main(int argc, char *argv[])
 	
 	port.closePort();
 	log.closeLogger();
+	closelog();
 
 	cleanup();
 

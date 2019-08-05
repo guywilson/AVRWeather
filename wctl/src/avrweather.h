@@ -3,7 +3,7 @@
 #ifndef _INCL_AVRWEATHER
 #define _INCL_AVRWEATHER
 
-//#define LOG_RXTX
+#define LOG_RXTX
 
 /*
 ** Request frame (6 - 80 bytes)

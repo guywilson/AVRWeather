@@ -19,92 +19,6 @@ extern "C" {
 
 #define INT_LENGTH				10
 
-//#define TEST_WEB
-
-#ifdef TEST_WEB
-int main(void)
-{
-	int				i = 0;
-	char			szTemperature[8];
-	char			szPressure[8];
-	char			szHumidity[8];
-
-	const char * 	temp[24] = {
-						"19.54", "21.43", "20.87", "20.46", "20.87", "21.23",
-						"19.54", "21.43", "20.87", "20.46", "20.87", "21.23",
-						"19.54", "21.43", "20.87", "20.46", "20.87", "21.23",
-						"19.54", "21.43", "20.87", "20.46", "20.87", "21.23"
-	};
-
-	const char * 	pres[24] = {
-						"1008.25", "1009.65", "1009.78", "1010.01", "1011.25", "1011.34",
-						"1008.25", "1009.65", "1009.78", "1010.01", "1011.25", "1011.34",
-						"1008.25", "1009.65", "1009.78", "1010.01", "1011.25", "1011.34",
-						"1008.25", "1009.65", "1009.78", "1010.01", "1011.25", "1011.34"
-	};
-
-	const char *	humi[24] = {
-						"57.25", "58.54", "58.54", "59.25", "59.87", "60.03",
-						"57.25", "58.54", "58.54", "59.25", "59.87", "60.03",
-						"57.25", "58.54", "58.54", "59.25", "59.87", "60.03",
-						"57.25", "58.54", "58.54", "59.25", "59.87", "60.03"
-	};
-
-	try {
-		WebConnector & web = WebConnector::getInstance();
-
-		for (i = 0;i < 24;i++) {
-			strcpy(szTemperature, temp[i]);
-			strcpy(szPressure, pres[i]);
-			strcpy(szHumidity, humi[i]);
-
-			web.postAvgTPH(false, szTemperature, szPressure, szHumidity);
-		}
-	}
-	catch (Exception * e) {
-		cout << "Caught exception " << e->getMessage() << endl;
-	}
-}
-#endif
-
-static void resetAVRHandler(struct mg_connection * connection, int event, void * p)
-{
-	struct http_message *			message;
-	char *							pszMethod;
-
-	Logger & log = Logger::getInstance();
-
-	switch (event) {
-		case MG_EV_HTTP_REQUEST:
-			message = (struct http_message *)p;
-
-			pszMethod = (char *)malloc(message->method.len + 1);
-
-			if (pszMethod == NULL) {
-				throw new Exception("Failed to allocate memory for method...");
-			}
-
-			memcpy(pszMethod, message->method.p, message->method.len);
-			pszMethod[message->method.len] = 0;
-
-			log.logInfo("Got %s request", pszMethod);
-
-			if (strncmp(pszMethod, "POST", 4) == 0) {
-				log.logInfo("Resetting AVR...");
-				resetAVR();
-			}
-
-			free(pszMethod);
-
-			mg_printf(connection, "HTTP/1.1 200 OK");
-			connection->flags |= MG_F_SEND_AND_CLOSE;
-			break;
-
-		default:
-			break;
-	}
-}
-
 static void nullHandler(struct mg_connection * connection, int event, void * p)
 {
 	struct http_message *	message;
@@ -153,8 +67,9 @@ void WebConnector::queryConfig()
 {
 	FILE *		fptr;
 	char *		pszToken;
-	char		config[1024];
-	int			i = 0;
+	char *		config = NULL;
+	int			fileLength = 0;
+	int			bytesRead = 0;
 
 	fptr = fopen("./webconfig.cfg", "rt");
 
@@ -162,12 +77,24 @@ void WebConnector::queryConfig()
 		throw new Exception("ERROR reading config");
 	}
 
-	do {
-		config[i++] = (char)fgetc(fptr);
-	}
-	while (!feof(fptr));
+    fseek(fptr, 0L, SEEK_END);
+    fileLength = ftell(fptr);
+    rewind(fptr);
 
-	config[i] = 0;
+	config = (char *)malloc(fileLength);
+
+	if (config == NULL) {
+		throw new Exception("Failed to allocate memory for config.");
+	}
+
+	/*
+	** Read in the config file...
+	*/
+	bytesRead = fread(config, 1, fileLength, fptr);
+
+	if (bytesRead != fileLength) {
+		throw new Exception("Failed to read in config file.");
+	}
 
 	fclose(fptr);
 
@@ -198,6 +125,8 @@ void WebConnector::queryConfig()
 			pszToken = strtok(NULL, "=\n\r ");
 		}
 	}
+
+	free(config);
 }
 
 void WebConnector::post(const char * pszHost, const int port, const char * pszPath, char * pszBody)
@@ -373,6 +302,4 @@ WebConnector::WebConnector()
 {
 	queryConfig();
 	setupListener();
-
-	registerHandler("/api/avr/reset-avr", resetAVRHandler);
 }

@@ -18,8 +18,40 @@
 
 //#define SERIAL_ENABLE_SELECT
 
+static uint8_t emulated_cmd_buffer[MAX_REQUEST_MESSAGE_LENGTH];
+static uint8_t emulated_rsp_buffer[MAX_RESPONSE_MESSAGE_LENGTH];
+
+static int emulated_cmd_length = 0;
+static int emulated_rsp_length = 0;
+
+static void _build_response_frame(char * data, int dataLength)
+{
+	uint16_t			checksumTotal = 0;
+	int					i;
+
+	emulated_rsp_buffer[0] = MSG_CHAR_START;
+	emulated_rsp_buffer[1] = (uint8_t)dataLength + 2;
+	emulated_rsp_buffer[2] = emulated_cmd_buffer[2];
+	emulated_rsp_buffer[3] = (emulated_cmd_buffer[3] << 4);
+	emulated_rsp_buffer[4] = MSG_CHAR_ACK;
+	
+	checksumTotal = (emulated_rsp_buffer[2] + emulated_rsp_buffer[3]) + emulated_rsp_buffer[4];
+
+	for (i = 0;i < dataLength;i++) {
+		emulated_rsp_buffer[i + 5] = (uint8_t)data[i];
+
+		checksumTotal += emulated_rsp_buffer[i + 5];
+	}
+
+	emulated_rsp_buffer[5 + dataLength] = (uint8_t)(0x00FF - (checksumTotal & 0x00FF));
+	emulated_rsp_buffer[6 + dataLength] = MSG_CHAR_END;
+
+	emulated_rsp_length = dataLength + NUM_ACK_RSP_FRAME_BYTES;
+}
+
 SerialPort::SerialPort()
 {
+	isEmulationMode = false;
 }
 
 SerialPort::~SerialPort()
@@ -34,7 +66,7 @@ SerialPort::~SerialPort()
 	closePort();
 }
 
-void SerialPort::openPort(char * pszPort, int baudRate, bool isBlocking)
+void SerialPort::_openSerialPort(char * pszPort, int baudRate, bool isBlocking)
 {
 	char				szExceptionText[1024];
 	int					flags;
@@ -100,12 +132,24 @@ void SerialPort::openPort(char * pszPort, int baudRate, bool isBlocking)
 	}
 }
 
+void SerialPort::openPort(char * pszPort, int baudRate, bool isBlocking)
+{
+	if (!isEmulationMode) {
+		_openSerialPort(pszPort, baudRate, isBlocking);
+	}
+}
+
 void SerialPort::closePort()
 {
 	close(fd);
 }
 
-int SerialPort::send(uint8_t * pBuffer, int writeLength)
+void SerialPort::setEmulationMode()
+{
+	isEmulationMode = true;
+}
+
+int SerialPort::_send_serial(uint8_t * pBuffer, int writeLength)
 {
 	int		bytesWritten;
 
@@ -118,12 +162,12 @@ int SerialPort::send(uint8_t * pBuffer, int writeLength)
 	return bytesWritten;
 }
 
-int SerialPort::receive(uint8_t * pBuffer, int requestedBytes)
+int SerialPort::_receive_serial(uint8_t * pBuffer, int requestedBytes)
 {
 	int		bytesRead = 0;
+#ifdef SERIAL_ENABLE_SELECT
 	int		rc;
 
-#ifdef SERIAL_ENABLE_SELECT
 	FD_ZERO(&fdSet);
 	FD_SET(fd, &fdSet);
 
@@ -146,6 +190,106 @@ int SerialPort::receive(uint8_t * pBuffer, int requestedBytes)
 #endif
 
 	return bytesRead;
+}
+
+int SerialPort::_send_emulated(uint8_t * pBuffer, int writeLength)
+{
+	int					bytesWritten;
+	uint8_t				cmdCode = 0;
+	int					dataLength;
+	char *				data;
+	static const char *	avgTPH = "T:25.28;P:1010.10;H:52.25;";
+	static const char *	minTPH = "T:21.21;P:1007.13;H:49.17;";
+	static const char *	maxTPH = "T:27.12;P:1012.23;H:57.74;";
+
+	memset(emulated_cmd_buffer, 0, MAX_REQUEST_MESSAGE_LENGTH);
+	memset(emulated_rsp_buffer, 0, MAX_RESPONSE_MESSAGE_LENGTH);
+
+	memcpy(emulated_cmd_buffer, pBuffer, writeLength);
+
+	emulated_cmd_length = writeLength;
+	bytesWritten = writeLength;
+
+	cmdCode = emulated_cmd_buffer[3];
+
+	switch (cmdCode) {
+		case RX_CMD_AVG_TPH:
+			data = (char *)avgTPH;
+			dataLength = strlen(data);
+
+			_build_response_frame(data, dataLength);
+			break;
+
+		case RX_CMD_MAX_TPH:
+			data = (char *)maxTPH;
+			dataLength = strlen(data);
+
+			_build_response_frame(data, dataLength);
+			break;
+
+		case RX_CMD_MIN_TPH:
+			data = (char *)minTPH;
+			dataLength = strlen(data);
+
+			_build_response_frame(data, dataLength);
+			break;
+
+		case RX_CMD_PING:
+			data = (char *)NULL;
+			dataLength = 0;
+
+			_build_response_frame(data, dataLength);
+			break;
+
+		case RX_CMD_GET_SCHED_VERSION:
+			data = (char *)"1.2.01 2019-07-30 17:37:20";
+			dataLength = strlen(data);
+
+			_build_response_frame(data, dataLength);
+			break;
+
+		default:
+			data = (char *)NULL;
+			dataLength = 0;
+
+			_build_response_frame(data, dataLength);
+			break;
+	}
+
+	return bytesWritten;
+}
+
+int SerialPort::_receive_emulated(uint8_t * pBuffer, int requestedBytes)
+{
+	int		bytesRead = 0;
+	
+	usleep(100000L);
+
+	bytesRead = emulated_rsp_length;
+
+	memcpy(pBuffer, emulated_rsp_buffer, emulated_rsp_length);
+	
+	return bytesRead;
+}
+
+int SerialPort::send(uint8_t * pBuffer, int writeLength)
+{
+	if (isEmulationMode) {
+		return _send_emulated(pBuffer, writeLength);
+	}
+	else {
+		return _send_serial(pBuffer, writeLength);
+	}
+}
+
+int SerialPort::receive(uint8_t * pBuffer, int requestedBytes)
+{
+	if (isEmulationMode) {
+		return _receive_emulated(pBuffer, requestedBytes);
+	}
+	else {
+		return _receive_serial(pBuffer, requestedBytes);
+	}
 }
 
 int SerialPort::mapBaudRate(int baud)
