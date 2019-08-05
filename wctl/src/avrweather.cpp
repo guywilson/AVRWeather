@@ -186,6 +186,13 @@ void processResponse(uint8_t * response, int responseLength)
 
 	Logger & log = Logger::getInstance();
 
+	if (pFrame->isACK() && pFrame->getFrameLength() < (pFrame->getDataLength() + NUM_ACK_RSP_FRAME_BYTES)) {
+		log.logInfo(
+			"Received %d bytes, but ACK frame should have been %d bytes long - Ignoring...", 
+			pFrame->getFrameLength(), 
+			(pFrame->getDataLength() + NUM_ACK_RSP_FRAME_BYTES));
+	}
+
 	if (log.isLogLevel(LOG_LEVEL_DEBUG)) {
 		log.logDebug("Entering printFrame()");
 		printFrame(response, responseLength);
@@ -207,7 +214,7 @@ void processResponse(uint8_t * response, int responseLength)
 				strcpy(szHumidity, strtok(NULL, ";"));
 
 				log.logDebug("Got data: T = %s, P = %s, H = %s", szTemperature, szPressure, szHumidity);
-				
+
 				try {
 					web.postTPH(WEB_PATH_AVG, avgSave, &szTemperature[2], &szPressure[2], &szHumidity[2]);
 					avgCount++;
