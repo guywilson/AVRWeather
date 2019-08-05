@@ -1,5 +1,7 @@
 #include <stdint.h>
 
+#include "logger.h"
+
 #ifndef _INCL_FRAME
 #define _INCL_FRAME
 
@@ -13,6 +15,8 @@ private:
 protected:
 	uint8_t 		getMsgID();
 	void			initialise(uint8_t * frame, int frameLength);
+
+	Logger &		log = Logger::getInstance();
 
 public:
 	Frame();

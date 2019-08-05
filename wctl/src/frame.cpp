@@ -5,6 +5,7 @@
 #include "exception.h"
 #include "avrweather.h"
 #include "frame.h"
+#include "logger.h"
 
 uint8_t				_msgID = 0;
 
@@ -15,6 +16,8 @@ Frame::Frame()
 
 void Frame::initialise(uint8_t * frame, int frameLength)
 {
+	log.logDebug("Initialising with %d bytes", frameLength);
+	
 	this->buffer = frame;
 	this->frameLength = frameLength;
 }

@@ -23,8 +23,8 @@
 #include "views.h"
 #include "logger.h"
 
-#define LOG_LEVEL			LOG_LEVEL_INFO | LOG_LEVEL_ERROR | LOG_LEVEL_FATAL //| LOG_LEVEL_DEBUG
-#define SERIAL_EMULATION
+#define LOG_LEVEL			LOG_LEVEL_INFO | LOG_LEVEL_ERROR | LOG_LEVEL_FATAL | LOG_LEVEL_DEBUG
+//#define SERIAL_EMULATION
 
 using namespace std;
 
@@ -376,7 +376,7 @@ int main(int argc, char *argv[])
 #endif
 
 	try {
-		port.openPort(szPort, SerialPort::mapBaudRate(atoi(szBaud)), false);
+		port.openPort(szPort, SerialPort::mapBaudRate(atoi(szBaud)), true);
 	}
 	catch (Exception * e) {
 		log.logFatal("Failed to open serial port %s", e->getMessage().c_str());

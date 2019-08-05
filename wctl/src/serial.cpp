@@ -106,7 +106,7 @@ void SerialPort::_openSerialPort(char * pszPort, int baudRate, bool isBlocking)
 	new_settings.c_cflag = (CS8 | CREAD | CLOCAL);
 
 	new_settings.c_cc[VMIN]  = NUM_ACK_RSP_FRAME_BYTES;		// Read minimum 7 characters
-	new_settings.c_cc[VTIME] = 0;  							// wait...
+	new_settings.c_cc[VTIME] = 3;  							// wait...
 
 	/*
 	 * Set the baud rate...
@@ -122,7 +122,7 @@ void SerialPort::_openSerialPort(char * pszPort, int baudRate, bool isBlocking)
         throw new Exception("Error setting attributes");
 	}
 
-	if (!isBlocking) {
+	if (isBlocking) {
 		int rc;
 		rc = fcntl(fd, F_GETFL, 0);
 
@@ -265,9 +265,10 @@ int SerialPort::_receive_emulated(uint8_t * pBuffer, int requestedBytes)
 	
 	usleep(100000L);
 
-	bytesRead = emulated_rsp_length;
+//	bytesRead = emulated_rsp_length;
+	bytesRead = 10;
 
-	memcpy(pBuffer, emulated_rsp_buffer, emulated_rsp_length);
+	memcpy(pBuffer, emulated_rsp_buffer, bytesRead);
 	
 	return bytesRead;
 }

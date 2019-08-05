@@ -168,7 +168,7 @@ void printFrame(uint8_t * buffer, int bufferLength)
 
 void processResponse(uint8_t * response, int responseLength)
 {
-	char				szResponse[80];
+	char				szResponse[MAX_RESPONSE_MESSAGE_LENGTH];
 	char 				szTemperature[20];
 	char 				szPressure[20];
 	char 				szHumidity[20];
@@ -187,20 +187,27 @@ void processResponse(uint8_t * response, int responseLength)
 	Logger & log = Logger::getInstance();
 
 	if (log.isLogLevel(LOG_LEVEL_DEBUG)) {
+		log.logDebug("Entering printFrame()");
 		printFrame(response, responseLength);
+		log.logDebug("Returned from printFrame()");
 	}
 
 	if (pFrame->isACK()) {
 		switch (pFrame->getResponseCode()) {
 			case RX_RSP_AVG_TPH:
+				log.logDebug("Copying %d bytes", pFrame->getDataLength());
 				memcpy(szResponse, pFrame->getData(), pFrame->getDataLength());
 
 				delete pFrame;
+
+				log.logDebug("Tokenising data...");
 
 				strcpy(szTemperature, strtok(szResponse, ";"));
 				strcpy(szPressure, strtok(NULL, ";"));
 				strcpy(szHumidity, strtok(NULL, ";"));
 
+				log.logDebug("Got data: T = %s, P = %s, H = %s", szTemperature, szPressure, szHumidity);
+				
 				try {
 					web.postTPH(WEB_PATH_AVG, avgSave, &szTemperature[2], &szPressure[2], &szHumidity[2]);
 					avgCount++;
