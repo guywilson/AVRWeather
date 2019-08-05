@@ -41,6 +41,8 @@ void * txCmdThread(void * pArgs)
 	uint32_t			txMinTPH = 1;
 	uint32_t			txMaxTPH = 2;
 	uint32_t			txResetMinMax;
+	int					bytesRead;
+	uint8_t				data[MAX_RESPONSE_MESSAGE_LENGTH];
 	bool				go = true;
 	uint8_t				frame[MAX_REQUEST_MESSAGE_LENGTH];
 	int					writeLen;
@@ -50,7 +52,7 @@ void * txCmdThread(void * pArgs)
 
 	SerialPort & port = SerialPort::getInstance();
 
-	log.logDebug("Got serial port instance [%ul]", &port);
+	log.logDebug("Got serial port instance [%u]", &port);
 
 	CurrentTime 		time;
 
@@ -162,6 +164,25 @@ void * txCmdThread(void * pArgs)
 		delete pTxFrame;
 
 		txCount++;
+		/*
+		** Read response frame...
+		*/
+		try {
+			log.logDebug("Reading from port");
+			bytesRead = port.receive(data, MAX_RESPONSE_MESSAGE_LENGTH);
+			log.logDebug("Read %d bytes", bytesRead);
+		}
+		catch (Exception * e) {
+			log.logError("Error reading port: %s", e->getMessage().c_str());
+			continue;
+		}
+
+		/*
+		** Process response...
+		*/
+		if (bytesRead) {
+			processResponse(data, bytesRead);
+		}
 
 		/*
 		** Sleep for 1 second...
@@ -184,7 +205,7 @@ void * rxRspThread(void * pArgs)
 
 	SerialPort & port = SerialPort::getInstance();
 
-	log.logDebug("Got serial port instance [%ul]", &port);
+	log.logDebug("Got serial port instance [%u]", &port);
 
 	while (go) {
 		/*
@@ -432,15 +453,15 @@ int main(int argc, char *argv[])
 		log.logInfo("Thread txCmdThread() created successfully");
 	}
 
-	err = pthread_create(&tidRxRsp, NULL, &rxRspThread, NULL);
+	// err = pthread_create(&tidRxRsp, NULL, &rxRspThread, NULL);
 
-	if (err != 0) {
-		log.logError("ERROR! Can't create rxRspThread() :[%s]", strerror(err));
-		return -1;
-	}
-	else {
-		log.logInfo("Thread rxRspThread() created successfully");
-	}
+	// if (err != 0) {
+	// 	log.logError("ERROR! Can't create rxRspThread() :[%s]", strerror(err));
+	// 	return -1;
+	// }
+	// else {
+	// 	log.logInfo("Thread rxRspThread() created successfully");
+	// }
 
 	WebConnector & web = WebConnector::getInstance();
 
