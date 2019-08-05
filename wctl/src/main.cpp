@@ -23,7 +23,7 @@
 #include "views.h"
 #include "logger.h"
 
-#define LOG_LEVEL			LOG_LEVEL_INFO | LOG_LEVEL_ERROR | LOG_LEVEL_FATAL //| LOG_LEVEL_DEBUG
+#define LOG_LEVEL			LOG_LEVEL_INFO | LOG_LEVEL_ERROR | LOG_LEVEL_FATAL | LOG_LEVEL_DEBUG
 //#define SERIAL_EMULATION
 
 using namespace std;
@@ -174,7 +174,7 @@ void * rxRspThread(void * pArgs)
 {
 	bool				go = true;
 	int					bytesRead;
-	uint8_t				data[MAX_DATA_LENGTH];
+	uint8_t				data[MAX_RESPONSE_MESSAGE_LENGTH];
 
 	Logger & log = Logger::getInstance();
 
@@ -185,7 +185,7 @@ void * rxRspThread(void * pArgs)
 		** Read response frame...
 		*/
 		try {
-			bytesRead = port.receive(data, MAX_REQUEST_MESSAGE_LENGTH);
+			bytesRead = port.receive(data, MAX_RESPONSE_MESSAGE_LENGTH);
 		}
 		catch (Exception * e) {
 			log.logError("Error reading port: %s", e->getMessage().c_str());

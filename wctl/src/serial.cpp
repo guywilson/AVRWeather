@@ -172,9 +172,11 @@ int SerialPort::_receive_serial(uint8_t * pBuffer, int requestedBytes)
 	** If we're expecting more bytes than we got
 	** then wait for a bit and try to receive some more...
 	*/
-	if (bytesRead < this->expectedBytes) {
-		usleep(150000L);
-		bytesRead += read(fd, &pBuffer[bytesRead], (requestedBytes - bytesRead));
+	if (bytesRead > 0) {
+		if (bytesRead < this->expectedBytes) {
+			usleep(150000L);
+			bytesRead += read(fd, &pBuffer[bytesRead], (requestedBytes - bytesRead));
+		}
 	}
 
 	/*
@@ -258,11 +260,24 @@ int SerialPort::_receive_emulated(uint8_t * pBuffer, int requestedBytes)
 	
 	usleep(100000L);
 
-//	bytesRead = emulated_rsp_length;
-	bytesRead = 10;
+	/*
+	** Block until we have some bytes to read...
+	*/
+	while (emulated_rsp_length == 0) {
+		usleep(1000L);
+	}
+
+	bytesRead = emulated_rsp_length;
+	//bytesRead = 10;
 
 	memcpy(pBuffer, emulated_rsp_buffer, bytesRead);
-	
+
+	memset(emulated_cmd_buffer, 0, MAX_REQUEST_MESSAGE_LENGTH);
+	memset(emulated_rsp_buffer, 0, MAX_RESPONSE_MESSAGE_LENGTH);
+
+	emulated_cmd_length = 0;
+	emulated_rsp_length = 0;
+
 	return bytesRead;
 }
 
