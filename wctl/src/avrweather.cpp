@@ -191,6 +191,8 @@ void processResponse(uint8_t * response, int responseLength)
 			"Received %d bytes, but ACK frame should have been %d bytes long - Ignoring...", 
 			pFrame->getFrameLength(), 
 			(pFrame->getDataLength() + NUM_ACK_RSP_FRAME_BYTES));
+
+		return;
 	}
 
 	if (log.isLogLevel(LOG_LEVEL_DEBUG)) {
