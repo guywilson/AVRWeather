@@ -17,7 +17,7 @@ Frame::Frame()
 void Frame::initialise(uint8_t * frame, int frameLength)
 {
 	log.logDebug("Initialising with %d bytes", frameLength);
-	
+
 	this->buffer = frame;
 	this->frameLength = frameLength;
 }
@@ -177,7 +177,7 @@ uint8_t * RxFrame::getData()
 int RxFrame::getDataLength()
 {
 	if (this->isACK()) {
-		return this->getFrameLength() - NUM_ACK_RSP_FRAME_BYTES;
+		return (this->getFrameByteAt(1) - 3);
 	}
 	else {
 		return 0;
