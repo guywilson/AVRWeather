@@ -23,7 +23,7 @@
 #include "views.h"
 #include "logger.h"
 
-#define LOG_LEVEL			LOG_LEVEL_INFO | LOG_LEVEL_ERROR | LOG_LEVEL_FATAL | LOG_LEVEL_DEBUG
+#define LOG_LEVEL			LOG_LEVEL_INFO | LOG_LEVEL_ERROR | LOG_LEVEL_FATAL //| LOG_LEVEL_DEBUG
 //#define SERIAL_EMULATION
 
 using namespace std;
