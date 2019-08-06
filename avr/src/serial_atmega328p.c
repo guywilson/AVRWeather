@@ -24,7 +24,7 @@ uint8_t			txLength = 0;
 
 uint8_t 		ackFrame[80];
 
-uint8_t 		nakFrame[NAK_FRAME_LEN] = {
+uint8_t 		nakFrame[NUM_NAK_RSP_FRAME_BYTES] = {
 	MSG_CHAR_START,
 	0x00,				// Length
 	0x00,				// Message ID

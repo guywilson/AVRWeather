@@ -1,5 +1,4 @@
 avr/build/
-avr/avrw.hex
 avr/avrw.s
 wctl/.gitignore
 wctl/build/
