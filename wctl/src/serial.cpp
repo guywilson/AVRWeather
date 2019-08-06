@@ -190,6 +190,12 @@ int SerialPort::_receive_serial(uint8_t * pBuffer, int requestedBytes)
 		log.logDebug("_receive_serial() - [%d] Read %d bytes", i, bytesRead);
 	}
 
+	if (bytesRead < 0) {
+		char szErrorString[80];
+		sprintf(szErrorString, "Error receiving on serial port [%s]", strerror(errno));
+		throw new Exception(szErrorString);
+	}
+
 	/*
 	** Reset expected bytes...
 	*/

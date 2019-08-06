@@ -180,6 +180,7 @@ void * txCmdThread(void * pArgs)
 		}
 		catch (Exception * e) {
 			log.logError("Error reading port: %s", e->getMessage().c_str());
+			usleep(900000L);
 			continue;
 		}
 
