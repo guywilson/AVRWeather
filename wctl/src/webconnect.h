@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -27,6 +28,7 @@ public:
 	}
 
 	~PostData() {
+		printf("In PostData destructor...\n");
 		free(this->pszPath);
 		free(this->pszBody);
 	}
