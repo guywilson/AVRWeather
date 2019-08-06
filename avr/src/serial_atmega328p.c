@@ -152,7 +152,7 @@ void txACK(uint8_t messageID, uint8_t responseCode, char * pData, int dataLength
 	memset(ackFrame, 0, 80);
 
 	ackFrame[0] = MSG_CHAR_START;
-	ackFrame[1] = (uint8_t)((dataLength + 2) & 0x00FF);
+	ackFrame[1] = (uint8_t)((dataLength + 3) & 0x00FF);
 	ackFrame[2] = messageID;
 	ackFrame[3] = responseCode;
 	ackFrame[4] = MSG_CHAR_ACK;

@@ -52,7 +52,7 @@ void RxTask(PTASKPARM p)
 				i += valueLen + 1;
 
 				// Null terminate string...
-				szBuffer[i++] = 0;
+				szBuffer[i] = 0;
 
 				txACK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), szBuffer, i);
 				break;
@@ -83,7 +83,7 @@ void RxTask(PTASKPARM p)
 				i += valueLen + 1;
 
 				// Null terminate string...
-				szBuffer[i++] = 0;
+				szBuffer[i] = 0;
 
 				txACK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), szBuffer, i);
 				break;
@@ -114,7 +114,7 @@ void RxTask(PTASKPARM p)
 				i += valueLen + 1;
 
 				// Null terminate string...
-				szBuffer[i++] = 0;
+				szBuffer[i] = 0;
 
 				txACK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), szBuffer, i);
 				break;
