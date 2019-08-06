@@ -319,10 +319,6 @@ void processResponse(uint8_t * response, int responseLength)
 				break;
 
 			case RX_RSP_GET_SCHED_VERSION:
-				memcpy(szResponse, pFrame->getData(), pFrame->getDataLength());
-				szResponse[pFrame->getDataLength() + 1] = 0;
-				log.logInfo("Scheduler version [%s]", szResponse);
-
 				qmgr.pushRx(pFrame);
 				break;
 
