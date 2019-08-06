@@ -1,4 +1,8 @@
+#include <stdlib.h>
+#include <string.h>
+
 #include "mongoose.h"
+#include "exception.h"
 
 #ifndef _INCL_WEBCONNECT
 #define _INCL_WEBCONNECT
@@ -15,13 +19,31 @@ private:
 
 public:
 	PostData() {
-		this->pszBody = NULL;
-		this->pszPath = NULL;
 	}
 
 	PostData(char * path, char * body) : PostData() {
-		this->pszPath = path;
-		this->pszBody = body;
+		this->pszPath = (char *)malloc(strlen(path));
+
+		if (this->pszPath == NULL) {
+			throw new Exception("Failed to allocate memeory for post data");
+		}
+
+		memcpy(this->pszPath, path, strlen(path));
+		this->pszPath[strlen(path)] = 0;
+
+		this->pszBody = (char *)malloc(strlen(body));
+
+		if (this->pszBody == NULL) {
+			throw new Exception("Failed to allocate memeory for post data");
+		}
+
+		memcpy(this->pszBody, body, strlen(body));
+		this->pszBody[strlen(body)] = 0;
+	}
+
+	~PostData() {
+		free(this->pszPath);
+		free(this->pszBody);
 	}
 
 	char *		getBody() {
