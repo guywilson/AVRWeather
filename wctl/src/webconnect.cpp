@@ -190,7 +190,7 @@ void * webPostThread(void * pArgs)
 			post(web.getHost(), web.getPort(), pPostData->getPath(), pPostData->getBody());
 			log.logDebug("Finished post...");
 
-			delete pPostData;
+//			delete pPostData;
 		}
 		else {
 			sleep(1);

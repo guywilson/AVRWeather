@@ -27,8 +27,8 @@ public:
 	}
 
 	~PostData() {
-		// free(this->pszPath);
-		// free(this->pszBody);
+		free(this->pszPath);
+		free(this->pszBody);
 	}
 
 	char *		getBody() {
