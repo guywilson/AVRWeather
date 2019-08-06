@@ -37,16 +37,16 @@ all: $(TARGET)
 
 # Compile C source files
 #
-$(BUILD)/main.o: $(SOURCE)/main.cpp $(SOURCE)/serial.h $(SOURCE)/exception.h $(SOURCE)/avrweather.h $(SOURCE)/currenttime.h
+$(BUILD)/main.o: $(SOURCE)/main.cpp $(SOURCE)/serial.h $(SOURCE)/logger.h $(SOURCE)/exception.h $(SOURCE)/avrweather.h $(SOURCE)/currenttime.h
 	$(CPP) $(CPPFLAGS) -o $(BUILD)/main.o $(SOURCE)/main.cpp
 
-$(BUILD)/serial.o: $(SOURCE)/serial.cpp $(SOURCE)/serial.h $(SOURCE)/exception.h $(SOURCE)/avrweather.h
+$(BUILD)/serial.o: $(SOURCE)/serial.cpp $(SOURCE)/serial.h $(SOURCE)/logger.h $(SOURCE)/exception.h $(SOURCE)/avrweather.h
 	$(CPP) $(CPPFLAGS) -o $(BUILD)/serial.o $(SOURCE)/serial.cpp
 
-$(BUILD)/avrweather.o: $(SOURCE)/avrweather.cpp $(SOURCE)/avrweather.h $(SOURCE)/webconnect.h $(SOURCE)/exception.h $(SOURCE)/currenttime.h $(SOURCE)/csvhelper.h
+$(BUILD)/avrweather.o: $(SOURCE)/avrweather.cpp $(SOURCE)/avrweather.h $(SOURCE)/webconnect.h $(SOURCE)/logger.h $(SOURCE)/exception.h $(SOURCE)/currenttime.h $(SOURCE)/csvhelper.h
 	$(CPP) $(CPPFLAGS) -o $(BUILD)/avrweather.o $(SOURCE)/avrweather.cpp
 
-$(BUILD)/frame.o: $(SOURCE)/frame.cpp $(SOURCE)/frame.h $(SOURCE)/exception.h $(SOURCE)/avrweather.h
+$(BUILD)/frame.o: $(SOURCE)/frame.cpp $(SOURCE)/frame.h $(SOURCE)/logger.h $(SOURCE)/exception.h $(SOURCE)/avrweather.h
 	$(CPP) $(CPPFLAGS) -o $(BUILD)/frame.o $(SOURCE)/frame.cpp
 
 $(BUILD)/currenttime.o: $(SOURCE)/currenttime.cpp $(SOURCE)/currenttime.h
@@ -55,16 +55,16 @@ $(BUILD)/currenttime.o: $(SOURCE)/currenttime.cpp $(SOURCE)/currenttime.h
 $(BUILD)/logger.o: $(SOURCE)/logger.cpp $(SOURCE)/logger.h $(SOURCE)/currenttime.h
 	$(CPP) $(CPPFLAGS) -o $(BUILD)/logger.o $(SOURCE)/logger.cpp
 
-$(BUILD)/csvhelper.o: $(SOURCE)/csvhelper.cpp $(SOURCE)/csvhelper.h $(SOURCE)/exception.h
+$(BUILD)/csvhelper.o: $(SOURCE)/csvhelper.cpp $(SOURCE)/csvhelper.h $(SOURCE)/logger.h $(SOURCE)/exception.h
 	$(CPP) $(CPPFLAGS) -o $(BUILD)/csvhelper.o $(SOURCE)/csvhelper.cpp
 
 $(BUILD)/queuemgr.o: $(SOURCE)/queuemgr.cpp $(SOURCE)/queuemgr.h $(SOURCE)/exception.h $(SOURCE)/frame.h
 	$(CPP) $(CPPFLAGS) -o $(BUILD)/queuemgr.o $(SOURCE)/queuemgr.cpp
 
-$(BUILD)/views.o: $(SOURCE)/views.cpp $(SOURCE)/views.h $(SOURCE)/exception.h $(SOURCE)/avrweather.h $(SOURCE)/queuemgr.h
+$(BUILD)/views.o: $(SOURCE)/views.cpp $(SOURCE)/views.h $(SOURCE)/logger.h $(SOURCE)/exception.h $(SOURCE)/avrweather.h $(SOURCE)/queuemgr.h
 	$(CPP) $(CPPFLAGS) -o $(BUILD)/views.o $(SOURCE)/views.cpp
 
-$(BUILD)/webconnect.o: $(SOURCE)/webconnect.cpp $(SOURCE)/webconnect.h $(SOURCE)/exception.h $(SOURCE)/currenttime.h
+$(BUILD)/webconnect.o: $(SOURCE)/webconnect.cpp $(SOURCE)/webconnect.h $(SOURCE)/logger.h $(SOURCE)/exception.h $(SOURCE)/currenttime.h
 	$(CPP) $(CPPFLAGS) -o $(BUILD)/webconnect.o $(SOURCE)/webconnect.cpp
 
 $(BUILD)/exception.o: $(SOURCE)/exception.cpp $(SOURCE)/exception.h $(SOURCE)/types.h

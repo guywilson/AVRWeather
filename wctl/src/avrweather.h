@@ -36,9 +36,7 @@
 #define NUM_NAK_RSP_FRAME_BYTES		  8
 #define MAX_RESPONSE_MESSAGE_LENGTH	 MAX_REQUEST_MESSAGE_LENGTH
 
-#define MAX_CMD_FRAME_LENGTH		 76		// Data + msgID + cmd
-
-#define NAK_FRAME_LEN				   8
+#define MAX_CMD_FRAME_LENGTH		 MAX_DATA_LENGTH + 2		// Data + msgID + cmd
 
 #define MSG_CHAR_START				0x7E
 #define MSG_CHAR_END				0x81

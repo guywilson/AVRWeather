@@ -141,7 +141,7 @@ void txNAK(uint8_t messageID, uint8_t responseCode, uint8_t nakCode)
 
 	pNakFrame = getNakFrame(messageID, responseCode, nakCode);
 
-	txmsg(pNakFrame, NAK_FRAME_LEN);
+	txmsg(pNakFrame, NUM_NAK_RSP_FRAME_BYTES);
 }
 
 void txACK(uint8_t messageID, uint8_t responseCode, char * pData, int dataLength)
@@ -166,12 +166,10 @@ void txACK(uint8_t messageID, uint8_t responseCode, char * pData, int dataLength
 		}
 	}
 
-	i += 5;
+	ackFrame[i + 5] = (uint8_t)(0x00FF - (checksum & 0x00FF));
+	ackFrame[i + 6] = MSG_CHAR_END;
 
-	ackFrame[i++] = (uint8_t)(0x00FF - (checksum & 0x00FF));
-	ackFrame[i] = MSG_CHAR_END;
-
-	txmsg(ackFrame, dataLength + 7);
+	txmsg(ackFrame, dataLength + NUM_ACK_RSP_FRAME_BYTES);
 }
 
 /*
