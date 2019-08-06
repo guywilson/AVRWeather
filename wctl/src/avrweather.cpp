@@ -133,7 +133,7 @@ void printFrame(uint8_t * buffer, int bufferLength)
 				log.logDebugNoCR("%c", b);
 				i++;
 
-				if (i == buffer[1] - 2) {
+				if (i == buffer[1] - 3) {
 					state = RX_STATE_CHECKSUM;
 				}
 				break;
