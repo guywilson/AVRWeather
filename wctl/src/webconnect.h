@@ -22,15 +22,19 @@ public:
 	}
 
 	PostData(char * path, char * body) : PostData() {
-		this->pszPath = (char *)malloc(strlen(path));
+		setPath(path);
+		setBody(body);
+	}
 
-		if (this->pszPath == NULL) {
-			throw new Exception("Failed to allocate memeory for post data");
-		}
+	~PostData() {
+		// free(this->pszPath);
+		// free(this->pszBody);
+	}
 
-		memcpy(this->pszPath, path, strlen(path));
-		this->pszPath[strlen(path)] = 0;
-
+	char *		getBody() {
+		return this->pszBody;
+	}
+	void		setBody(char * body) {
 		this->pszBody = (char *)malloc(strlen(body));
 
 		if (this->pszBody == NULL) {
@@ -40,23 +44,18 @@ public:
 		memcpy(this->pszBody, body, strlen(body));
 		this->pszBody[strlen(body)] = 0;
 	}
-
-	~PostData() {
-		free(this->pszPath);
-		free(this->pszBody);
-	}
-
-	char *		getBody() {
-		return this->pszBody;
-	}
-	void		setBody(char * body) {
-		this->pszBody = body;
-	}
 	char *		getPath() {
 		return this->pszPath;
 	}
 	void		setPath(char * path) {
-		this->pszPath = path;
+		this->pszPath = (char *)malloc(strlen(path));
+
+		if (this->pszPath == NULL) {
+			throw new Exception("Failed to allocate memeory for post data");
+		}
+
+		memcpy(this->pszPath, path, strlen(path));
+		this->pszPath[strlen(path)] = 0;
 	}
 };
 
