@@ -253,6 +253,7 @@ void WebConnector::postTPH(const char * pszPathSuffix, bool save, char * pszTemp
 	char				szWebPath[256];
 
 	CurrentTime time;
+	Logger & log = Logger::getInstance();
 
 	sprintf(
 		szBody,
@@ -266,7 +267,9 @@ void WebConnector::postTPH(const char * pszPathSuffix, bool save, char * pszTemp
 	strcpy(szWebPath, this->szBasePath);
 	strcat(szWebPath, pszPathSuffix);
 
+	log.logDebug("Posting to %s [%s]", szWebPath, szBody);
 	post(this->getHost(), this->getPort(), szWebPath, szBody);
+	log.logDebug("Finished post to %s", szWebPath);
 }
 
 void WebConnector::setupListener()

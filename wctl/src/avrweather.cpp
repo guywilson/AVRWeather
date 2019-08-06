@@ -214,9 +214,7 @@ void processResponse(uint8_t * response, int responseLength)
 				log.logDebug("Got AVG data: T = %s, P = %s, H = %s", szTemperature, szPressure, szHumidity);
 
 				try {
-					log.logDebug("Posting AVG data to");
 					web.postTPH(WEB_PATH_AVG, avgSave, &szTemperature[2], &szPressure[2], &szHumidity[2]);
-					log.logDebug("Posted AVG data");
 					avgCount++;
 
 					/*
@@ -259,9 +257,7 @@ void processResponse(uint8_t * response, int responseLength)
 						maxSave = true;
 					}
 
-					log.logDebug("Posting MAX data to");
 					web.postTPH(WEB_PATH_MAX, maxSave, &szTemperature[2], &szPressure[2], &szHumidity[2]);
-					log.logDebug("Posted MAX data");
 
 					maxSave = false;
 				}
@@ -294,9 +290,7 @@ void processResponse(uint8_t * response, int responseLength)
 						minSave = true;
 					}
 
-					log.logDebug("Posting MIN data to");
 					web.postTPH(WEB_PATH_MIN, minSave, &szTemperature[2], &szPressure[2], &szHumidity[2]);
-					log.logDebug("Posted MIN data");
 
 					minSave = false;
 				}
