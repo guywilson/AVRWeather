@@ -202,7 +202,7 @@ void processResponse(uint8_t * response, int responseLength)
 	if (pFrame->isACK()) {
 		switch (pFrame->getResponseCode()) {
 			case RX_RSP_AVG_TPH:
-				log.logDebug("Copying %d bytes", pFrame->getDataLength());
+				log.logDebug("AVG - Copying %d bytes", pFrame->getDataLength());
 				memcpy(szResponse, pFrame->getData(), pFrame->getDataLength());
 
 				delete pFrame;
@@ -211,10 +211,12 @@ void processResponse(uint8_t * response, int responseLength)
 				strcpy(szPressure, strtok(NULL, ";"));
 				strcpy(szHumidity, strtok(NULL, ";"));
 
-				log.logDebug("Got data: T = %s, P = %s, H = %s", szTemperature, szPressure, szHumidity);
+				log.logDebug("Got AVG data: T = %s, P = %s, H = %s", szTemperature, szPressure, szHumidity);
 
 				try {
+					log.logDebug("Posting AVG data to");
 					web.postTPH(WEB_PATH_AVG, avgSave, &szTemperature[2], &szPressure[2], &szHumidity[2]);
+					log.logDebug("Posted AVG data");
 					avgCount++;
 
 					/*
@@ -241,6 +243,7 @@ void processResponse(uint8_t * response, int responseLength)
 				break;
 
 			case RX_RSP_MAX_TPH:
+				log.logDebug("MAX - Copying %d bytes", pFrame->getDataLength());
 				memcpy(szResponse, pFrame->getData(), pFrame->getDataLength());
 
 				delete pFrame;
@@ -249,12 +252,16 @@ void processResponse(uint8_t * response, int responseLength)
 				strcpy(szPressure, strtok(NULL, ";"));
 				strcpy(szHumidity, strtok(NULL, ";"));
 
+				log.logDebug("Got MAX data: T = %s, P = %s, H = %s", szTemperature, szPressure, szHumidity);
+
 				try {
 					if (time.getHour() == 23 && time.getMinute() == 59 && time.getSecond() >= 30) {
 						maxSave = true;
 					}
 
+					log.logDebug("Posting MAX data to");
 					web.postTPH(WEB_PATH_MAX, maxSave, &szTemperature[2], &szPressure[2], &szHumidity[2]);
+					log.logDebug("Posted MAX data");
 
 					maxSave = false;
 				}
@@ -271,6 +278,7 @@ void processResponse(uint8_t * response, int responseLength)
 				break;
 
 			case RX_RSP_MIN_TPH:
+				log.logDebug("MIN - Copying %d bytes", pFrame->getDataLength());
 				memcpy(szResponse, pFrame->getData(), pFrame->getDataLength());
 
 				delete pFrame;
@@ -279,12 +287,16 @@ void processResponse(uint8_t * response, int responseLength)
 				strcpy(szPressure, strtok(NULL, ";"));
 				strcpy(szHumidity, strtok(NULL, ";"));
 
+				log.logDebug("Got MIN data: T = %s, P = %s, H = %s", szTemperature, szPressure, szHumidity);
+
 				try {
 					if (time.getHour() == 23 && time.getMinute() == 59 && time.getSecond() >= 30) {
 						minSave = true;
 					}
 
+					log.logDebug("Posting MIN data to");
 					web.postTPH(WEB_PATH_MIN, minSave, &szTemperature[2], &szPressure[2], &szHumidity[2]);
+					log.logDebug("Posted MIN data");
 
 					minSave = false;
 				}
