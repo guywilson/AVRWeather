@@ -2,6 +2,7 @@
 #include <stdint.h>
 
 #include "frame.h"
+#include "webconnect.h"
 
 using namespace std;
 
@@ -21,9 +22,11 @@ private:
 
     queue<TxFrame *>    txQueue;
     queue<RxFrame *>    rxQueue;
+    queue<PostData *>   webPostQueue;
 
     pthread_mutex_t 	txLock;
     pthread_mutex_t 	rxLock;
+    pthread_mutex_t 	webPostLock;
 
 public:
     ~QueueMgr();
@@ -35,6 +38,10 @@ public:
     RxFrame *           popRx();
     void                pushRx(RxFrame * pFrame);
     bool                isRxQueueEmpty();
+
+    PostData *          popWebPost();
+    void                pushWebPost(PostData * pszPost);
+    bool                isWebPostQueueEmpty();
 };
 
 #endif

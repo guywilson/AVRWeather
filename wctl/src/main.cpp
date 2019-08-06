@@ -29,7 +29,7 @@
 using namespace std;
 
 pthread_t			tidTxCmd;
-pthread_t			tidRxRsp;
+pthread_t			tidWebPost;
 int					pid_fd = -1;
 char				szAppName[256];
 
@@ -460,15 +460,15 @@ int main(int argc, char *argv[])
 		log.logInfo("Thread txCmdThread() created successfully");
 	}
 
-	// err = pthread_create(&tidRxRsp, NULL, &rxRspThread, NULL);
+	err = pthread_create(&tidWebPost, NULL, &webPostThread, NULL);
 
-	// if (err != 0) {
-	// 	log.logError("ERROR! Can't create rxRspThread() :[%s]", strerror(err));
-	// 	return -1;
-	// }
-	// else {
-	// 	log.logInfo("Thread rxRspThread() created successfully");
-	// }
+	if (err != 0) {
+		log.logError("ERROR! Can't create webPostThread() :[%s]", strerror(err));
+		return -1;
+	}
+	else {
+		log.logInfo("Thread webPostThread() created successfully");
+	}
 
 	WebConnector & web = WebConnector::getInstance();
 

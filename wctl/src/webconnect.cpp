@@ -11,6 +11,7 @@
 #include "currenttime.h"
 #include "webconnect.h"
 #include "avrweather.h"
+#include "queuemgr.h"
 #include "logger.h"
 
 extern "C" {
@@ -63,73 +64,7 @@ static void nullHandler(struct mg_connection * connection, int event, void * p)
 	}
 }
 
-void WebConnector::queryConfig()
-{
-	FILE *		fptr;
-	char *		pszToken;
-	char *		config = NULL;
-	int			fileLength = 0;
-	int			bytesRead = 0;
-
-	fptr = fopen("./webconfig.cfg", "rt");
-
-	if (fptr == NULL) {
-		throw new Exception("ERROR reading config");
-	}
-
-    fseek(fptr, 0L, SEEK_END);
-    fileLength = ftell(fptr);
-    rewind(fptr);
-
-	config = (char *)malloc(fileLength);
-
-	if (config == NULL) {
-		throw new Exception("Failed to allocate memory for config.");
-	}
-
-	/*
-	** Read in the config file...
-	*/
-	bytesRead = fread(config, 1, fileLength, fptr);
-
-	if (bytesRead != fileLength) {
-		throw new Exception("Failed to read in config file.");
-	}
-
-	fclose(fptr);
-
-	pszToken = strtok(config, "=\n\r ");
-
-	while (pszToken != NULL) {
-		if (strcmp(pszToken, "host") == 0) {
-			pszToken = strtok(NULL, "=\n\r ");
-
-			strcpy(this->szHost, pszToken);
-		}
-		else if (strcmp(pszToken, "port") == 0) {
-			pszToken = strtok(NULL, "=\n\r ");
-
-			this->port = atoi(pszToken);
-		}
-		else if (strcmp(pszToken, "basepath") == 0) {
-			pszToken = strtok(NULL, "=\n\r ");
-
-			strcpy(this->szBasePath, pszToken);
-		}
-		else if (strcmp(pszToken, "listenport") == 0) {
-			pszToken = strtok(NULL, "=\n\r ");
-
-			strcpy(this->szListenPort, pszToken);
-		}
-		else {
-			pszToken = strtok(NULL, "=\n\r ");
-		}
-	}
-
-	free(config);
-}
-
-void WebConnector::post(const char * pszHost, const int port, const char * pszPath, char * pszBody)
+static void post(const char * pszHost, const int port, const char * pszPath, char * pszBody)
 {
     struct hostent *	server;
     struct sockaddr_in 	serv_addr;
@@ -239,10 +174,110 @@ void WebConnector::post(const char * pszHost, const int port, const char * pszPa
     free(message);
 }
 
+void * webPostThread(void * pArgs)
+{
+	bool				go = true;
+
+	Logger & log = Logger::getInstance();
+	QueueMgr & qmgr = QueueMgr::getInstance();
+	WebConnector & web = WebConnector::getInstance();
+
+	while (go) {
+		if (!qmgr.isWebPostQueueEmpty()) {
+			PostData * pPostData = qmgr.popWebPost();
+
+			log.logDebug("Posting data to %s [%s]", pPostData->getPath(), pPostData->getBody());
+			post(web.getHost(), web.getPort(), pPostData->getPath(), pPostData->getBody());
+			log.logDebug("Finished post...");
+
+			delete pPostData;
+		}
+		else {
+			sleep(1);
+		}
+	}
+
+	return NULL;
+}
+
+WebConnector::WebConnector()
+{
+	queryConfig();
+	setupListener();
+}
+
+void WebConnector::queryConfig()
+{
+	FILE *		fptr;
+	char *		pszToken;
+	char *		config = NULL;
+	int			fileLength = 0;
+	int			bytesRead = 0;
+
+	fptr = fopen("./webconfig.cfg", "rt");
+
+	if (fptr == NULL) {
+		throw new Exception("ERROR reading config");
+	}
+
+    fseek(fptr, 0L, SEEK_END);
+    fileLength = ftell(fptr);
+    rewind(fptr);
+
+	config = (char *)malloc(fileLength);
+
+	if (config == NULL) {
+		throw new Exception("Failed to allocate memory for config.");
+	}
+
+	/*
+	** Read in the config file...
+	*/
+	bytesRead = fread(config, 1, fileLength, fptr);
+
+	if (bytesRead != fileLength) {
+		throw new Exception("Failed to read in config file.");
+	}
+
+	fclose(fptr);
+
+	pszToken = strtok(config, "=\n\r ");
+
+	while (pszToken != NULL) {
+		if (strcmp(pszToken, "host") == 0) {
+			pszToken = strtok(NULL, "=\n\r ");
+
+			strcpy(this->szHost, pszToken);
+		}
+		else if (strcmp(pszToken, "port") == 0) {
+			pszToken = strtok(NULL, "=\n\r ");
+
+			this->port = atoi(pszToken);
+		}
+		else if (strcmp(pszToken, "basepath") == 0) {
+			pszToken = strtok(NULL, "=\n\r ");
+
+			strcpy(this->szBasePath, pszToken);
+		}
+		else if (strcmp(pszToken, "listenport") == 0) {
+			pszToken = strtok(NULL, "=\n\r ");
+
+			strcpy(this->szListenPort, pszToken);
+		}
+		else {
+			pszToken = strtok(NULL, "=\n\r ");
+		}
+	}
+
+	free(config);
+}
+
 void WebConnector::postTPH(const char * pszPathSuffix, bool save, char * pszTemperature, char * pszPressure, char * pszHumidity)
 {
 	char				szBody[128];
 	char				szWebPath[256];
+
+	QueueMgr & qmgr = QueueMgr::getInstance();
 
 	CurrentTime time;
 
@@ -258,7 +293,10 @@ void WebConnector::postTPH(const char * pszPathSuffix, bool save, char * pszTemp
 	strcpy(szWebPath, this->szBasePath);
 	strcat(szWebPath, pszPathSuffix);
 
-	post(this->szHost, this->port, szWebPath, szBody);
+	/*
+	** Push the post to the queue...
+	*/
+	qmgr.pushWebPost(new PostData(szWebPath, szBody));
 }
 
 void WebConnector::setupListener()
@@ -296,10 +334,4 @@ void WebConnector::listen()
 void WebConnector::registerHandler(const char * pszURI, void (* handler)(struct mg_connection *, int, void *))
 {
 	mg_register_http_endpoint(connection, pszURI, handler);
-}
-
-WebConnector::WebConnector()
-{
-	queryConfig();
-	setupListener();
 }

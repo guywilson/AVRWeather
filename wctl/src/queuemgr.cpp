@@ -94,3 +94,37 @@ bool QueueMgr::isRxQueueEmpty()
 
     return isEmpty;
 }
+
+PostData * QueueMgr::popWebPost()
+{
+    PostData *     pPostData = NULL;
+
+	pthread_mutex_lock(&webPostLock);
+    
+    if (!webPostQueue.empty()) {
+        pPostData = webPostQueue.front();
+        webPostQueue.pop();
+    }
+	
+    pthread_mutex_unlock(&webPostLock);
+
+    return pPostData;
+}
+
+void QueueMgr::pushWebPost(PostData * pPostData)
+{
+	pthread_mutex_lock(&webPostLock);
+    webPostQueue.push(pPostData);
+    pthread_mutex_unlock(&webPostLock);
+}
+
+bool QueueMgr::isWebPostQueueEmpty()
+{
+    bool    isEmpty;
+
+	pthread_mutex_lock(&webPostLock);
+    isEmpty = webPostQueue.empty();
+    pthread_mutex_unlock(&webPostLock);
+
+    return isEmpty;
+}
