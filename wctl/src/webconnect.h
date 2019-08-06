@@ -15,24 +15,43 @@
 class PostData
 {
 private:
-	char *		pszBody;
-	char *		pszPath;
+	char *			pszBody = NULL;
+	char *			pszPath = NULL;
+	const char *	type;
 
 public:
 	PostData() {
 	}
 
-	PostData(char * path, char * body) : PostData() {
+	PostData(const char * type, char * path, char * body) : PostData() {
 		setPath(path);
 		setBody(body);
+
+		this->type = type;
+	}
+
+	void		clean() {
+		if (this->pszBody != NULL) {
+			free(this->pszBody);
+			this->pszBody = NULL;
+		}
+		if (this->pszPath != NULL) {
+			free(this->pszPath);
+			this->pszPath = NULL;
+		}
 	}
 
 	~PostData() {
 		printf("In PostData destructor...\n");
-		free(this->pszPath);
-		free(this->pszBody);
+		clean();
 	}
 
+	const char *	getType() {
+		return this->type;
+	}
+	void			setType(const char * type) {
+		this->type = type;
+	}
 	char *		getBody() {
 		return this->pszBody;
 	}

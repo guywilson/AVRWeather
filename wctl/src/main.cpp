@@ -29,7 +29,6 @@
 using namespace std;
 
 pthread_t			tidTxCmd;
-pthread_t			tidWebPost;
 int					pid_fd = -1;
 char				szAppName[256];
 
@@ -195,45 +194,6 @@ void * txCmdThread(void * pArgs)
 		** Sleep for the remaining 900ms...
 		*/
 		usleep(900000L);
-	}
-
-	return NULL;
-}
-
-void * rxRspThread(void * pArgs)
-{
-	bool				go = true;
-	int					bytesRead;
-	uint8_t				data[MAX_RESPONSE_MESSAGE_LENGTH];
-
-	Logger & log = Logger::getInstance();
-
-	log.logDebug("Got Logger instance");
-
-	SerialPort & port = SerialPort::getInstance();
-
-	log.logDebug("Got serial port instance [%u]", &port);
-
-	while (go) {
-		/*
-		** Read response frame...
-		*/
-		try {
-			log.logDebug("Reading from port");
-			bytesRead = port.receive(data, MAX_RESPONSE_MESSAGE_LENGTH);
-			log.logDebug("Read %d bytes", bytesRead);
-		}
-		catch (Exception * e) {
-			log.logError("Error reading port: %s", e->getMessage().c_str());
-			continue;
-		}
-
-		/*
-		** Process response...
-		*/
-		if (bytesRead) {
-			processResponse(data, bytesRead);
-		}
 	}
 
 	return NULL;
@@ -458,16 +418,6 @@ int main(int argc, char *argv[])
 	}
 	else {
 		log.logInfo("Thread txCmdThread() created successfully");
-	}
-
-	err = pthread_create(&tidWebPost, NULL, &webPostThread, NULL);
-
-	if (err != 0) {
-		log.logError("ERROR! Can't create webPostThread() :[%s]", strerror(err));
-		return -1;
-	}
-	else {
-		log.logInfo("Thread webPostThread() created successfully");
 	}
 
 	WebConnector & web = WebConnector::getInstance();

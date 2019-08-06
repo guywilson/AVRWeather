@@ -13,6 +13,7 @@
 #include "avrweather.h"
 #include "queuemgr.h"
 #include "logger.h"
+#include "csvhelper.h"
 
 extern "C" {
 #include "mongoose.h"
@@ -174,32 +175,6 @@ static void post(const char * pszHost, const int port, const char * pszPath, cha
     free(message);
 }
 
-void * webPostThread(void * pArgs)
-{
-	bool				go = true;
-
-	Logger & log = Logger::getInstance();
-	QueueMgr & qmgr = QueueMgr::getInstance();
-	WebConnector & web = WebConnector::getInstance();
-
-	while (go) {
-		if (!qmgr.isWebPostQueueEmpty()) {
-			PostData * pPostData = qmgr.popWebPost();
-
-			log.logDebug("Posting data to %s [%s]", pPostData->getPath(), pPostData->getBody());
-			post(web.getHost(), web.getPort(), pPostData->getPath(), pPostData->getBody());
-			log.logDebug("Finished post...");
-
-//			delete pPostData;
-		}
-		else {
-			sleep(1);
-		}
-	}
-
-	return NULL;
-}
-
 WebConnector::WebConnector()
 {
 	queryConfig();
@@ -277,8 +252,6 @@ void WebConnector::postTPH(const char * pszPathSuffix, bool save, char * pszTemp
 	char				szBody[128];
 	char				szWebPath[256];
 
-	QueueMgr & qmgr = QueueMgr::getInstance();
-
 	CurrentTime time;
 
 	sprintf(
@@ -293,10 +266,7 @@ void WebConnector::postTPH(const char * pszPathSuffix, bool save, char * pszTemp
 	strcpy(szWebPath, this->szBasePath);
 	strcat(szWebPath, pszPathSuffix);
 
-	/*
-	** Push the post to the queue...
-	*/
-	qmgr.pushWebPost(new PostData(szWebPath, szBody));
+	post(this->getHost(), this->getPort(), szWebPath, szBody);
 }
 
 void WebConnector::setupListener()
