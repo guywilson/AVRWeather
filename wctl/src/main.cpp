@@ -434,7 +434,7 @@ int main(int argc, char *argv[])
 #endif
 
 	try {
-		port.openPort(szPort, SerialPort::mapBaudRate(atoi(szBaud)), true);
+		port.openPort(szPort, SerialPort::mapBaudRate(atoi(szBaud)), false);
 	}
 	catch (Exception * e) {
 		log.logFatal("Failed to open serial port %s", e->getMessage().c_str());

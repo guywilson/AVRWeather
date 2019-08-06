@@ -165,22 +165,29 @@ int SerialPort::_send_serial(uint8_t * pBuffer, int writeLength)
 int SerialPort::_receive_serial(uint8_t * pBuffer, int requestedBytes)
 {
 	int		bytesRead = 0;
+	long	loopTime = 0L;
+	long	loopDelay = 50000L;
+	long	timeout = 300000L;
+	int		i = 0;
 
 	bytesRead = read(fd, pBuffer, requestedBytes);
 
-	log.logDebug("_receive_serial() - [1] Read %d bytes, expecting %d", bytesRead, expectedBytes);
+	log.logDebug("_receive_serial() - [%d] Read %d bytes, expecting %d", i, bytesRead, expectedBytes);
 
 	/*
 	** If we're expecting more bytes than we got
 	** then wait for a bit and try to receive some more...
 	*/
-	if (bytesRead > 0) {
-		if (bytesRead < this->expectedBytes) {
-			usleep(150000L);
-			bytesRead += read(fd, &pBuffer[bytesRead], (requestedBytes - bytesRead));
+	while (bytesRead >= 0 && bytesRead < this->expectedBytes && loopTime < timeout) {
+		usleep(loopDelay);
 
-			log.logDebug("_receive_serial() - [2] Read %d bytes", bytesRead);
-		}
+		loopTime += loopDelay;
+
+		bytesRead += read(fd, &pBuffer[bytesRead], (requestedBytes - bytesRead));
+
+		i++;
+
+		log.logDebug("_receive_serial() - [%d] Read %d bytes", i, bytesRead);
 	}
 
 	/*
