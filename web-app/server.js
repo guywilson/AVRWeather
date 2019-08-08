@@ -195,7 +195,7 @@ app.post('/weather/api/min-tph', function(req, res) {
 	minHumidity = req.body.humidity;
 
 	if (doSave == 'true') {
-		db.putChartData(timestamp, 'MIN', avgTemperature, avgPressure, avgHumidity);		
+		db.putChartData(timestamp, 'MIN', minTemperature, minPressure, minHumidity);		
 	}
 				 
 	res.json(["OK", ""]);
@@ -212,7 +212,7 @@ app.post('/weather/api/max-tph', function(req, res) {
 	maxHumidity = req.body.humidity;
 
 	if (doSave == 'true') {
-		db.putChartData(timestamp, 'MAX', avgTemperature, avgPressure, avgHumidity);		
+		db.putChartData(timestamp, 'MAX', maxTemperature, maxPressure, maxHumidity);		
 }
 	 	
 	res.json(["OK", ""]);
