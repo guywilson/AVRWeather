@@ -13,7 +13,8 @@ SOURCE=src
 BUILD=build
 
 # What is our target
-TARGET=wctl
+WCTL=wctl
+TOGGLERST=toggle
 
 # C compiler
 CPP=g++
@@ -33,7 +34,7 @@ MGFLAGS=
 OBJFILES=$(BUILD)/main.o $(BUILD)/serial.o $(BUILD)/avrweather.o $(BUILD)/frame.o $(BUILD)/currenttime.o $(BUILD)/logger.o $(BUILD)/csvhelper.o $(BUILD)/queuemgr.o $(BUILD)/webconnect.o $(BUILD)/views.o $(BUILD)/exception.o $(BUILD)/mongoose.o
 
 # Target
-all: $(TARGET)
+all: $(WCTL) $(TOGGLERST)
 
 # Compile C source files
 #
@@ -73,8 +74,11 @@ $(BUILD)/exception.o: $(SOURCE)/exception.cpp $(SOURCE)/exception.h $(SOURCE)/ty
 $(BUILD)/mongoose.o: $(SOURCE)/mongoose.c
 	$(C) $(CFLAGS) $(MGFLAGS) -o $(BUILD)/mongoose.o $(SOURCE)/mongoose.c
 
-$(TARGET): $(OBJFILES)
-	$(LINKER) -lpthread -lgpioc -lstdc++ -o $(TARGET) $(OBJFILES)
+$(WCTL): $(OBJFILES)
+	$(LINKER) -lpthread -lgpioc -lstdc++ -o $(WCTL) $(OBJFILES)
+
+$(TOGGLERST): $(SOURCE)/toggle.c
+	$(C) -Wall -lgpioc -o $(TOGGLERST) $(SOURCE)/toggle.c
 
 test: webtest
 

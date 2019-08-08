@@ -21,3 +21,4 @@ togglerst/build/
 togglerst/toggle
 .vscode/c_cpp_properties.json
 wctl/wctl.log
+wctl/toggle
