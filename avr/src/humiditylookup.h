@@ -3,17 +3,17 @@
 #ifndef _INCL_HUMIDITYLOOKUP
 #define _INCL_HUMIDITYLOOKUP
 
-#define HUMIDITY_LOOKUP_BUFFER_SIZE		636
+#define HUMIDITY_LOOKUP_BUFFER_SIZE		700
 
 /*
 ** Minimum sensor output corresponding to 0% RH is 800mv. The minimum
 ** ADC value at 800mv is 163", hence we subtract the offset defined here
 ** from the value before using as the index into the array below...
 */
-#define ADC_HUMIDITY_OFFSET				163
+#define ADC_HUMIDITY_OFFSET				    163
 
 #define ADC_HUMIDITY_MIN					  0
-#define ADC_HUMIDITY_MAX					635
+#define ADC_HUMIDITY_MAX					699
 
 /******************************************************************************
 **
@@ -672,7 +672,71 @@ const char humidity631[] PROGMEM = "99.38";
 const char humidity632[] PROGMEM = "99.54";
 const char humidity633[] PROGMEM = "99.69";
 const char humidity634[] PROGMEM = "99.85";
-const char humidity635[] PROGMEM = "100.00";
+const char humidity635[] PROGMEM = "100.01";
+const char humidity636[] PROGMEM = "100.17";
+const char humidity637[] PROGMEM = "100.32";
+const char humidity638[] PROGMEM = "100.48";
+const char humidity639[] PROGMEM = "100.64";
+const char humidity640[] PROGMEM = "100.80";
+const char humidity641[] PROGMEM = "100.96";
+const char humidity642[] PROGMEM = "101.11";
+const char humidity643[] PROGMEM = "101.27";
+const char humidity644[] PROGMEM = "101.43";
+const char humidity645[] PROGMEM = "101.59";
+const char humidity646[] PROGMEM = "101.74";
+const char humidity647[] PROGMEM = "101.90";
+const char humidity648[] PROGMEM = "102.06";
+const char humidity649[] PROGMEM = "102.22";
+const char humidity650[] PROGMEM = "102.37";
+const char humidity651[] PROGMEM = "102.53";
+const char humidity652[] PROGMEM = "102.69";
+const char humidity653[] PROGMEM = "102.85";
+const char humidity654[] PROGMEM = "103.01";
+const char humidity655[] PROGMEM = "103.16";
+const char humidity656[] PROGMEM = "103.32";
+const char humidity657[] PROGMEM = "103.48";
+const char humidity658[] PROGMEM = "103.64";
+const char humidity659[] PROGMEM = "103.79";
+const char humidity660[] PROGMEM = "103.95";
+const char humidity661[] PROGMEM = "104.11";
+const char humidity662[] PROGMEM = "104.27";
+const char humidity663[] PROGMEM = "104.42";
+const char humidity664[] PROGMEM = "104.58";
+const char humidity665[] PROGMEM = "104.74";
+const char humidity666[] PROGMEM = "104.90";
+const char humidity667[] PROGMEM = "105.05";
+const char humidity668[] PROGMEM = "105.21";
+const char humidity669[] PROGMEM = "105.37";
+const char humidity670[] PROGMEM = "105.53";
+const char humidity671[] PROGMEM = "105.69";
+const char humidity672[] PROGMEM = "105.84";
+const char humidity673[] PROGMEM = "106.00";
+const char humidity674[] PROGMEM = "106.16";
+const char humidity675[] PROGMEM = "106.32";
+const char humidity676[] PROGMEM = "106.47";
+const char humidity677[] PROGMEM = "106.63";
+const char humidity678[] PROGMEM = "106.79";
+const char humidity679[] PROGMEM = "106.95";
+const char humidity680[] PROGMEM = "107.10";
+const char humidity681[] PROGMEM = "107.26";
+const char humidity682[] PROGMEM = "107.42";
+const char humidity683[] PROGMEM = "107.58";
+const char humidity684[] PROGMEM = "107.73";
+const char humidity685[] PROGMEM = "107.89";
+const char humidity686[] PROGMEM = "108.05";
+const char humidity687[] PROGMEM = "108.21";
+const char humidity688[] PROGMEM = "108.37";
+const char humidity689[] PROGMEM = "108.52";
+const char humidity690[] PROGMEM = "108.68";
+const char humidity691[] PROGMEM = "108.84";
+const char humidity692[] PROGMEM = "109.00";
+const char humidity693[] PROGMEM = "109.15";
+const char humidity694[] PROGMEM = "109.31";
+const char humidity695[] PROGMEM = "109.47";
+const char humidity696[] PROGMEM = "109.63";
+const char humidity697[] PROGMEM = "109.78";
+const char humidity698[] PROGMEM = "109.94";
+const char humidity699[] PROGMEM = "110.10";
 
 static PGM_P const humidityLookup[HUMIDITY_LOOKUP_BUFFER_SIZE] PROGMEM = 
 {
@@ -1311,7 +1375,71 @@ humidity631,
 humidity632,
 humidity633,
 humidity634,
-humidity635
+humidity635,
+humidity636,
+humidity637,
+humidity638,
+humidity639,
+humidity640,
+humidity641,
+humidity642,
+humidity643,
+humidity644,
+humidity645,
+humidity646,
+humidity647,
+humidity648,
+humidity649,
+humidity650,
+humidity651,
+humidity652,
+humidity653,
+humidity654,
+humidity655,
+humidity656,
+humidity657,
+humidity658,
+humidity659,
+humidity660,
+humidity661,
+humidity662,
+humidity663,
+humidity664,
+humidity665,
+humidity666,
+humidity667,
+humidity668,
+humidity669,
+humidity670,
+humidity671,
+humidity672,
+humidity673,
+humidity674,
+humidity675,
+humidity676,
+humidity677,
+humidity678,
+humidity679,
+humidity680,
+humidity681,
+humidity682,
+humidity683,
+humidity684,
+humidity685,
+humidity686,
+humidity687,
+humidity688,
+humidity689,
+humidity690,
+humidity691,
+humidity692,
+humidity693,
+humidity694,
+humidity695,
+humidity696,
+humidity697,
+humidity698,
+humidity699
 };
 
 #endif
