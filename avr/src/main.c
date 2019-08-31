@@ -64,7 +64,7 @@ int main(void)
 	 */
 	turnOn(LED_ONBOARD);
 
-	initScheduler(6);
+	initScheduler(NUM_TASKS);
 
 	registerTask(TASK_WDT, &wdtTask);
 	registerTask(TASK_HEARTBEAT, &HeartbeatTask);
