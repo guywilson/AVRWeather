@@ -9,7 +9,8 @@
 #include "rainfall.h"
 #include "taskdef.h"
 
-uint16_t		TPH = 0;
+uint16_t		tips = 0;
+uint16_t		totalTips = 0;
 
 void rainGuageTask(PTASKPARM p)
 {
@@ -18,21 +19,42 @@ void rainGuageTask(PTASKPARM p)
 	** envocation of the task (runs once every hour), from this 
 	** we can calculate the rainfall in mm/hour...
 	*/
-	TPH = getExtIntPin1Count();
+	tips = getExtIntPin1Count();
 	
 	rescheduleTask(TASK_RAINGUAGE, NULL);
 }
 
-int getRainfall(char * pszDest)
+int getAvgRainfall(char * pszDest)
 {
 	PGM_P rainfall;
 
-	if (TPH >= RAINFALL_LOOKUP_BUFFER_SIZE) {
-		TPH = RAINFALL_LOOKUP_BUFFER_SIZE - 1;
+	if (tips >= RAINFALL_LOOKUP_BUFFER_SIZE) {
+		tips = RAINFALL_LOOKUP_BUFFER_SIZE - 1;
 	}
 	
-	memcpy_P(&rainfall, &rainfallLookup[TPH], sizeof(PGM_P));
+	memcpy_P(&rainfall, &rainfallLookup[tips], sizeof(PGM_P));
 	strcpy_P(pszDest, rainfall);
 	
+	totalTips += tips;
+
+	/*
+	** Reset tips per hour
+	*/
+	tips = 0;
+
+	return strlen(pszDest);
+}
+
+int getTotalRainfall(char * pszDest)
+{
+	PGM_P rainfall;
+
+	if (totalTips >= RAINFALL_LOOKUP_BUFFER_SIZE) {
+		totalTips = RAINFALL_LOOKUP_BUFFER_SIZE - 1;
+	}
+	
+	memcpy_P(&rainfall, &rainfallLookup[totalTips], sizeof(PGM_P));
+	strcpy_P(pszDest, rainfall);
+
 	return strlen(pszDest);
 }

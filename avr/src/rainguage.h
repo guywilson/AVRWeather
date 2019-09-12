@@ -5,6 +5,7 @@
 #define RAINGUAGE_AVG_COUNT				64
 
 void 	rainGuageTask(PTASKPARM p);
-int		getRainfall(char * pszDest);
+int		getAvgRainfall(char * pszDest);
+int     getTotalRainfall(char * pszDest);
 
 #endif
