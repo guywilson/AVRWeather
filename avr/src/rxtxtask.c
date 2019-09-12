@@ -10,6 +10,7 @@
 #include "anemometer.h"
 #include "rainguage.h"
 #include "rxtxtask.h"
+#include "version.h"
 
 char		szBuffer[80];
 
@@ -140,6 +141,16 @@ void RxTask(PTASKPARM p)
 
 			case RX_CMD_GET_SCHED_VERSION:
 				strcpy(szBuffer, getSchedulerVersion());
+				i = strlen(szBuffer);
+				
+				txACK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), szBuffer, i);
+				break;
+
+			case RX_CMD_GET_AVR_VERSION:
+				strcpy(szBuffer, getVersion());
+				strcat(szBuffer, " [");
+				strcat(szBuffer, getBuildDate());
+				strcat(szBuffer, "]");
 				i = strlen(szBuffer);
 				
 				txACK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), szBuffer, i);
