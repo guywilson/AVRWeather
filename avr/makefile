@@ -6,6 +6,10 @@
 #                                                                             #
 ###############################################################################
 
+# Version number for WCTL
+MAJOR_VERSION=1
+MINOR_VERSION=2
+
 PROJNAME=avrw
 
 # Target device
@@ -50,6 +54,8 @@ SIZETOOL=avr-size
 
 # Upload tool
 UPLOADTOOL=./upload.sh
+
+VBUILD=vbuild
 
 # C compiler flags
 CFLAGS=-c -O1 -Wall -ffunction-sections -fdata-sections -mmcu=$(DEVICE) -DF_CPU=16000000L -DARDUINO=10804 -D$(BOARD) -DARDUINO_ARCH_AVR -DARCH_SIZE=$(ARCHSIZE)
@@ -131,7 +137,9 @@ $(BUILD)/main.o: $(SRC)/main.c $(SRC)/heartbeat.h $(SRC)/wdttask.h $(SRC)/adctas
 #
 ###############################################################################
 $(BUILD)/$(ELF): $(OBJFILES)
-	$(LINKER) $(LFLAGS) -o $(BUILD)/$(ELF) $(OBJFILES) -lm -lsched
+	$(VBUILD) -incfile avrw.ver -template version.c.template -out $(SRC)/version.c -major $(MAJOR_VERSION) -minor $(MINOR_VERSION)
+	$(CC) $(CFLAGS) -o $(BUILD)/version.o $(SRC)/version.c
+	$(LINKER) $(LFLAGS) -o $(BUILD)/$(ELF) $(OBJFILES) $(BUILD)/version.o -lm -lsched
 	$(OBJDUMP) $(OBJDUMPFLAGS) $(BUILD)/$(ELF) > $(PROJNAME).s
 
 ###############################################################################
