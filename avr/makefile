@@ -7,140 +7,59 @@
 ###############################################################################
 
 # Version number for WCTL
-MAJOR_VERSION=1
-MINOR_VERSION=2
+MAJOR_VERSION = 1
+MINOR_VERSION = 2
 
-PROJNAME=avrw
-
-# Target device
-DEVICE=atmega328p
-
-# Target board
-BOARD=ARDUINO_AVR_UNO
-
-# Baud rate for serial comms
-BAUD=115200
-
-# Baud rate tolerance for serial comms
-BAUD_TOL=0
-
-# Target architecture size
-ARCHSIZE=8
+PROJNAME = avrw
+DEVICE = atmega328p
+BOARD = ARDUINO_AVR_UNO
+BAUD = 115200
+BAUD_TOL = 0
+ARCHSIZE = 8
 
 # What is our target
-ELF=$(PROJNAME).elf
-TARGET=$(PROJNAME).hex
+ELF = $(PROJNAME).elf
+TARGET = $(PROJNAME).hex
 
-# Build output directory
-BUILD=build
+# Directories
+BUILD = build
+SOURCE = src
+DEP = dep
 
-# Source directory
-SRC=src
+# Tools
+CC = avr-gcc
+LINKER = avr-gcc
+OBJCOPY = avr-objcopy
+OBJDUMP = avr-objdump
+SIZETOOL = avr-size
+UPLOADTOOL = ./upload.sh
+VBUILD = vbuild
 
-# C compiler
-CC=avr-gcc
+# postcompile step
+PRECOMPILE = @ mkdir -p $(BUILD) $(DEP)
 
-# Linker
-LINKER=avr-gcc
+# postcompile step
+POSTCOMPILE = @ mv -f $(DEP)/$*.Td $(DEP)/$*.d
 
-# Hex file creator
-OBJCOPY=avr-objcopy
+CFLAGS = -c -O1 -Wall -ffunction-sections -fdata-sections -mmcu=$(DEVICE) -DF_CPU=16000000L -DARDUINO=10804 -D$(BOARD) -DARDUINO_ARCH_AVR -DARCH_SIZE=$(ARCHSIZE) -DBAUD=$(BAUD) -DBAUD_TOL=$(BAUD_TOL)
+DEPFLAGS = -MT $@ -MMD -MP -MF $(DEP)/$*.Td
+LFLAGS = -fuse-linker-plugin -Wl,--gc-sections -mmcu=$(DEVICE)
+OBJCOPYFLAGS = -O ihex -R .eeprom
+OBJDUMPFLAGS = -I $(SRC) -f -s -l -S
+SFLAGS = -C --mcu=$(DEVICE)
 
-# Assembly dump tool
-OBJDUMP=avr-objdump
+# Libraries
+STDLIBS = -lm -lsched
 
-# Size tool
-SIZETOOL=avr-size
+COMPILE.c = $(CC) $(CFLAGS) $(DEPFLAGS) -o $@
+LINK.o = $(LINKER) $(LFLAGS) -o $@
 
-# Upload tool
-UPLOADTOOL=./upload.sh
-
-VBUILD=vbuild
-
-# C compiler flags
-CFLAGS=-c -O1 -Wall -ffunction-sections -fdata-sections -mmcu=$(DEVICE) -DF_CPU=16000000L -DARDUINO=10804 -D$(BOARD) -DARDUINO_ARCH_AVR -DARCH_SIZE=$(ARCHSIZE)
-
-# Linker flags
-LFLAGS=-fuse-linker-plugin -Wl,--gc-sections -mmcu=$(DEVICE)
-
-# Hex file creator flags
-OBJCOPYFLAGS=-O ihex -R .eeprom
-
-#Obj dump flags
-OBJDUMPFLAGS=-I $(SRC) -f -s -l -S
-
-# Size tool flags
-SFLAGS=-C --mcu=$(DEVICE)
-
-# Object files
-OBJFILES=$(BUILD)/led_utils.o $(BUILD)/heartbeat.o $(BUILD)/wdttask.o $(BUILD)/adctask.o $(BUILD)/anemometer.o $(BUILD)/rainguage.o $(BUILD)/wdt_atmega328p.o $(BUILD)/isr_atmega328p.o $(BUILD)/rtc_atmega328p.o $(BUILD)/serial_atmega328p.o $(BUILD)/adc_atmega328p.o $(BUILD)/extint_atmega328p.o $(BUILD)/pwm_atmega328p.o $(BUILD)/error_atmega328p.o $(BUILD)/rxtxtask.o $(BUILD)/main.o
+CSRCFILES = $(wildcard $(SOURCE)/*.c)
+OBJFILES = $(patsubst $(SOURCE)/%.c, $(BUILD)/%.o, $(CSRCFILES))
+DEPFILES = $(patsubst $(SOURCE)/%.c, $(DEP)/%.d, $(CSRCFILES))
 
 # Target
 all: $(TARGET)
-
-###############################################################################
-#
-# Project files
-#
-###############################################################################
-$(BUILD)/led_utils.o: $(SRC)/led_utils.c $(SRC)/led_utils.h
-	$(CC) $(CFLAGS) -o $(BUILD)/led_utils.o $(SRC)/led_utils.c
-
-$(BUILD)/heartbeat.o: $(SRC)/heartbeat.c $(SRC)/heartbeat.h $(SRC)/led_utils.h $(SRC)/taskdef.h
-	$(CC) $(CFLAGS) -o $(BUILD)/heartbeat.o $(SRC)/heartbeat.c
-
-$(BUILD)/wdttask.o: $(SRC)/wdttask.c $(SRC)/wdttask.h $(SRC)/taskdef.h
-	$(CC) $(CFLAGS) -o $(BUILD)/wdttask.o $(SRC)/wdttask.c
-
-$(BUILD)/adctask.o: $(SRC)/adctask.c $(SRC)/adctask.h $(SRC)/taskdef.h $(SRC)/adc_atmega328p.h $(SRC)/templookup.h $(SRC)/mbarlookup.h $(SRC)/humiditylookup.h
-	$(CC) $(CFLAGS) -o $(BUILD)/adctask.o $(SRC)/adctask.c
-
-$(BUILD)/anemometer.o: $(SRC)/anemometer.c $(SRC)/anemometer.h $(SRC)/spi_atmega328p.h $(SRC)/kphlookup.h $(SRC)/taskdef.h
-	$(CC) $(CFLAGS) -o $(BUILD)/anemometer.o $(SRC)/anemometer.c
-
-$(BUILD)/rainguage.o: $(SRC)/rainguage.c $(SRC)/rainguage.h $(SRC)/rainfall.h $(SRC)/spi_atmega328p.h $(SRC)/taskdef.h
-	$(CC) $(CFLAGS) -o $(BUILD)/rainguage.o $(SRC)/rainguage.c
-
-$(BUILD)/wdt_atmega328p.o: $(SRC)/wdt_atmega328p.c $(SRC)/wdt_atmega328p.h
-	$(CC) $(CFLAGS) -o $(BUILD)/wdt_atmega328p.o $(SRC)/wdt_atmega328p.c
-
-$(BUILD)/isr_atmega328p.o: $(SRC)/isr_atmega328p.c $(SRC)/rtc_atmega328p.h $(SRC)/adc_atmega328p.h $(SRC)/serial_atmega328p.h
-	$(CC) $(CFLAGS) -o $(BUILD)/isr_atmega328p.o $(SRC)/isr_atmega328p.c
-
-$(BUILD)/rtc_atmega328p.o: $(SRC)/rtc_atmega328p.c $(SRC)/rtc_atmega328p.h
-	$(CC) $(CFLAGS) -o $(BUILD)/rtc_atmega328p.o $(SRC)/rtc_atmega328p.c
-
-$(BUILD)/extint_atmega328p.o: $(SRC)/extint_atmega328p.c $(SRC)/extint_atmega328p.h $(SRC)/rtc_atmega328p.h
-	$(CC) $(CFLAGS) -o $(BUILD)/extint_atmega328p.o $(SRC)/extint_atmega328p.c
-
-$(BUILD)/adc_atmega328p.o: $(SRC)/adc_atmega328p.c $(SRC)/adc_atmega328p.h $(SRC)/adctask.h $(SRC)/taskdef.h
-	$(CC) $(CFLAGS) -o $(BUILD)/adc_atmega328p.o $(SRC)/adc_atmega328p.c
-
-$(BUILD)/pwm_atmega328p.o: $(SRC)/pwm_atmega328p.c $(SRC)/pwm_atmega328p.h
-	$(CC) $(CFLAGS) -o $(BUILD)/pwm_atmega328p.o $(SRC)/pwm_atmega328p.c
-
-$(BUILD)/serial_atmega328p.o: $(SRC)/serial_atmega328p.c $(SRC)/serial_atmega328p.h $(SRC)/rtc_atmega328p.h $(SRC)/rxtxmsgdef.h $(SRC)/taskdef.h
-	$(CC) $(CFLAGS) -DBAUD=$(BAUD) -DBAUD_TOL=$(BAUD_TOL) -o $(BUILD)/serial_atmega328p.o $(SRC)/serial_atmega328p.c
-
-$(BUILD)/error_atmega328p.o: $(SRC)/error_atmega328p.c $(SRC)/led_utils.h
-	$(CC) $(CFLAGS) -o $(BUILD)/error_atmega328p.o $(SRC)/error_atmega328p.c
-
-$(BUILD)/rxtxtask.o: $(SRC)/rxtxtask.c $(SRC)/rxtxtask.h $(SRC)/taskdef.h $(SRC)/serial_atmega328p.h $(SRC)/adctask.h $(SRC)/anemometer.h $(SRC)/rainguage.h
-	$(CC) $(CFLAGS) -o $(BUILD)/rxtxtask.o $(SRC)/rxtxtask.c
-
-$(BUILD)/main.o: $(SRC)/main.c $(SRC)/heartbeat.h $(SRC)/wdttask.h $(SRC)/adctask.h $(SRC)/anemometer.h $(SRC)/rainguage.h $(SRC)/taskdef.h $(SRC)/led_utils.h $(SRC)/wdt_atmega328p.h $(SRC)/rtc_atmega328p.h $(SRC)/adc_atmega328p.h $(SRC)/extint_atmega328p.h $(SRC)/pwm_atmega328p.h $(SRC)/spi_atmega328p.h
-	$(CC) $(CFLAGS) -o $(BUILD)/main.o $(SRC)/main.c
-
-###############################################################################
-#
-# Link it all together into an ELF format file
-#
-###############################################################################
-$(BUILD)/$(ELF): $(OBJFILES)
-	$(VBUILD) -incfile avrw.ver -template version.c.template -out $(SRC)/version.c -major $(MAJOR_VERSION) -minor $(MINOR_VERSION)
-	$(CC) $(CFLAGS) -o $(BUILD)/version.o $(SRC)/version.c
-	$(LINKER) $(LFLAGS) -o $(BUILD)/$(ELF) $(OBJFILES) $(BUILD)/version.o -lm -lsched
-	$(OBJDUMP) $(OBJDUMPFLAGS) $(BUILD)/$(ELF) > $(PROJNAME).s
 
 ###############################################################################
 #
@@ -148,8 +67,35 @@ $(BUILD)/$(ELF): $(OBJFILES)
 #
 ###############################################################################
 $(TARGET): $(BUILD)/$(ELF)
-	$(OBJCOPY) $(OBJCOPYFLAGS) $(BUILD)/$(ELF) $(TARGET)
-	$(SIZETOOL) $(SFLAGS) $(BUILD)/$(ELF)
+	$(OBJCOPY) $(OBJCOPYFLAGS) $< $@
+	$(SIZETOOL) $(SFLAGS) $<
+
+###############################################################################
+#
+# Link it all together into an ELF format file
+#
+###############################################################################
+$(BUILD)/$(ELF): $(OBJFILES)
+	$(VBUILD) -incfile avrw.ver -template version.c.template -out $(SOURCE)/version.c -major $(MAJOR_VERSION) -minor $(MINOR_VERSION)
+	$(CC) $(CFLAGS) -o $(BUILD)/version.o $(SOURCE)/version.c
+	$(LINK.o) $^ $(STDLIBS)
+	$(OBJDUMP) $(OBJDUMPFLAGS) $@ > $(PROJNAME).s
+
+###############################################################################
+#
+# C Project files
+#
+###############################################################################
+$(BUILD)/%.o: $(SOURCE)/%.c
+$(BUILD)/%.o: $(SOURCE)/%.c $(DEP)/%.d
+	$(PRECOMPILE)
+	$(COMPILE.c) $<
+	$(POSTCOMPILE)
+
+.PRECIOUS = $(DEP)/%.d
+$(DEP)/%.d: ;
+
+-include $(DEPFILES)
 
 ###############################################################################
 #

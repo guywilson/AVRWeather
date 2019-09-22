@@ -3,7 +3,9 @@
 #include <avr/interrupt.h>
 
 #include <scheduler.h>
+#include "rtc_atmega328p.h"
 #include "taskdef.h"
+#include "spi_atmega328p.h"
 
 #define NUM_CHANNELS		2
 

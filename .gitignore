@@ -1,4 +1,5 @@
 avr/build/
+avr/dep/
 avr/avrw.s
 avr/avrw.hex
 .vscode/launch.json
