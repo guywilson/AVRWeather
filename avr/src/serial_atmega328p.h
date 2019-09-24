@@ -67,6 +67,8 @@
 #define RX_CMD_WDT_DISABLE			0x08
 #define RX_CMD_GET_SCHED_VERSION	0x09
 #define RX_CMD_GET_AVR_VERSION		0x0A
+#define RX_CMD_GET_CALIBRATION_DATA	0x0B
+#define RX_CMD_SET_CALIBRATION_DATA	0x0C
 
 #define RX_RSP_PING					(RX_CMD_PING << 4)
 #define RX_RSP_AVG_TPH				(RX_CMD_AVG_TPH << 4)
@@ -79,6 +81,8 @@
 #define RX_RSP_WDT_DISABLE			(RX_CMD_WDT_DISABLE << 4)
 #define RX_RSP_GET_SCHED_VERSION	(RX_CMD_GET_SCHED_VERSION << 4)
 #define RX_RSP_GET_AVR_VERSION		(RX_CMD_GET_AVR_VERSION << 4)
+#define RX_RSP_GET_CALIBRATION_DATA	(RX_CMD_GET_CALIBRATION_DATA << 4)
+#define RX_RSP_SET_CALIBRATION_DATA	(RX_CMD_SET_CALIBRATION_DATA << 4)
 
 typedef struct {
 	uint8_t			start;
@@ -117,7 +121,8 @@ void txmsg(uint8_t * pMsg, uint8_t dataLength);
 
 uint8_t * getNakFrame(uint8_t messageID, uint8_t responseCode, uint8_t nakCode);
 void txNAK(uint8_t messageID, uint8_t responseCode, uint8_t nakCode);
-void txACK(uint8_t messageID, uint8_t responseCode, char * pData, int dataLength);
+void txACKStr(uint8_t messageID, uint8_t responseCode, char * pData, int dataLength);
+void txACK(uint8_t messageID, uint8_t responseCode, uint8_t * pData, int dataLength);
 
 PRXMSGSTRUCT allocateRxMsgStruct();
 void freeRxMsgStruct(PRXMSGSTRUCT m);

@@ -76,8 +76,6 @@ $(TARGET): $(BUILD)/$(ELF)
 #
 ###############################################################################
 $(BUILD)/$(ELF): $(OBJFILES)
-	$(VBUILD) -incfile avrw.ver -template version.c.template -out $(SOURCE)/version.c -major $(MAJOR_VERSION) -minor $(MINOR_VERSION)
-	$(CC) $(CFLAGS) -o $(BUILD)/version.o $(SOURCE)/version.c
 	$(LINK.o) $^ $(STDLIBS)
 	$(OBJDUMP) $(OBJDUMPFLAGS) $@ > $(PROJNAME).s
 
@@ -105,6 +103,9 @@ $(DEP)/%.d: ;
 install: $(TARGET)
 	$(UPLOADTOOL) $(DEVICE) $(TARGET)
 	
+version:
+	$(VBUILD) -incfile avrw.ver -template version.c.template -out $(SOURCE)/version.c -major $(MAJOR_VERSION) -minor $(MINOR_VERSION)
+
 clean: 
 	rm $(BUILD)/*
 	rm $(PROJNAME).s

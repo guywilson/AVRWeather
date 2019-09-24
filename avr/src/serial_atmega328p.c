@@ -144,7 +144,35 @@ void txNAK(uint8_t messageID, uint8_t responseCode, uint8_t nakCode)
 	txmsg(pNakFrame, NUM_NAK_RSP_FRAME_BYTES);
 }
 
-void txACK(uint8_t messageID, uint8_t responseCode, char * pData, int dataLength)
+void txACKStr(uint8_t messageID, uint8_t responseCode, char * pData, int dataLength)
+{
+	int				i = 0;
+	uint16_t		checksum = 0;
+
+	memset(ackFrame, 0, 80);
+
+	ackFrame[0] = MSG_CHAR_START;
+	ackFrame[1] = (uint8_t)((dataLength + 3) & 0x00FF);
+	ackFrame[2] = messageID;
+	ackFrame[3] = responseCode;
+	ackFrame[4] = MSG_CHAR_ACK;
+
+	checksum = ackFrame[2] + ackFrame[3] + ackFrame[4];
+
+	if (dataLength > 0) {
+		for (i = 0;i < dataLength;i++) {
+			ackFrame[i + 5] = pData[i];
+			checksum += pData[i];
+		}
+	}
+
+	ackFrame[i + 5] = (uint8_t)(0x00FF - (checksum & 0x00FF));
+	ackFrame[i + 6] = MSG_CHAR_END;
+
+	txmsg(ackFrame, dataLength + NUM_ACK_RSP_FRAME_BYTES);
+}
+
+void txACK(uint8_t messageID, uint8_t responseCode, uint8_t * pData, int dataLength)
 {
 	int				i = 0;
 	uint16_t		checksum = 0;

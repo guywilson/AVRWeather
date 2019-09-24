@@ -5,6 +5,7 @@
 
 #include <scheduler.h>
 #include "serial_atmega328p.h"
+#include "calibration.h"
 #include "taskdef.h"
 #include "adctask.h"
 #include "wdttask.h"
@@ -13,9 +14,11 @@
 #include "rxtxtask.h"
 #include "version.h"
 
-char		szBuffer[80];
-uint32_t	idleCount = 0;
-uint32_t	busyCount = 0;
+char				szBuffer[80];
+uint32_t			idleCount = 0;
+uint32_t			busyCount = 0;
+
+CALIBRATION_DATA	calibrationData;
 
 void RxTask(PTASKPARM p)
 {
@@ -59,7 +62,7 @@ void RxTask(PTASKPARM p)
 				// Null terminate string...
 				szBuffer[i] = 0;
 
-				txACK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), szBuffer, i);
+				txACKStr(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), szBuffer, i);
 				break;
 
 			case RX_CMD_MAX_TPH:
@@ -90,7 +93,7 @@ void RxTask(PTASKPARM p)
 				// Null terminate string...
 				szBuffer[i] = 0;
 
-				txACK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), szBuffer, i);
+				txACKStr(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), szBuffer, i);
 				break;
 
 			case RX_CMD_MIN_TPH:
@@ -121,12 +124,12 @@ void RxTask(PTASKPARM p)
 				// Null terminate string...
 				szBuffer[i] = 0;
 
-				txACK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), szBuffer, i);
+				txACKStr(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), szBuffer, i);
 				break;
 
 			case RX_CMD_RESET_MINMAX:
 				resetMinMax();
-				txACK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), NULL, 0);
+				txACKStr(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), NULL, 0);
 				break;
 
 			case RX_CMD_CPU_PERCENTAGE:
@@ -142,7 +145,7 @@ void RxTask(PTASKPARM p)
 
 				i = strlen(szBuffer);
 
-				txACK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), szBuffer, i);
+				txACKStr(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), szBuffer, i);
 				break;
 
 			case RX_CMD_WINDSPEED:
@@ -165,7 +168,7 @@ void RxTask(PTASKPARM p)
 				// Null terminate string...
 				szBuffer[i] = 0;
 
-				txACK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), szBuffer, i);
+				txACKStr(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), szBuffer, i);
 				break;
 
 			case RX_CMD_RAINFALL:
@@ -188,19 +191,19 @@ void RxTask(PTASKPARM p)
 				// Null terminate string...
 				szBuffer[i] = 0;
 
-				txACK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), szBuffer, i);
+				txACKStr(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), szBuffer, i);
 				break;
 
 			case RX_CMD_WDT_DISABLE:
 				disableWDTReset();
-				txACK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), NULL, 0);
+				txACKStr(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), NULL, 0);
 				break;
 
 			case RX_CMD_GET_SCHED_VERSION:
 				strcpy(szBuffer, getSchedulerVersion());
 				i = strlen(szBuffer);
 				
-				txACK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), szBuffer, i);
+				txACKStr(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), szBuffer, i);
 				break;
 
 			case RX_CMD_GET_AVR_VERSION:
@@ -210,11 +213,28 @@ void RxTask(PTASKPARM p)
 				strcat(szBuffer, "]");
 				i = strlen(szBuffer);
 				
-				txACK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), szBuffer, i);
+				txACKStr(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), szBuffer, i);
+				break;
+
+			case RX_CMD_GET_CALIBRATION_DATA:
+				readCalibrationData(&calibrationData);
+				txACK(
+					pMsgStruct->frame.msgID, 
+					(pMsgStruct->frame.cmd << 4), 
+					(uint8_t *)&calibrationData, 
+					sizeof(CALIBRATION_DATA));
+				break;
+
+			case RX_CMD_SET_CALIBRATION_DATA:
+				memcpy(&calibrationData, pMsgStruct->frame.data, pMsgStruct->frame.cmdFrameLength - 2);
+
+				writeCalibrationData(&calibrationData);
+
+				txACKStr(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), NULL, 0);
 				break;
 
 			case RX_CMD_PING:
-				txACK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), NULL, 0);
+				txACKStr(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), NULL, 0);
 				break;
 
 			default:
