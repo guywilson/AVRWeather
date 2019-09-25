@@ -1,5 +1,7 @@
 #include <avr/pgmspace.h>
 
+#include "types.h"
+
 #ifndef _INCL_HUMIDITYLOOKUP
 #define _INCL_HUMIDITYLOOKUP
 
@@ -37,6 +39,14 @@
 ** macro to get the far pointer to the flash ROM.
 **
 ******************************************************************************/
+
+const decimal24_t humid0 PROGMEM = populate_decimal(1, 15);
+
+static PGM_VOID_P const humidLookup[HUMIDITY_LOOKUP_BUFFER_SIZE] PROGMEM = 
+{
+    &humid0
+};
+
 const char humidity0[] PROGMEM = "0.00";
 const char humidity1[] PROGMEM = "0.05";
 const char humidity2[] PROGMEM = "0.21";
