@@ -19,6 +19,7 @@ uint32_t			idleCount = 0;
 uint32_t			busyCount = 0;
 
 CALIBRATION_DATA	calibrationData;
+TPH					tph;
 
 void RxTask(PTASKPARM p)
 {
@@ -35,96 +36,27 @@ void RxTask(PTASKPARM p)
 	else {
 		switch (pMsgStruct->frame.cmd) {
 			case RX_CMD_AVG_TPH:
-				szBuffer[i++] = 'T';
-				szBuffer[i++] = ':';
+				tph.temperature = getTemperature(QUERY_TYPE_AVG);
+				tph.pressure = getPressure(QUERY_TYPE_AVG);
+				tph.humidity = getHumidity(QUERY_TYPE_AVG);
 
-				valueLen = getTemperature(QUERY_TYPE_AVG, &szBuffer[i]);
-
-				szBuffer[i + valueLen] = ';';
-				i += valueLen + 1;
-
-				szBuffer[i++] = 'P';
-				szBuffer[i++] = ':';
-
-				valueLen = getPressure(QUERY_TYPE_AVG, &szBuffer[i]);
-
-				szBuffer[i + valueLen] = ';';
-				i += valueLen + 1;
-
-				szBuffer[i++] = 'H';
-				szBuffer[i++] = ':';
-
-				valueLen = getHumidity(QUERY_TYPE_AVG, &szBuffer[i]);
-
-				szBuffer[i + valueLen] = ';';
-				i += valueLen + 1;
-
-				// Null terminate string...
-				szBuffer[i] = 0;
-
-				txACKStr(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), szBuffer, i);
+				txACK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), (uint8_t *)(&tph), sizeof(TPH));
 				break;
 
 			case RX_CMD_MAX_TPH:
-				szBuffer[i++] = 'T';
-				szBuffer[i++] = ':';
+				tph.temperature = getTemperature(QUERY_TYPE_MAX);
+				tph.pressure = getPressure(QUERY_TYPE_MAX);
+				tph.humidity = getHumidity(QUERY_TYPE_MAX);
 
-				valueLen = getTemperature(QUERY_TYPE_MAX, &szBuffer[i]);
-
-				szBuffer[i + valueLen] = ';';
-				i += valueLen + 1;
-
-				szBuffer[i++] = 'P';
-				szBuffer[i++] = ':';
-
-				valueLen = getPressure(QUERY_TYPE_MAX, &szBuffer[i]);
-
-				szBuffer[i + valueLen] = ';';
-				i += valueLen + 1;
-
-				szBuffer[i++] = 'H';
-				szBuffer[i++] = ':';
-
-				valueLen = getHumidity(QUERY_TYPE_MAX, &szBuffer[i]);
-
-				szBuffer[i + valueLen] = ';';
-				i += valueLen + 1;
-
-				// Null terminate string...
-				szBuffer[i] = 0;
-
-				txACKStr(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), szBuffer, i);
+				txACK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), (uint8_t *)(&tph), sizeof(TPH));
 				break;
 
 			case RX_CMD_MIN_TPH:
-				szBuffer[i++] = 'T';
-				szBuffer[i++] = ':';
+				tph.temperature = getTemperature(QUERY_TYPE_MIN);
+				tph.pressure = getPressure(QUERY_TYPE_MIN);
+				tph.humidity = getHumidity(QUERY_TYPE_MIN);
 
-				valueLen = getTemperature(QUERY_TYPE_MIN, &szBuffer[i]);
-
-				szBuffer[i + valueLen] = ';';
-				i += valueLen + 1;
-
-				szBuffer[i++] = 'P';
-				szBuffer[i++] = ':';
-
-				valueLen = getPressure(QUERY_TYPE_MIN, &szBuffer[i]);
-
-				szBuffer[i + valueLen] = ';';
-				i += valueLen + 1;
-
-				szBuffer[i++] = 'H';
-				szBuffer[i++] = ':';
-
-				valueLen = getHumidity(QUERY_TYPE_MIN, &szBuffer[i]);
-
-				szBuffer[i + valueLen] = ';';
-				i += valueLen + 1;
-
-				// Null terminate string...
-				szBuffer[i] = 0;
-
-				txACKStr(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), szBuffer, i);
+				txACK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), (uint8_t *)(&tph), sizeof(TPH));
 				break;
 
 			case RX_CMD_RESET_MINMAX:

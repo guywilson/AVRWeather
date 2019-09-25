@@ -11,6 +11,7 @@
 #include "mbarlookup.h"
 #include "humiditylookup.h"
 #include "templookup.h"
+#include "types.h"
 
 #define MOVING_AVG_ENABLE
 
@@ -131,9 +132,9 @@ uint16_t getADCMin(uint8_t channel)
 	return adcMin[channel];
 }
 
-int getHumidity(int queryType, char * pszDest)
+decimal24_t getHumidity(int queryType)
 {
-	PGM_P		humidity;
+	decimal24_t	humidity = populate_decimal(0, 0);
 	uint16_t	adcValue;
 	uint8_t		channel = ADC_CHANNEL0;
 
@@ -155,25 +156,18 @@ int getHumidity(int queryType, char * pszDest)
 			break;
 	}
 
-	if (adcValue < ADC_HUMIDITY_OFFSET) {
-		strcpy(pszDest, "-ERR");
-	}
-	else if (adcValue > (ADC_HUMIDITY_MAX + ADC_HUMIDITY_OFFSET)) {
-		strcpy(pszDest, "+ERR");
-	}
-	else {
+	if (adcValue >= ADC_HUMIDITY_OFFSET && adcValue < (ADC_HUMIDITY_MAX + ADC_HUMIDITY_OFFSET)) {
 		adcValue -= ADC_HUMIDITY_OFFSET;
 
-		memcpy_P(&humidity, &humidityLookup[adcValue], sizeof(PGM_P));
-		strcpy_P(pszDest, humidity);
+		memcpy_P(&humidity, &humidityLookup[adcValue], sizeof(PGM_VOID_P));
 	}
 
-	return strlen(pszDest);
+	return humidity;
 }
 
-int getPressure(int queryType, char * pszDest)
+decimal24_t getPressure(int queryType)
 {
-	PGM_P		pressure;
+	decimal24_t	pressure = populate_decimal(0, 0);
 	uint16_t	adcValue;
 	uint8_t		channel = ADC_CHANNEL1;
 
@@ -195,25 +189,18 @@ int getPressure(int queryType, char * pszDest)
 			break;
 	}
 
-	if (adcValue < ADC_MBAR_OFFSET) {
-		strcpy(pszDest, "-ERR");
-	}
-	else if (adcValue > (ADC_MBAR_MAX + ADC_MBAR_OFFSET)) {
-		strcpy(pszDest, "+ERR");
-	}
-	else {
+	if (adcValue >= ADC_MBAR_OFFSET && adcValue < (ADC_MBAR_MAX + ADC_MBAR_OFFSET)) {
 		adcValue -= ADC_MBAR_OFFSET;
 
-		memcpy_P(&pressure, &mbarLookup[adcValue], sizeof(PGM_P));
-		strcpy_P(pszDest, pressure);
+		memcpy_P(&pressure, &mbarLookup[adcValue], sizeof(PGM_VOID_P));
 	}
 
-	return strlen(pszDest);
+	return pressure;
 }
 
-int getTemperature(int queryType, char * pszDest)
+decimal24_t getTemperature(int queryType)
 {
-	PGM_P		temperature;
+	decimal24_t	temperature = populate_decimal(0, 0);
 	int16_t		adcValue;
 	uint8_t		channel = ADC_CHANNEL2;
 
@@ -235,18 +222,11 @@ int getTemperature(int queryType, char * pszDest)
 			break;
 	}
 
-	if (adcValue < ADC_TEMP_OFFSET) {
-		strcpy(pszDest, "-ERR");
-	}
-	else if (adcValue > (ADC_TEMP_MAX + ADC_TEMP_OFFSET)) {
-		strcpy(pszDest, "+ERR");
-	}
-	else {
+	if (adcValue >= ADC_TEMP_OFFSET && adcValue < (ADC_TEMP_MAX + ADC_TEMP_OFFSET)) {
 		adcValue -= ADC_TEMP_OFFSET;
 
-		memcpy_P(&temperature, &tempLookup[adcValue], sizeof(PGM_P));
-		strcpy_P(pszDest, temperature);
+		memcpy_P(&temperature, &tempLookup[adcValue], sizeof(PGM_VOID_P));
 	}
 	
-	return strlen(pszDest);
+	return temperature;
 }

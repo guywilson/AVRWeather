@@ -1,4 +1,5 @@
 #include "adc_atmega328p.h"
+#include "types.h"
 
 #ifndef _INCL_ADCTASK
 #define _INCL_ADCTASK
@@ -33,8 +34,8 @@ void		ADCTask(PTASKPARM p);
 uint16_t	getADCAverage(uint8_t channel);
 uint16_t	getADCMax(uint8_t channel);
 uint16_t	getADCMin(uint8_t channel);
-int 		getPressure(int queryType, char * pszDest);
-int 		getHumidity(int queryType, char * pszDest);
-int 		getTemperature(int queryType, char * pszDest);
+decimal24_t getPressure(int queryType);
+decimal24_t getHumidity(int queryType);
+decimal24_t getTemperature(int queryType);
 
 #endif
