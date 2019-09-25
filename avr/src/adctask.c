@@ -159,7 +159,7 @@ decimal24_t getHumidity(int queryType)
 	if (adcValue >= ADC_HUMIDITY_OFFSET && adcValue < (ADC_HUMIDITY_MAX + ADC_HUMIDITY_OFFSET)) {
 		adcValue -= ADC_HUMIDITY_OFFSET;
 
-		memcpy_P(&humidity, &humidityLookup[adcValue], sizeof(decimal24_t));
+		memcpy_P(&humidity, humidityLookup[adcValue], sizeof(decimal24_t));
 	}
 
 	return humidity;
@@ -192,7 +192,7 @@ decimal24_t getPressure(int queryType)
 	if (adcValue >= ADC_MBAR_OFFSET && adcValue < (ADC_MBAR_MAX + ADC_MBAR_OFFSET)) {
 		adcValue -= ADC_MBAR_OFFSET;
 
-		memcpy_P(&pressure, &mbarLookup[adcValue], sizeof(decimal24_t));
+		memcpy_P(&pressure, mbarLookup[adcValue], sizeof(decimal24_t));
 	}
 
 	return pressure;
@@ -225,7 +225,7 @@ decimal24_t getTemperature(int queryType)
 	if (adcValue >= ADC_TEMP_OFFSET && adcValue < (ADC_TEMP_MAX + ADC_TEMP_OFFSET)) {
 		adcValue -= ADC_TEMP_OFFSET;
 
-		memcpy_P(&temperature, &tempLookup[adcValue], sizeof(decimal24_t));
+		memcpy_P(&temperature, tempLookup[adcValue], sizeof(decimal24_t));
 	}
 	
 	return temperature;
