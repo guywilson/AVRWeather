@@ -8,7 +8,7 @@
 
 # Version number for WCTL
 MAJOR_VERSION = 1
-MINOR_VERSION = 2
+MINOR_VERSION = 3
 
 PROJNAME = avrw
 DEVICE = atmega328p
