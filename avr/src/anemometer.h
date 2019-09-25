@@ -1,3 +1,5 @@
+#include "types.h"
+
 #ifndef _INCL_ANEMOMETER
 #define _INCL_ANONOMETER
 
@@ -8,7 +10,7 @@
 
 void		anemometerTask(PTASKPARM p);
 uint16_t	getAvgRPS(void);
-int 		getAvgWindSpeed(char * pszDest);
-int			getMaxWindSpeed(char * pszDest);
+decimal24_t getAvgWindSpeed();
+decimal24_t	getMaxWindSpeed();
 
 #endif

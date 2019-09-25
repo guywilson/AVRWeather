@@ -8,6 +8,7 @@
 #include "rainguage.h"
 #include "rainfall.h"
 #include "taskdef.h"
+#include "types.h"
 
 uint16_t		tips = 0;
 uint16_t		totalTips = 0;
@@ -24,16 +25,15 @@ void rainGuageTask(PTASKPARM p)
 	rescheduleTask(TASK_RAINGUAGE, NULL);
 }
 
-int getAvgRainfall(char * pszDest)
+decimal24_t getAvgRainfall()
 {
-	PGM_P rainfall;
+	decimal24_t	rainfall;
 
 	if (tips >= RAINFALL_LOOKUP_BUFFER_SIZE) {
 		tips = RAINFALL_LOOKUP_BUFFER_SIZE - 1;
 	}
 	
-	memcpy_P(&rainfall, &rainfallLookup[tips], sizeof(PGM_P));
-	strcpy_P(pszDest, rainfall);
+	memcpy_P(&rainfall, &rainfallLookup[tips], sizeof(decimal24_t));
 	
 	totalTips += tips;
 
@@ -42,19 +42,18 @@ int getAvgRainfall(char * pszDest)
 	*/
 	tips = 0;
 
-	return strlen(pszDest);
+	return rainfall;
 }
 
-int getTotalRainfall(char * pszDest)
+decimal24_t getTotalRainfall()
 {
-	PGM_P rainfall;
+	decimal24_t rainfall;
 
 	if (totalTips >= RAINFALL_LOOKUP_BUFFER_SIZE) {
 		totalTips = RAINFALL_LOOKUP_BUFFER_SIZE - 1;
 	}
 	
-	memcpy_P(&rainfall, &rainfallLookup[totalTips], sizeof(PGM_P));
-	strcpy_P(pszDest, rainfall);
+	memcpy_P(&rainfall, &rainfallLookup[totalTips], sizeof(decimal24_t));
 
-	return strlen(pszDest);
+	return rainfall;
 }

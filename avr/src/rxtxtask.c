@@ -20,11 +20,12 @@ uint32_t			busyCount = 0;
 
 CALIBRATION_DATA	calibrationData;
 TPH					tph;
+WINDSPEED			ws;
+RAINFALL			rf;
 
 void RxTask(PTASKPARM p)
 {
 	PRXMSGSTRUCT	pMsgStruct;
-	int				valueLen = 0;
 	int				i = 0;
 	float			cpuPct = 0.0;
 
@@ -81,49 +82,17 @@ void RxTask(PTASKPARM p)
 				break;
 
 			case RX_CMD_WINDSPEED:
-				szBuffer[i++] = 'A';
-				szBuffer[i++] = ':';
+				ws.avgWindspeed = getAvgWindSpeed();
+				ws.maxWindspeed = getMaxWindSpeed();
 
-				valueLen = getAvgWindSpeed(&szBuffer[i]);
-
-				szBuffer[i + valueLen] = ';';
-				i += valueLen + 1;
-
-				szBuffer[i++] = 'M';
-				szBuffer[i++] = ':';
-
-				valueLen = getMaxWindSpeed(&szBuffer[i]);
-
-				szBuffer[i + valueLen] = ';';
-				i += valueLen + 1;
-
-				// Null terminate string...
-				szBuffer[i] = 0;
-
-				txACKStr(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), szBuffer, i);
+				txACK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), (uint8_t *)(&ws), sizeof(WINDSPEED));
 				break;
 
 			case RX_CMD_RAINFALL:
-				szBuffer[i++] = 'A';
-				szBuffer[i++] = ':';
+				rf.avgRainfall = getAvgRainfall();
+				rf.totalRainfall = getTotalRainfall();
 
-				valueLen = getAvgRainfall(&szBuffer[i]);
-
-				szBuffer[i + valueLen] = ';';
-				i += valueLen + 1;
-
-				szBuffer[i++] = 'T';
-				szBuffer[i++] = ':';
-
-				valueLen = getTotalRainfall(&szBuffer[i]);
-
-				szBuffer[i + valueLen] = ';';
-				i += valueLen + 1;
-
-				// Null terminate string...
-				szBuffer[i] = 0;
-
-				txACKStr(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), szBuffer, i);
+				txACK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), (uint8_t *)(&rf), sizeof(RAINFALL));
 				break;
 
 			case RX_CMD_WDT_DISABLE:

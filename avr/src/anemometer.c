@@ -9,6 +9,7 @@
 #include "anemometer.h"
 #include "taskdef.h"
 #include "serial_atmega328p.h"
+#include "types.h"
 
 uint16_t	rpsBuffer[WIND_SPEED_AVG_COUNT];
 uint16_t	maxRPS = 0;
@@ -55,9 +56,9 @@ uint16_t getAvgRPS(void)
 	return avgRPS;
 }
 
-int getAvgWindSpeed(char * pszDest)
+decimal24_t getAvgWindSpeed()
 {
-	PGM_P			avgSpeed;
+	decimal24_t		avgSpeed;
 	uint16_t		avgRPS;
 	
 	avgRPS = getAvgRPS();
@@ -66,22 +67,20 @@ int getAvgWindSpeed(char * pszDest)
 		avgRPS = KPH_LOOKUP_BUFFER_SIZE - 1;
 	}
 	
-	memcpy_P(&avgSpeed, &kphLookup[avgRPS], sizeof(PGM_P));
-	strcpy_P(pszDest, avgSpeed);
+	memcpy_P(&avgSpeed, &kphLookup[avgRPS], sizeof(decimal24_t));
 	
-	return strlen(pszDest);
+	return avgSpeed;
 }
 
-int getMaxWindSpeed(char * pszDest)
+decimal24_t getMaxWindSpeed()
 {
-	PGM_P			maxSpeed;
+	decimal24_t		maxSpeed;
 
 	if (maxRPS >= KPH_LOOKUP_BUFFER_SIZE) {
 		maxRPS = KPH_LOOKUP_BUFFER_SIZE - 1;
 	}
 
-	memcpy_P(&maxSpeed, &kphLookup[maxRPS], sizeof(PGM_P));
-	strcpy_P(pszDest, maxSpeed);
+	memcpy_P(&maxSpeed, &kphLookup[maxRPS], sizeof(decimal24_t));
 
-	return strlen(pszDest);
+	return maxSpeed;
 }
