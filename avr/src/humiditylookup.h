@@ -40,1416 +40,1410 @@
 **
 ******************************************************************************/
 
-const decimal24_t humid0 PROGMEM = populate_decimal(1, 15);
+const decimal24_t humidity0 PROGMEM = populate_decimal(0, 0);
+const decimal24_t humidity1 PROGMEM = populate_decimal(0, 5);
+const decimal24_t humidity2 PROGMEM = populate_decimal(0, 20);
+const decimal24_t humidity3 PROGMEM = populate_decimal(0, 36);
+const decimal24_t humidity4 PROGMEM = populate_decimal(0, 52);
+const decimal24_t humidity5 PROGMEM = populate_decimal(0, 68);
+const decimal24_t humidity6 PROGMEM = populate_decimal(0, 83);
+const decimal24_t humidity7 PROGMEM = populate_decimal(0, 99);
+const decimal24_t humidity8 PROGMEM = populate_decimal(1, 15);
+const decimal24_t humidity9 PROGMEM = populate_decimal(1, 31);
+const decimal24_t humidity10 PROGMEM = populate_decimal(1, 46);
+const decimal24_t humidity11 PROGMEM = populate_decimal(1, 62);
+const decimal24_t humidity12 PROGMEM = populate_decimal(1, 78);
+const decimal24_t humidity13 PROGMEM = populate_decimal(1, 94);
+const decimal24_t humidity14 PROGMEM = populate_decimal(2, 10);
+const decimal24_t humidity15 PROGMEM = populate_decimal(2, 25);
+const decimal24_t humidity16 PROGMEM = populate_decimal(2, 41);
+const decimal24_t humidity17 PROGMEM = populate_decimal(2, 57);
+const decimal24_t humidity18 PROGMEM = populate_decimal(2, 73);
+const decimal24_t humidity19 PROGMEM = populate_decimal(2, 88);
+const decimal24_t humidity20 PROGMEM = populate_decimal(3, 4);
+const decimal24_t humidity21 PROGMEM = populate_decimal(3, 20);
+const decimal24_t humidity22 PROGMEM = populate_decimal(3, 36);
+const decimal24_t humidity23 PROGMEM = populate_decimal(3, 51);
+const decimal24_t humidity24 PROGMEM = populate_decimal(3, 67);
+const decimal24_t humidity25 PROGMEM = populate_decimal(3, 83);
+const decimal24_t humidity26 PROGMEM = populate_decimal(3, 99);
+const decimal24_t humidity27 PROGMEM = populate_decimal(4, 14);
+const decimal24_t humidity28 PROGMEM = populate_decimal(4, 30);
+const decimal24_t humidity29 PROGMEM = populate_decimal(4, 46);
+const decimal24_t humidity30 PROGMEM = populate_decimal(4, 62);
+const decimal24_t humidity31 PROGMEM = populate_decimal(4, 78);
+const decimal24_t humidity32 PROGMEM = populate_decimal(4, 93);
+const decimal24_t humidity33 PROGMEM = populate_decimal(5, 9);
+const decimal24_t humidity34 PROGMEM = populate_decimal(5, 25);
+const decimal24_t humidity35 PROGMEM = populate_decimal(5, 41);
+const decimal24_t humidity36 PROGMEM = populate_decimal(5, 56);
+const decimal24_t humidity37 PROGMEM = populate_decimal(5, 72);
+const decimal24_t humidity38 PROGMEM = populate_decimal(5, 88);
+const decimal24_t humidity39 PROGMEM = populate_decimal(6, 4);
+const decimal24_t humidity40 PROGMEM = populate_decimal(6, 19);
+const decimal24_t humidity41 PROGMEM = populate_decimal(6, 35);
+const decimal24_t humidity42 PROGMEM = populate_decimal(6, 51);
+const decimal24_t humidity43 PROGMEM = populate_decimal(6, 67);
+const decimal24_t humidity44 PROGMEM = populate_decimal(6, 83);
+const decimal24_t humidity45 PROGMEM = populate_decimal(6, 98);
+const decimal24_t humidity46 PROGMEM = populate_decimal(7, 14);
+const decimal24_t humidity47 PROGMEM = populate_decimal(7, 30);
+const decimal24_t humidity48 PROGMEM = populate_decimal(7, 46);
+const decimal24_t humidity49 PROGMEM = populate_decimal(7, 61);
+const decimal24_t humidity50 PROGMEM = populate_decimal(7, 77);
+const decimal24_t humidity51 PROGMEM = populate_decimal(7, 93);
+const decimal24_t humidity52 PROGMEM = populate_decimal(8, 9);
+const decimal24_t humidity53 PROGMEM = populate_decimal(8, 24);
+const decimal24_t humidity54 PROGMEM = populate_decimal(8, 40);
+const decimal24_t humidity55 PROGMEM = populate_decimal(8, 56);
+const decimal24_t humidity56 PROGMEM = populate_decimal(8, 72);
+const decimal24_t humidity57 PROGMEM = populate_decimal(8, 87);
+const decimal24_t humidity58 PROGMEM = populate_decimal(9, 3);
+const decimal24_t humidity59 PROGMEM = populate_decimal(9, 19);
+const decimal24_t humidity60 PROGMEM = populate_decimal(9, 35);
+const decimal24_t humidity61 PROGMEM = populate_decimal(9, 51);
+const decimal24_t humidity62 PROGMEM = populate_decimal(9, 66);
+const decimal24_t humidity63 PROGMEM = populate_decimal(9, 82);
+const decimal24_t humidity64 PROGMEM = populate_decimal(9, 98);
+const decimal24_t humidity65 PROGMEM = populate_decimal(10, 14);
+const decimal24_t humidity66 PROGMEM = populate_decimal(10, 29);
+const decimal24_t humidity67 PROGMEM = populate_decimal(10, 45);
+const decimal24_t humidity68 PROGMEM = populate_decimal(10, 61);
+const decimal24_t humidity69 PROGMEM = populate_decimal(10, 77);
+const decimal24_t humidity70 PROGMEM = populate_decimal(10, 92);
+const decimal24_t humidity71 PROGMEM = populate_decimal(11, 8);
+const decimal24_t humidity72 PROGMEM = populate_decimal(11, 24);
+const decimal24_t humidity73 PROGMEM = populate_decimal(11, 40);
+const decimal24_t humidity74 PROGMEM = populate_decimal(11, 55);
+const decimal24_t humidity75 PROGMEM = populate_decimal(11, 71);
+const decimal24_t humidity76 PROGMEM = populate_decimal(11, 87);
+const decimal24_t humidity77 PROGMEM = populate_decimal(12, 3);
+const decimal24_t humidity78 PROGMEM = populate_decimal(12, 19);
+const decimal24_t humidity79 PROGMEM = populate_decimal(12, 34);
+const decimal24_t humidity80 PROGMEM = populate_decimal(12, 50);
+const decimal24_t humidity81 PROGMEM = populate_decimal(12, 66);
+const decimal24_t humidity82 PROGMEM = populate_decimal(12, 82);
+const decimal24_t humidity83 PROGMEM = populate_decimal(12, 97);
+const decimal24_t humidity84 PROGMEM = populate_decimal(13, 13);
+const decimal24_t humidity85 PROGMEM = populate_decimal(13, 29);
+const decimal24_t humidity86 PROGMEM = populate_decimal(13, 45);
+const decimal24_t humidity87 PROGMEM = populate_decimal(13, 60);
+const decimal24_t humidity88 PROGMEM = populate_decimal(13, 76);
+const decimal24_t humidity89 PROGMEM = populate_decimal(13, 92);
+const decimal24_t humidity90 PROGMEM = populate_decimal(14, 8);
+const decimal24_t humidity91 PROGMEM = populate_decimal(14, 24);
+const decimal24_t humidity92 PROGMEM = populate_decimal(14, 39);
+const decimal24_t humidity93 PROGMEM = populate_decimal(14, 55);
+const decimal24_t humidity94 PROGMEM = populate_decimal(14, 71);
+const decimal24_t humidity95 PROGMEM = populate_decimal(14, 87);
+const decimal24_t humidity96 PROGMEM = populate_decimal(15, 2);
+const decimal24_t humidity97 PROGMEM = populate_decimal(15, 18);
+const decimal24_t humidity98 PROGMEM = populate_decimal(15, 34);
+const decimal24_t humidity99 PROGMEM = populate_decimal(15, 50);
+const decimal24_t humidity100 PROGMEM = populate_decimal(15, 65);
+const decimal24_t humidity101 PROGMEM = populate_decimal(15, 81);
+const decimal24_t humidity102 PROGMEM = populate_decimal(15, 97);
+const decimal24_t humidity103 PROGMEM = populate_decimal(16, 13);
+const decimal24_t humidity104 PROGMEM = populate_decimal(16, 28);
+const decimal24_t humidity105 PROGMEM = populate_decimal(16, 44);
+const decimal24_t humidity106 PROGMEM = populate_decimal(16, 60);
+const decimal24_t humidity107 PROGMEM = populate_decimal(16, 76);
+const decimal24_t humidity108 PROGMEM = populate_decimal(16, 92);
+const decimal24_t humidity109 PROGMEM = populate_decimal(17, 7);
+const decimal24_t humidity110 PROGMEM = populate_decimal(17, 23);
+const decimal24_t humidity111 PROGMEM = populate_decimal(17, 39);
+const decimal24_t humidity112 PROGMEM = populate_decimal(17, 55);
+const decimal24_t humidity113 PROGMEM = populate_decimal(17, 70);
+const decimal24_t humidity114 PROGMEM = populate_decimal(17, 86);
+const decimal24_t humidity115 PROGMEM = populate_decimal(18, 2);
+const decimal24_t humidity116 PROGMEM = populate_decimal(18, 18);
+const decimal24_t humidity117 PROGMEM = populate_decimal(18, 33);
+const decimal24_t humidity118 PROGMEM = populate_decimal(18, 49);
+const decimal24_t humidity119 PROGMEM = populate_decimal(18, 65);
+const decimal24_t humidity120 PROGMEM = populate_decimal(18, 81);
+const decimal24_t humidity121 PROGMEM = populate_decimal(18, 97);
+const decimal24_t humidity122 PROGMEM = populate_decimal(19, 12);
+const decimal24_t humidity123 PROGMEM = populate_decimal(19, 28);
+const decimal24_t humidity124 PROGMEM = populate_decimal(19, 44);
+const decimal24_t humidity125 PROGMEM = populate_decimal(19, 60);
+const decimal24_t humidity126 PROGMEM = populate_decimal(19, 75);
+const decimal24_t humidity127 PROGMEM = populate_decimal(19, 91);
+const decimal24_t humidity128 PROGMEM = populate_decimal(20, 7);
+const decimal24_t humidity129 PROGMEM = populate_decimal(20, 23);
+const decimal24_t humidity130 PROGMEM = populate_decimal(20, 38);
+const decimal24_t humidity131 PROGMEM = populate_decimal(20, 54);
+const decimal24_t humidity132 PROGMEM = populate_decimal(20, 70);
+const decimal24_t humidity133 PROGMEM = populate_decimal(20, 86);
+const decimal24_t humidity134 PROGMEM = populate_decimal(21, 1);
+const decimal24_t humidity135 PROGMEM = populate_decimal(21, 17);
+const decimal24_t humidity136 PROGMEM = populate_decimal(21, 33);
+const decimal24_t humidity137 PROGMEM = populate_decimal(21, 49);
+const decimal24_t humidity138 PROGMEM = populate_decimal(21, 65);
+const decimal24_t humidity139 PROGMEM = populate_decimal(21, 80);
+const decimal24_t humidity140 PROGMEM = populate_decimal(21, 96);
+const decimal24_t humidity141 PROGMEM = populate_decimal(22, 12);
+const decimal24_t humidity142 PROGMEM = populate_decimal(22, 28);
+const decimal24_t humidity143 PROGMEM = populate_decimal(22, 43);
+const decimal24_t humidity144 PROGMEM = populate_decimal(22, 59);
+const decimal24_t humidity145 PROGMEM = populate_decimal(22, 75);
+const decimal24_t humidity146 PROGMEM = populate_decimal(22, 91);
+const decimal24_t humidity147 PROGMEM = populate_decimal(23, 6);
+const decimal24_t humidity148 PROGMEM = populate_decimal(23, 22);
+const decimal24_t humidity149 PROGMEM = populate_decimal(23, 38);
+const decimal24_t humidity150 PROGMEM = populate_decimal(23, 54);
+const decimal24_t humidity151 PROGMEM = populate_decimal(23, 70);
+const decimal24_t humidity152 PROGMEM = populate_decimal(23, 85);
+const decimal24_t humidity153 PROGMEM = populate_decimal(24, 1);
+const decimal24_t humidity154 PROGMEM = populate_decimal(24, 17);
+const decimal24_t humidity155 PROGMEM = populate_decimal(24, 33);
+const decimal24_t humidity156 PROGMEM = populate_decimal(24, 48);
+const decimal24_t humidity157 PROGMEM = populate_decimal(24, 64);
+const decimal24_t humidity158 PROGMEM = populate_decimal(24, 80);
+const decimal24_t humidity159 PROGMEM = populate_decimal(24, 96);
+const decimal24_t humidity160 PROGMEM = populate_decimal(25, 11);
+const decimal24_t humidity161 PROGMEM = populate_decimal(25, 27);
+const decimal24_t humidity162 PROGMEM = populate_decimal(25, 43);
+const decimal24_t humidity163 PROGMEM = populate_decimal(25, 59);
+const decimal24_t humidity164 PROGMEM = populate_decimal(25, 74);
+const decimal24_t humidity165 PROGMEM = populate_decimal(25, 90);
+const decimal24_t humidity166 PROGMEM = populate_decimal(26, 6);
+const decimal24_t humidity167 PROGMEM = populate_decimal(26, 22);
+const decimal24_t humidity168 PROGMEM = populate_decimal(26, 38);
+const decimal24_t humidity169 PROGMEM = populate_decimal(26, 53);
+const decimal24_t humidity170 PROGMEM = populate_decimal(26, 69);
+const decimal24_t humidity171 PROGMEM = populate_decimal(26, 85);
+const decimal24_t humidity172 PROGMEM = populate_decimal(27, 1);
+const decimal24_t humidity173 PROGMEM = populate_decimal(27, 16);
+const decimal24_t humidity174 PROGMEM = populate_decimal(27, 32);
+const decimal24_t humidity175 PROGMEM = populate_decimal(27, 48);
+const decimal24_t humidity176 PROGMEM = populate_decimal(27, 64);
+const decimal24_t humidity177 PROGMEM = populate_decimal(27, 79);
+const decimal24_t humidity178 PROGMEM = populate_decimal(27, 95);
+const decimal24_t humidity179 PROGMEM = populate_decimal(28, 11);
+const decimal24_t humidity180 PROGMEM = populate_decimal(28, 27);
+const decimal24_t humidity181 PROGMEM = populate_decimal(28, 42);
+const decimal24_t humidity182 PROGMEM = populate_decimal(28, 58);
+const decimal24_t humidity183 PROGMEM = populate_decimal(28, 74);
+const decimal24_t humidity184 PROGMEM = populate_decimal(28, 90);
+const decimal24_t humidity185 PROGMEM = populate_decimal(29, 6);
+const decimal24_t humidity186 PROGMEM = populate_decimal(29, 21);
+const decimal24_t humidity187 PROGMEM = populate_decimal(29, 37);
+const decimal24_t humidity188 PROGMEM = populate_decimal(29, 53);
+const decimal24_t humidity189 PROGMEM = populate_decimal(29, 69);
+const decimal24_t humidity190 PROGMEM = populate_decimal(29, 84);
+const decimal24_t humidity191 PROGMEM = populate_decimal(30, 0);
+const decimal24_t humidity192 PROGMEM = populate_decimal(30, 16);
+const decimal24_t humidity193 PROGMEM = populate_decimal(30, 32);
+const decimal24_t humidity194 PROGMEM = populate_decimal(30, 47);
+const decimal24_t humidity195 PROGMEM = populate_decimal(30, 63);
+const decimal24_t humidity196 PROGMEM = populate_decimal(30, 79);
+const decimal24_t humidity197 PROGMEM = populate_decimal(30, 95);
+const decimal24_t humidity198 PROGMEM = populate_decimal(31, 11);
+const decimal24_t humidity199 PROGMEM = populate_decimal(31, 26);
+const decimal24_t humidity200 PROGMEM = populate_decimal(31, 42);
+const decimal24_t humidity201 PROGMEM = populate_decimal(31, 58);
+const decimal24_t humidity202 PROGMEM = populate_decimal(31, 74);
+const decimal24_t humidity203 PROGMEM = populate_decimal(31, 89);
+const decimal24_t humidity204 PROGMEM = populate_decimal(32, 5);
+const decimal24_t humidity205 PROGMEM = populate_decimal(32, 21);
+const decimal24_t humidity206 PROGMEM = populate_decimal(32, 37);
+const decimal24_t humidity207 PROGMEM = populate_decimal(32, 52);
+const decimal24_t humidity208 PROGMEM = populate_decimal(32, 68);
+const decimal24_t humidity209 PROGMEM = populate_decimal(32, 84);
+const decimal24_t humidity210 PROGMEM = populate_decimal(33, 0);
+const decimal24_t humidity211 PROGMEM = populate_decimal(33, 15);
+const decimal24_t humidity212 PROGMEM = populate_decimal(33, 31);
+const decimal24_t humidity213 PROGMEM = populate_decimal(33, 47);
+const decimal24_t humidity214 PROGMEM = populate_decimal(33, 63);
+const decimal24_t humidity215 PROGMEM = populate_decimal(33, 79);
+const decimal24_t humidity216 PROGMEM = populate_decimal(33, 94);
+const decimal24_t humidity217 PROGMEM = populate_decimal(34, 10);
+const decimal24_t humidity218 PROGMEM = populate_decimal(34, 26);
+const decimal24_t humidity219 PROGMEM = populate_decimal(34, 42);
+const decimal24_t humidity220 PROGMEM = populate_decimal(34, 57);
+const decimal24_t humidity221 PROGMEM = populate_decimal(34, 73);
+const decimal24_t humidity222 PROGMEM = populate_decimal(34, 89);
+const decimal24_t humidity223 PROGMEM = populate_decimal(35, 5);
+const decimal24_t humidity224 PROGMEM = populate_decimal(35, 20);
+const decimal24_t humidity225 PROGMEM = populate_decimal(35, 36);
+const decimal24_t humidity226 PROGMEM = populate_decimal(35, 52);
+const decimal24_t humidity227 PROGMEM = populate_decimal(35, 68);
+const decimal24_t humidity228 PROGMEM = populate_decimal(35, 84);
+const decimal24_t humidity229 PROGMEM = populate_decimal(35, 99);
+const decimal24_t humidity230 PROGMEM = populate_decimal(36, 15);
+const decimal24_t humidity231 PROGMEM = populate_decimal(36, 31);
+const decimal24_t humidity232 PROGMEM = populate_decimal(36, 47);
+const decimal24_t humidity233 PROGMEM = populate_decimal(36, 62);
+const decimal24_t humidity234 PROGMEM = populate_decimal(36, 78);
+const decimal24_t humidity235 PROGMEM = populate_decimal(36, 94);
+const decimal24_t humidity236 PROGMEM = populate_decimal(37, 10);
+const decimal24_t humidity237 PROGMEM = populate_decimal(37, 25);
+const decimal24_t humidity238 PROGMEM = populate_decimal(37, 41);
+const decimal24_t humidity239 PROGMEM = populate_decimal(37, 57);
+const decimal24_t humidity240 PROGMEM = populate_decimal(37, 73);
+const decimal24_t humidity241 PROGMEM = populate_decimal(37, 88);
+const decimal24_t humidity242 PROGMEM = populate_decimal(38, 4);
+const decimal24_t humidity243 PROGMEM = populate_decimal(38, 20);
+const decimal24_t humidity244 PROGMEM = populate_decimal(38, 36);
+const decimal24_t humidity245 PROGMEM = populate_decimal(38, 52);
+const decimal24_t humidity246 PROGMEM = populate_decimal(38, 67);
+const decimal24_t humidity247 PROGMEM = populate_decimal(38, 83);
+const decimal24_t humidity248 PROGMEM = populate_decimal(38, 99);
+const decimal24_t humidity249 PROGMEM = populate_decimal(39, 15);
+const decimal24_t humidity250 PROGMEM = populate_decimal(39, 30);
+const decimal24_t humidity251 PROGMEM = populate_decimal(39, 46);
+const decimal24_t humidity252 PROGMEM = populate_decimal(39, 62);
+const decimal24_t humidity253 PROGMEM = populate_decimal(39, 78);
+const decimal24_t humidity254 PROGMEM = populate_decimal(39, 93);
+const decimal24_t humidity255 PROGMEM = populate_decimal(40, 9);
+const decimal24_t humidity256 PROGMEM = populate_decimal(40, 25);
+const decimal24_t humidity257 PROGMEM = populate_decimal(40, 41);
+const decimal24_t humidity258 PROGMEM = populate_decimal(40, 57);
+const decimal24_t humidity259 PROGMEM = populate_decimal(40, 72);
+const decimal24_t humidity260 PROGMEM = populate_decimal(40, 88);
+const decimal24_t humidity261 PROGMEM = populate_decimal(41, 4);
+const decimal24_t humidity262 PROGMEM = populate_decimal(41, 20);
+const decimal24_t humidity263 PROGMEM = populate_decimal(41, 35);
+const decimal24_t humidity264 PROGMEM = populate_decimal(41, 51);
+const decimal24_t humidity265 PROGMEM = populate_decimal(41, 67);
+const decimal24_t humidity266 PROGMEM = populate_decimal(41, 83);
+const decimal24_t humidity267 PROGMEM = populate_decimal(41, 98);
+const decimal24_t humidity268 PROGMEM = populate_decimal(42, 14);
+const decimal24_t humidity269 PROGMEM = populate_decimal(42, 30);
+const decimal24_t humidity270 PROGMEM = populate_decimal(42, 46);
+const decimal24_t humidity271 PROGMEM = populate_decimal(42, 61);
+const decimal24_t humidity272 PROGMEM = populate_decimal(42, 77);
+const decimal24_t humidity273 PROGMEM = populate_decimal(42, 93);
+const decimal24_t humidity274 PROGMEM = populate_decimal(43, 9);
+const decimal24_t humidity275 PROGMEM = populate_decimal(43, 25);
+const decimal24_t humidity276 PROGMEM = populate_decimal(43, 40);
+const decimal24_t humidity277 PROGMEM = populate_decimal(43, 56);
+const decimal24_t humidity278 PROGMEM = populate_decimal(43, 72);
+const decimal24_t humidity279 PROGMEM = populate_decimal(43, 88);
+const decimal24_t humidity280 PROGMEM = populate_decimal(44, 3);
+const decimal24_t humidity281 PROGMEM = populate_decimal(44, 19);
+const decimal24_t humidity282 PROGMEM = populate_decimal(44, 35);
+const decimal24_t humidity283 PROGMEM = populate_decimal(44, 51);
+const decimal24_t humidity284 PROGMEM = populate_decimal(44, 66);
+const decimal24_t humidity285 PROGMEM = populate_decimal(44, 82);
+const decimal24_t humidity286 PROGMEM = populate_decimal(44, 98);
+const decimal24_t humidity287 PROGMEM = populate_decimal(45, 14);
+const decimal24_t humidity288 PROGMEM = populate_decimal(45, 30);
+const decimal24_t humidity289 PROGMEM = populate_decimal(45, 45);
+const decimal24_t humidity290 PROGMEM = populate_decimal(45, 61);
+const decimal24_t humidity291 PROGMEM = populate_decimal(45, 77);
+const decimal24_t humidity292 PROGMEM = populate_decimal(45, 93);
+const decimal24_t humidity293 PROGMEM = populate_decimal(46, 8);
+const decimal24_t humidity294 PROGMEM = populate_decimal(46, 24);
+const decimal24_t humidity295 PROGMEM = populate_decimal(46, 40);
+const decimal24_t humidity296 PROGMEM = populate_decimal(46, 56);
+const decimal24_t humidity297 PROGMEM = populate_decimal(46, 71);
+const decimal24_t humidity298 PROGMEM = populate_decimal(46, 87);
+const decimal24_t humidity299 PROGMEM = populate_decimal(47, 3);
+const decimal24_t humidity300 PROGMEM = populate_decimal(47, 19);
+const decimal24_t humidity301 PROGMEM = populate_decimal(47, 34);
+const decimal24_t humidity302 PROGMEM = populate_decimal(47, 50);
+const decimal24_t humidity303 PROGMEM = populate_decimal(47, 66);
+const decimal24_t humidity304 PROGMEM = populate_decimal(47, 82);
+const decimal24_t humidity305 PROGMEM = populate_decimal(47, 98);
+const decimal24_t humidity306 PROGMEM = populate_decimal(48, 13);
+const decimal24_t humidity307 PROGMEM = populate_decimal(48, 29);
+const decimal24_t humidity308 PROGMEM = populate_decimal(48, 45);
+const decimal24_t humidity309 PROGMEM = populate_decimal(48, 61);
+const decimal24_t humidity310 PROGMEM = populate_decimal(48, 76);
+const decimal24_t humidity311 PROGMEM = populate_decimal(48, 92);
+const decimal24_t humidity312 PROGMEM = populate_decimal(49, 8);
+const decimal24_t humidity313 PROGMEM = populate_decimal(49, 24);
+const decimal24_t humidity314 PROGMEM = populate_decimal(49, 39);
+const decimal24_t humidity315 PROGMEM = populate_decimal(49, 55);
+const decimal24_t humidity316 PROGMEM = populate_decimal(49, 71);
+const decimal24_t humidity317 PROGMEM = populate_decimal(49, 87);
+const decimal24_t humidity318 PROGMEM = populate_decimal(50, 2);
+const decimal24_t humidity319 PROGMEM = populate_decimal(50, 18);
+const decimal24_t humidity320 PROGMEM = populate_decimal(50, 34);
+const decimal24_t humidity321 PROGMEM = populate_decimal(50, 50);
+const decimal24_t humidity322 PROGMEM = populate_decimal(50, 66);
+const decimal24_t humidity323 PROGMEM = populate_decimal(50, 81);
+const decimal24_t humidity324 PROGMEM = populate_decimal(50, 97);
+const decimal24_t humidity325 PROGMEM = populate_decimal(51, 13);
+const decimal24_t humidity326 PROGMEM = populate_decimal(51, 29);
+const decimal24_t humidity327 PROGMEM = populate_decimal(51, 44);
+const decimal24_t humidity328 PROGMEM = populate_decimal(51, 60);
+const decimal24_t humidity329 PROGMEM = populate_decimal(51, 76);
+const decimal24_t humidity330 PROGMEM = populate_decimal(51, 92);
+const decimal24_t humidity331 PROGMEM = populate_decimal(52, 7);
+const decimal24_t humidity332 PROGMEM = populate_decimal(52, 23);
+const decimal24_t humidity333 PROGMEM = populate_decimal(52, 39);
+const decimal24_t humidity334 PROGMEM = populate_decimal(52, 55);
+const decimal24_t humidity335 PROGMEM = populate_decimal(52, 71);
+const decimal24_t humidity336 PROGMEM = populate_decimal(52, 86);
+const decimal24_t humidity337 PROGMEM = populate_decimal(53, 2);
+const decimal24_t humidity338 PROGMEM = populate_decimal(53, 18);
+const decimal24_t humidity339 PROGMEM = populate_decimal(53, 34);
+const decimal24_t humidity340 PROGMEM = populate_decimal(53, 49);
+const decimal24_t humidity341 PROGMEM = populate_decimal(53, 65);
+const decimal24_t humidity342 PROGMEM = populate_decimal(53, 81);
+const decimal24_t humidity343 PROGMEM = populate_decimal(53, 97);
+const decimal24_t humidity344 PROGMEM = populate_decimal(54, 12);
+const decimal24_t humidity345 PROGMEM = populate_decimal(54, 28);
+const decimal24_t humidity346 PROGMEM = populate_decimal(54, 44);
+const decimal24_t humidity347 PROGMEM = populate_decimal(54, 60);
+const decimal24_t humidity348 PROGMEM = populate_decimal(54, 75);
+const decimal24_t humidity349 PROGMEM = populate_decimal(54, 91);
+const decimal24_t humidity350 PROGMEM = populate_decimal(55, 7);
+const decimal24_t humidity351 PROGMEM = populate_decimal(55, 23);
+const decimal24_t humidity352 PROGMEM = populate_decimal(55, 39);
+const decimal24_t humidity353 PROGMEM = populate_decimal(55, 54);
+const decimal24_t humidity354 PROGMEM = populate_decimal(55, 70);
+const decimal24_t humidity355 PROGMEM = populate_decimal(55, 86);
+const decimal24_t humidity356 PROGMEM = populate_decimal(56, 2);
+const decimal24_t humidity357 PROGMEM = populate_decimal(56, 17);
+const decimal24_t humidity358 PROGMEM = populate_decimal(56, 33);
+const decimal24_t humidity359 PROGMEM = populate_decimal(56, 49);
+const decimal24_t humidity360 PROGMEM = populate_decimal(56, 65);
+const decimal24_t humidity361 PROGMEM = populate_decimal(56, 80);
+const decimal24_t humidity362 PROGMEM = populate_decimal(56, 96);
+const decimal24_t humidity363 PROGMEM = populate_decimal(57, 12);
+const decimal24_t humidity364 PROGMEM = populate_decimal(57, 28);
+const decimal24_t humidity365 PROGMEM = populate_decimal(57, 44);
+const decimal24_t humidity366 PROGMEM = populate_decimal(57, 59);
+const decimal24_t humidity367 PROGMEM = populate_decimal(57, 75);
+const decimal24_t humidity368 PROGMEM = populate_decimal(57, 91);
+const decimal24_t humidity369 PROGMEM = populate_decimal(58, 7);
+const decimal24_t humidity370 PROGMEM = populate_decimal(58, 22);
+const decimal24_t humidity371 PROGMEM = populate_decimal(58, 38);
+const decimal24_t humidity372 PROGMEM = populate_decimal(58, 54);
+const decimal24_t humidity373 PROGMEM = populate_decimal(58, 70);
+const decimal24_t humidity374 PROGMEM = populate_decimal(58, 85);
+const decimal24_t humidity375 PROGMEM = populate_decimal(59, 1);
+const decimal24_t humidity376 PROGMEM = populate_decimal(59, 17);
+const decimal24_t humidity377 PROGMEM = populate_decimal(59, 33);
+const decimal24_t humidity378 PROGMEM = populate_decimal(59, 48);
+const decimal24_t humidity379 PROGMEM = populate_decimal(59, 64);
+const decimal24_t humidity380 PROGMEM = populate_decimal(59, 80);
+const decimal24_t humidity381 PROGMEM = populate_decimal(59, 96);
+const decimal24_t humidity382 PROGMEM = populate_decimal(60, 12);
+const decimal24_t humidity383 PROGMEM = populate_decimal(60, 27);
+const decimal24_t humidity384 PROGMEM = populate_decimal(60, 43);
+const decimal24_t humidity385 PROGMEM = populate_decimal(60, 59);
+const decimal24_t humidity386 PROGMEM = populate_decimal(60, 75);
+const decimal24_t humidity387 PROGMEM = populate_decimal(60, 90);
+const decimal24_t humidity388 PROGMEM = populate_decimal(61, 6);
+const decimal24_t humidity389 PROGMEM = populate_decimal(61, 22);
+const decimal24_t humidity390 PROGMEM = populate_decimal(61, 38);
+const decimal24_t humidity391 PROGMEM = populate_decimal(61, 53);
+const decimal24_t humidity392 PROGMEM = populate_decimal(61, 69);
+const decimal24_t humidity393 PROGMEM = populate_decimal(61, 85);
+const decimal24_t humidity394 PROGMEM = populate_decimal(62, 1);
+const decimal24_t humidity395 PROGMEM = populate_decimal(62, 17);
+const decimal24_t humidity396 PROGMEM = populate_decimal(62, 32);
+const decimal24_t humidity397 PROGMEM = populate_decimal(62, 48);
+const decimal24_t humidity398 PROGMEM = populate_decimal(62, 64);
+const decimal24_t humidity399 PROGMEM = populate_decimal(62, 80);
+const decimal24_t humidity400 PROGMEM = populate_decimal(62, 95);
+const decimal24_t humidity401 PROGMEM = populate_decimal(63, 11);
+const decimal24_t humidity402 PROGMEM = populate_decimal(63, 27);
+const decimal24_t humidity403 PROGMEM = populate_decimal(63, 43);
+const decimal24_t humidity404 PROGMEM = populate_decimal(63, 58);
+const decimal24_t humidity405 PROGMEM = populate_decimal(63, 74);
+const decimal24_t humidity406 PROGMEM = populate_decimal(63, 90);
+const decimal24_t humidity407 PROGMEM = populate_decimal(64, 6);
+const decimal24_t humidity408 PROGMEM = populate_decimal(64, 21);
+const decimal24_t humidity409 PROGMEM = populate_decimal(64, 37);
+const decimal24_t humidity410 PROGMEM = populate_decimal(64, 53);
+const decimal24_t humidity411 PROGMEM = populate_decimal(64, 69);
+const decimal24_t humidity412 PROGMEM = populate_decimal(64, 85);
+const decimal24_t humidity413 PROGMEM = populate_decimal(65, 0);
+const decimal24_t humidity414 PROGMEM = populate_decimal(65, 16);
+const decimal24_t humidity415 PROGMEM = populate_decimal(65, 32);
+const decimal24_t humidity416 PROGMEM = populate_decimal(65, 48);
+const decimal24_t humidity417 PROGMEM = populate_decimal(65, 63);
+const decimal24_t humidity418 PROGMEM = populate_decimal(65, 79);
+const decimal24_t humidity419 PROGMEM = populate_decimal(65, 95);
+const decimal24_t humidity420 PROGMEM = populate_decimal(66, 11);
+const decimal24_t humidity421 PROGMEM = populate_decimal(66, 26);
+const decimal24_t humidity422 PROGMEM = populate_decimal(66, 42);
+const decimal24_t humidity423 PROGMEM = populate_decimal(66, 58);
+const decimal24_t humidity424 PROGMEM = populate_decimal(66, 74);
+const decimal24_t humidity425 PROGMEM = populate_decimal(66, 90);
+const decimal24_t humidity426 PROGMEM = populate_decimal(67, 5);
+const decimal24_t humidity427 PROGMEM = populate_decimal(67, 21);
+const decimal24_t humidity428 PROGMEM = populate_decimal(67, 37);
+const decimal24_t humidity429 PROGMEM = populate_decimal(67, 53);
+const decimal24_t humidity430 PROGMEM = populate_decimal(67, 68);
+const decimal24_t humidity431 PROGMEM = populate_decimal(67, 84);
+const decimal24_t humidity432 PROGMEM = populate_decimal(68, 0);
+const decimal24_t humidity433 PROGMEM = populate_decimal(68, 16);
+const decimal24_t humidity434 PROGMEM = populate_decimal(68, 31);
+const decimal24_t humidity435 PROGMEM = populate_decimal(68, 47);
+const decimal24_t humidity436 PROGMEM = populate_decimal(68, 63);
+const decimal24_t humidity437 PROGMEM = populate_decimal(68, 79);
+const decimal24_t humidity438 PROGMEM = populate_decimal(68, 94);
+const decimal24_t humidity439 PROGMEM = populate_decimal(69, 10);
+const decimal24_t humidity440 PROGMEM = populate_decimal(69, 26);
+const decimal24_t humidity441 PROGMEM = populate_decimal(69, 42);
+const decimal24_t humidity442 PROGMEM = populate_decimal(69, 58);
+const decimal24_t humidity443 PROGMEM = populate_decimal(69, 73);
+const decimal24_t humidity444 PROGMEM = populate_decimal(69, 89);
+const decimal24_t humidity445 PROGMEM = populate_decimal(70, 5);
+const decimal24_t humidity446 PROGMEM = populate_decimal(70, 21);
+const decimal24_t humidity447 PROGMEM = populate_decimal(70, 36);
+const decimal24_t humidity448 PROGMEM = populate_decimal(70, 52);
+const decimal24_t humidity449 PROGMEM = populate_decimal(70, 68);
+const decimal24_t humidity450 PROGMEM = populate_decimal(70, 84);
+const decimal24_t humidity451 PROGMEM = populate_decimal(70, 99);
+const decimal24_t humidity452 PROGMEM = populate_decimal(71, 15);
+const decimal24_t humidity453 PROGMEM = populate_decimal(71, 31);
+const decimal24_t humidity454 PROGMEM = populate_decimal(71, 47);
+const decimal24_t humidity455 PROGMEM = populate_decimal(71, 62);
+const decimal24_t humidity456 PROGMEM = populate_decimal(71, 78);
+const decimal24_t humidity457 PROGMEM = populate_decimal(71, 94);
+const decimal24_t humidity458 PROGMEM = populate_decimal(72, 10);
+const decimal24_t humidity459 PROGMEM = populate_decimal(72, 26);
+const decimal24_t humidity460 PROGMEM = populate_decimal(72, 41);
+const decimal24_t humidity461 PROGMEM = populate_decimal(72, 57);
+const decimal24_t humidity462 PROGMEM = populate_decimal(72, 73);
+const decimal24_t humidity463 PROGMEM = populate_decimal(72, 89);
+const decimal24_t humidity464 PROGMEM = populate_decimal(73, 4);
+const decimal24_t humidity465 PROGMEM = populate_decimal(73, 20);
+const decimal24_t humidity466 PROGMEM = populate_decimal(73, 36);
+const decimal24_t humidity467 PROGMEM = populate_decimal(73, 52);
+const decimal24_t humidity468 PROGMEM = populate_decimal(73, 67);
+const decimal24_t humidity469 PROGMEM = populate_decimal(73, 83);
+const decimal24_t humidity470 PROGMEM = populate_decimal(73, 99);
+const decimal24_t humidity471 PROGMEM = populate_decimal(74, 15);
+const decimal24_t humidity472 PROGMEM = populate_decimal(74, 31);
+const decimal24_t humidity473 PROGMEM = populate_decimal(74, 46);
+const decimal24_t humidity474 PROGMEM = populate_decimal(74, 62);
+const decimal24_t humidity475 PROGMEM = populate_decimal(74, 78);
+const decimal24_t humidity476 PROGMEM = populate_decimal(74, 94);
+const decimal24_t humidity477 PROGMEM = populate_decimal(75, 9);
+const decimal24_t humidity478 PROGMEM = populate_decimal(75, 25);
+const decimal24_t humidity479 PROGMEM = populate_decimal(75, 41);
+const decimal24_t humidity480 PROGMEM = populate_decimal(75, 57);
+const decimal24_t humidity481 PROGMEM = populate_decimal(75, 72);
+const decimal24_t humidity482 PROGMEM = populate_decimal(75, 88);
+const decimal24_t humidity483 PROGMEM = populate_decimal(76, 4);
+const decimal24_t humidity484 PROGMEM = populate_decimal(76, 20);
+const decimal24_t humidity485 PROGMEM = populate_decimal(76, 35);
+const decimal24_t humidity486 PROGMEM = populate_decimal(76, 51);
+const decimal24_t humidity487 PROGMEM = populate_decimal(76, 67);
+const decimal24_t humidity488 PROGMEM = populate_decimal(76, 83);
+const decimal24_t humidity489 PROGMEM = populate_decimal(76, 99);
+const decimal24_t humidity490 PROGMEM = populate_decimal(77, 14);
+const decimal24_t humidity491 PROGMEM = populate_decimal(77, 30);
+const decimal24_t humidity492 PROGMEM = populate_decimal(77, 46);
+const decimal24_t humidity493 PROGMEM = populate_decimal(77, 62);
+const decimal24_t humidity494 PROGMEM = populate_decimal(77, 77);
+const decimal24_t humidity495 PROGMEM = populate_decimal(77, 93);
+const decimal24_t humidity496 PROGMEM = populate_decimal(78, 9);
+const decimal24_t humidity497 PROGMEM = populate_decimal(78, 25);
+const decimal24_t humidity498 PROGMEM = populate_decimal(78, 40);
+const decimal24_t humidity499 PROGMEM = populate_decimal(78, 56);
+const decimal24_t humidity500 PROGMEM = populate_decimal(78, 72);
+const decimal24_t humidity501 PROGMEM = populate_decimal(78, 88);
+const decimal24_t humidity502 PROGMEM = populate_decimal(79, 4);
+const decimal24_t humidity503 PROGMEM = populate_decimal(79, 19);
+const decimal24_t humidity504 PROGMEM = populate_decimal(79, 35);
+const decimal24_t humidity505 PROGMEM = populate_decimal(79, 51);
+const decimal24_t humidity506 PROGMEM = populate_decimal(79, 67);
+const decimal24_t humidity507 PROGMEM = populate_decimal(79, 82);
+const decimal24_t humidity508 PROGMEM = populate_decimal(79, 98);
+const decimal24_t humidity509 PROGMEM = populate_decimal(80, 14);
+const decimal24_t humidity510 PROGMEM = populate_decimal(80, 30);
+const decimal24_t humidity511 PROGMEM = populate_decimal(80, 45);
+const decimal24_t humidity512 PROGMEM = populate_decimal(80, 61);
+const decimal24_t humidity513 PROGMEM = populate_decimal(80, 77);
+const decimal24_t humidity514 PROGMEM = populate_decimal(80, 93);
+const decimal24_t humidity515 PROGMEM = populate_decimal(81, 8);
+const decimal24_t humidity516 PROGMEM = populate_decimal(81, 24);
+const decimal24_t humidity517 PROGMEM = populate_decimal(81, 40);
+const decimal24_t humidity518 PROGMEM = populate_decimal(81, 56);
+const decimal24_t humidity519 PROGMEM = populate_decimal(81, 72);
+const decimal24_t humidity520 PROGMEM = populate_decimal(81, 87);
+const decimal24_t humidity521 PROGMEM = populate_decimal(82, 3);
+const decimal24_t humidity522 PROGMEM = populate_decimal(82, 19);
+const decimal24_t humidity523 PROGMEM = populate_decimal(82, 35);
+const decimal24_t humidity524 PROGMEM = populate_decimal(82, 50);
+const decimal24_t humidity525 PROGMEM = populate_decimal(82, 66);
+const decimal24_t humidity526 PROGMEM = populate_decimal(82, 82);
+const decimal24_t humidity527 PROGMEM = populate_decimal(82, 98);
+const decimal24_t humidity528 PROGMEM = populate_decimal(83, 13);
+const decimal24_t humidity529 PROGMEM = populate_decimal(83, 29);
+const decimal24_t humidity530 PROGMEM = populate_decimal(83, 45);
+const decimal24_t humidity531 PROGMEM = populate_decimal(83, 61);
+const decimal24_t humidity532 PROGMEM = populate_decimal(83, 77);
+const decimal24_t humidity533 PROGMEM = populate_decimal(83, 92);
+const decimal24_t humidity534 PROGMEM = populate_decimal(84, 8);
+const decimal24_t humidity535 PROGMEM = populate_decimal(84, 24);
+const decimal24_t humidity536 PROGMEM = populate_decimal(84, 40);
+const decimal24_t humidity537 PROGMEM = populate_decimal(84, 55);
+const decimal24_t humidity538 PROGMEM = populate_decimal(84, 71);
+const decimal24_t humidity539 PROGMEM = populate_decimal(84, 87);
+const decimal24_t humidity540 PROGMEM = populate_decimal(85, 3);
+const decimal24_t humidity541 PROGMEM = populate_decimal(85, 18);
+const decimal24_t humidity542 PROGMEM = populate_decimal(85, 34);
+const decimal24_t humidity543 PROGMEM = populate_decimal(85, 50);
+const decimal24_t humidity544 PROGMEM = populate_decimal(85, 66);
+const decimal24_t humidity545 PROGMEM = populate_decimal(85, 81);
+const decimal24_t humidity546 PROGMEM = populate_decimal(85, 97);
+const decimal24_t humidity547 PROGMEM = populate_decimal(86, 13);
+const decimal24_t humidity548 PROGMEM = populate_decimal(86, 29);
+const decimal24_t humidity549 PROGMEM = populate_decimal(86, 45);
+const decimal24_t humidity550 PROGMEM = populate_decimal(86, 60);
+const decimal24_t humidity551 PROGMEM = populate_decimal(86, 76);
+const decimal24_t humidity552 PROGMEM = populate_decimal(86, 92);
+const decimal24_t humidity553 PROGMEM = populate_decimal(87, 8);
+const decimal24_t humidity554 PROGMEM = populate_decimal(87, 23);
+const decimal24_t humidity555 PROGMEM = populate_decimal(87, 39);
+const decimal24_t humidity556 PROGMEM = populate_decimal(87, 55);
+const decimal24_t humidity557 PROGMEM = populate_decimal(87, 71);
+const decimal24_t humidity558 PROGMEM = populate_decimal(87, 86);
+const decimal24_t humidity559 PROGMEM = populate_decimal(88, 2);
+const decimal24_t humidity560 PROGMEM = populate_decimal(88, 18);
+const decimal24_t humidity561 PROGMEM = populate_decimal(88, 34);
+const decimal24_t humidity562 PROGMEM = populate_decimal(88, 49);
+const decimal24_t humidity563 PROGMEM = populate_decimal(88, 65);
+const decimal24_t humidity564 PROGMEM = populate_decimal(88, 81);
+const decimal24_t humidity565 PROGMEM = populate_decimal(88, 97);
+const decimal24_t humidity566 PROGMEM = populate_decimal(89, 13);
+const decimal24_t humidity567 PROGMEM = populate_decimal(89, 28);
+const decimal24_t humidity568 PROGMEM = populate_decimal(89, 44);
+const decimal24_t humidity569 PROGMEM = populate_decimal(89, 60);
+const decimal24_t humidity570 PROGMEM = populate_decimal(89, 76);
+const decimal24_t humidity571 PROGMEM = populate_decimal(89, 91);
+const decimal24_t humidity572 PROGMEM = populate_decimal(90, 7);
+const decimal24_t humidity573 PROGMEM = populate_decimal(90, 23);
+const decimal24_t humidity574 PROGMEM = populate_decimal(90, 39);
+const decimal24_t humidity575 PROGMEM = populate_decimal(90, 54);
+const decimal24_t humidity576 PROGMEM = populate_decimal(90, 70);
+const decimal24_t humidity577 PROGMEM = populate_decimal(90, 86);
+const decimal24_t humidity578 PROGMEM = populate_decimal(91, 2);
+const decimal24_t humidity579 PROGMEM = populate_decimal(91, 18);
+const decimal24_t humidity580 PROGMEM = populate_decimal(91, 33);
+const decimal24_t humidity581 PROGMEM = populate_decimal(91, 49);
+const decimal24_t humidity582 PROGMEM = populate_decimal(91, 65);
+const decimal24_t humidity583 PROGMEM = populate_decimal(91, 81);
+const decimal24_t humidity584 PROGMEM = populate_decimal(91, 96);
+const decimal24_t humidity585 PROGMEM = populate_decimal(92, 12);
+const decimal24_t humidity586 PROGMEM = populate_decimal(92, 28);
+const decimal24_t humidity587 PROGMEM = populate_decimal(92, 44);
+const decimal24_t humidity588 PROGMEM = populate_decimal(92, 59);
+const decimal24_t humidity589 PROGMEM = populate_decimal(92, 75);
+const decimal24_t humidity590 PROGMEM = populate_decimal(92, 91);
+const decimal24_t humidity591 PROGMEM = populate_decimal(93, 7);
+const decimal24_t humidity592 PROGMEM = populate_decimal(93, 22);
+const decimal24_t humidity593 PROGMEM = populate_decimal(93, 38);
+const decimal24_t humidity594 PROGMEM = populate_decimal(93, 54);
+const decimal24_t humidity595 PROGMEM = populate_decimal(93, 70);
+const decimal24_t humidity596 PROGMEM = populate_decimal(93, 86);
+const decimal24_t humidity597 PROGMEM = populate_decimal(94, 1);
+const decimal24_t humidity598 PROGMEM = populate_decimal(94, 17);
+const decimal24_t humidity599 PROGMEM = populate_decimal(94, 33);
+const decimal24_t humidity600 PROGMEM = populate_decimal(94, 49);
+const decimal24_t humidity601 PROGMEM = populate_decimal(94, 64);
+const decimal24_t humidity602 PROGMEM = populate_decimal(94, 80);
+const decimal24_t humidity603 PROGMEM = populate_decimal(94, 96);
+const decimal24_t humidity604 PROGMEM = populate_decimal(95, 12);
+const decimal24_t humidity605 PROGMEM = populate_decimal(95, 27);
+const decimal24_t humidity606 PROGMEM = populate_decimal(95, 43);
+const decimal24_t humidity607 PROGMEM = populate_decimal(95, 59);
+const decimal24_t humidity608 PROGMEM = populate_decimal(95, 75);
+const decimal24_t humidity609 PROGMEM = populate_decimal(95, 91);
+const decimal24_t humidity610 PROGMEM = populate_decimal(96, 6);
+const decimal24_t humidity611 PROGMEM = populate_decimal(96, 22);
+const decimal24_t humidity612 PROGMEM = populate_decimal(96, 38);
+const decimal24_t humidity613 PROGMEM = populate_decimal(96, 54);
+const decimal24_t humidity614 PROGMEM = populate_decimal(96, 69);
+const decimal24_t humidity615 PROGMEM = populate_decimal(96, 85);
+const decimal24_t humidity616 PROGMEM = populate_decimal(97, 1);
+const decimal24_t humidity617 PROGMEM = populate_decimal(97, 17);
+const decimal24_t humidity618 PROGMEM = populate_decimal(97, 32);
+const decimal24_t humidity619 PROGMEM = populate_decimal(97, 48);
+const decimal24_t humidity620 PROGMEM = populate_decimal(97, 64);
+const decimal24_t humidity621 PROGMEM = populate_decimal(97, 80);
+const decimal24_t humidity622 PROGMEM = populate_decimal(97, 95);
+const decimal24_t humidity623 PROGMEM = populate_decimal(98, 11);
+const decimal24_t humidity624 PROGMEM = populate_decimal(98, 27);
+const decimal24_t humidity625 PROGMEM = populate_decimal(98, 43);
+const decimal24_t humidity626 PROGMEM = populate_decimal(98, 59);
+const decimal24_t humidity627 PROGMEM = populate_decimal(98, 74);
+const decimal24_t humidity628 PROGMEM = populate_decimal(98, 90);
+const decimal24_t humidity629 PROGMEM = populate_decimal(99, 6);
+const decimal24_t humidity630 PROGMEM = populate_decimal(99, 22);
+const decimal24_t humidity631 PROGMEM = populate_decimal(99, 37);
+const decimal24_t humidity632 PROGMEM = populate_decimal(99, 53);
+const decimal24_t humidity633 PROGMEM = populate_decimal(99, 69);
+const decimal24_t humidity634 PROGMEM = populate_decimal(99, 85);
+const decimal24_t humidity635 PROGMEM = populate_decimal(100, 0);
+const decimal24_t humidity636 PROGMEM = populate_decimal(100, 16);
+const decimal24_t humidity637 PROGMEM = populate_decimal(100, 32);
+const decimal24_t humidity638 PROGMEM = populate_decimal(100, 48);
+const decimal24_t humidity639 PROGMEM = populate_decimal(100, 64);
+const decimal24_t humidity640 PROGMEM = populate_decimal(100, 79);
+const decimal24_t humidity641 PROGMEM = populate_decimal(100, 95);
+const decimal24_t humidity642 PROGMEM = populate_decimal(101, 11);
+const decimal24_t humidity643 PROGMEM = populate_decimal(101, 27);
+const decimal24_t humidity644 PROGMEM = populate_decimal(101, 42);
+const decimal24_t humidity645 PROGMEM = populate_decimal(101, 58);
+const decimal24_t humidity646 PROGMEM = populate_decimal(101, 74);
+const decimal24_t humidity647 PROGMEM = populate_decimal(101, 90);
+const decimal24_t humidity648 PROGMEM = populate_decimal(102, 5);
+const decimal24_t humidity649 PROGMEM = populate_decimal(102, 21);
+const decimal24_t humidity650 PROGMEM = populate_decimal(102, 37);
+const decimal24_t humidity651 PROGMEM = populate_decimal(102, 53);
+const decimal24_t humidity652 PROGMEM = populate_decimal(102, 68);
+const decimal24_t humidity653 PROGMEM = populate_decimal(102, 84);
+const decimal24_t humidity654 PROGMEM = populate_decimal(103, 0);
+const decimal24_t humidity655 PROGMEM = populate_decimal(103, 16);
+const decimal24_t humidity656 PROGMEM = populate_decimal(103, 32);
+const decimal24_t humidity657 PROGMEM = populate_decimal(103, 47);
+const decimal24_t humidity658 PROGMEM = populate_decimal(103, 63);
+const decimal24_t humidity659 PROGMEM = populate_decimal(103, 79);
+const decimal24_t humidity660 PROGMEM = populate_decimal(103, 95);
+const decimal24_t humidity661 PROGMEM = populate_decimal(104, 10);
+const decimal24_t humidity662 PROGMEM = populate_decimal(104, 26);
+const decimal24_t humidity663 PROGMEM = populate_decimal(104, 42);
+const decimal24_t humidity664 PROGMEM = populate_decimal(104, 58);
+const decimal24_t humidity665 PROGMEM = populate_decimal(104, 73);
+const decimal24_t humidity666 PROGMEM = populate_decimal(104, 89);
+const decimal24_t humidity667 PROGMEM = populate_decimal(105, 5);
+const decimal24_t humidity668 PROGMEM = populate_decimal(105, 21);
+const decimal24_t humidity669 PROGMEM = populate_decimal(105, 37);
+const decimal24_t humidity670 PROGMEM = populate_decimal(105, 52);
+const decimal24_t humidity671 PROGMEM = populate_decimal(105, 68);
+const decimal24_t humidity672 PROGMEM = populate_decimal(105, 84);
+const decimal24_t humidity673 PROGMEM = populate_decimal(106, 0);
+const decimal24_t humidity674 PROGMEM = populate_decimal(106, 15);
+const decimal24_t humidity675 PROGMEM = populate_decimal(106, 31);
+const decimal24_t humidity676 PROGMEM = populate_decimal(106, 47);
+const decimal24_t humidity677 PROGMEM = populate_decimal(106, 63);
+const decimal24_t humidity678 PROGMEM = populate_decimal(106, 78);
+const decimal24_t humidity679 PROGMEM = populate_decimal(106, 94);
+const decimal24_t humidity680 PROGMEM = populate_decimal(107, 10);
+const decimal24_t humidity681 PROGMEM = populate_decimal(107, 26);
+const decimal24_t humidity682 PROGMEM = populate_decimal(107, 41);
+const decimal24_t humidity683 PROGMEM = populate_decimal(107, 57);
+const decimal24_t humidity684 PROGMEM = populate_decimal(107, 73);
+const decimal24_t humidity685 PROGMEM = populate_decimal(107, 89);
+const decimal24_t humidity686 PROGMEM = populate_decimal(108, 5);
+const decimal24_t humidity687 PROGMEM = populate_decimal(108, 20);
+const decimal24_t humidity688 PROGMEM = populate_decimal(108, 36);
+const decimal24_t humidity689 PROGMEM = populate_decimal(108, 52);
+const decimal24_t humidity690 PROGMEM = populate_decimal(108, 68);
+const decimal24_t humidity691 PROGMEM = populate_decimal(108, 83);
+const decimal24_t humidity692 PROGMEM = populate_decimal(108, 99);
+const decimal24_t humidity693 PROGMEM = populate_decimal(109, 15);
+const decimal24_t humidity694 PROGMEM = populate_decimal(109, 31);
+const decimal24_t humidity695 PROGMEM = populate_decimal(109, 46);
+const decimal24_t humidity696 PROGMEM = populate_decimal(109, 62);
+const decimal24_t humidity697 PROGMEM = populate_decimal(109, 78);
+const decimal24_t humidity698 PROGMEM = populate_decimal(109, 94);
+const decimal24_t humidity699 PROGMEM = populate_decimal(110, 9);
+const decimal24_t humidity700 PROGMEM = populate_decimal(110, 25);
 
-static PGM_VOID_P const humidLookup[HUMIDITY_LOOKUP_BUFFER_SIZE] PROGMEM = 
+static PGM_VOID_P const humidityLookup[HUMIDITY_LOOKUP_BUFFER_SIZE] PROGMEM = 
 {
-    &humid0
-};
-
-const char humidity0[] PROGMEM = "0.00";
-const char humidity1[] PROGMEM = "0.05";
-const char humidity2[] PROGMEM = "0.21";
-const char humidity3[] PROGMEM = "0.37";
-const char humidity4[] PROGMEM = "0.52";
-const char humidity5[] PROGMEM = "0.68";
-const char humidity6[] PROGMEM = "0.84";
-const char humidity7[] PROGMEM = "1.00";
-const char humidity8[] PROGMEM = "1.15";
-const char humidity9[] PROGMEM = "1.31";
-const char humidity10[] PROGMEM = "1.47";
-const char humidity11[] PROGMEM = "1.63";
-const char humidity12[] PROGMEM = "1.78";
-const char humidity13[] PROGMEM = "1.94";
-const char humidity14[] PROGMEM = "2.10";
-const char humidity15[] PROGMEM = "2.26";
-const char humidity16[] PROGMEM = "2.42";
-const char humidity17[] PROGMEM = "2.57";
-const char humidity18[] PROGMEM = "2.73";
-const char humidity19[] PROGMEM = "2.89";
-const char humidity20[] PROGMEM = "3.05";
-const char humidity21[] PROGMEM = "3.20";
-const char humidity22[] PROGMEM = "3.36";
-const char humidity23[] PROGMEM = "3.52";
-const char humidity24[] PROGMEM = "3.68";
-const char humidity25[] PROGMEM = "3.83";
-const char humidity26[] PROGMEM = "3.99";
-const char humidity27[] PROGMEM = "4.15";
-const char humidity28[] PROGMEM = "4.31";
-const char humidity29[] PROGMEM = "4.47";
-const char humidity30[] PROGMEM = "4.62";
-const char humidity31[] PROGMEM = "4.78";
-const char humidity32[] PROGMEM = "4.94";
-const char humidity33[] PROGMEM = "5.10";
-const char humidity34[] PROGMEM = "5.25";
-const char humidity35[] PROGMEM = "5.41";
-const char humidity36[] PROGMEM = "5.57";
-const char humidity37[] PROGMEM = "5.73";
-const char humidity38[] PROGMEM = "5.88";
-const char humidity39[] PROGMEM = "6.04";
-const char humidity40[] PROGMEM = "6.20";
-const char humidity41[] PROGMEM = "6.36";
-const char humidity42[] PROGMEM = "6.51";
-const char humidity43[] PROGMEM = "6.67";
-const char humidity44[] PROGMEM = "6.83";
-const char humidity45[] PROGMEM = "6.99";
-const char humidity46[] PROGMEM = "7.15";
-const char humidity47[] PROGMEM = "7.30";
-const char humidity48[] PROGMEM = "7.46";
-const char humidity49[] PROGMEM = "7.62";
-const char humidity50[] PROGMEM = "7.78";
-const char humidity51[] PROGMEM = "7.93";
-const char humidity52[] PROGMEM = "8.09";
-const char humidity53[] PROGMEM = "8.25";
-const char humidity54[] PROGMEM = "8.41";
-const char humidity55[] PROGMEM = "8.56";
-const char humidity56[] PROGMEM = "8.72";
-const char humidity57[] PROGMEM = "8.88";
-const char humidity58[] PROGMEM = "9.04";
-const char humidity59[] PROGMEM = "9.19";
-const char humidity60[] PROGMEM = "9.35";
-const char humidity61[] PROGMEM = "9.51";
-const char humidity62[] PROGMEM = "9.67";
-const char humidity63[] PROGMEM = "9.83";
-const char humidity64[] PROGMEM = "9.98";
-const char humidity65[] PROGMEM = "10.14";
-const char humidity66[] PROGMEM = "10.30";
-const char humidity67[] PROGMEM = "10.46";
-const char humidity68[] PROGMEM = "10.61";
-const char humidity69[] PROGMEM = "10.77";
-const char humidity70[] PROGMEM = "10.93";
-const char humidity71[] PROGMEM = "11.09";
-const char humidity72[] PROGMEM = "11.24";
-const char humidity73[] PROGMEM = "11.40";
-const char humidity74[] PROGMEM = "11.56";
-const char humidity75[] PROGMEM = "11.72";
-const char humidity76[] PROGMEM = "11.88";
-const char humidity77[] PROGMEM = "12.03";
-const char humidity78[] PROGMEM = "12.19";
-const char humidity79[] PROGMEM = "12.35";
-const char humidity80[] PROGMEM = "12.51";
-const char humidity81[] PROGMEM = "12.66";
-const char humidity82[] PROGMEM = "12.82";
-const char humidity83[] PROGMEM = "12.98";
-const char humidity84[] PROGMEM = "13.14";
-const char humidity85[] PROGMEM = "13.29";
-const char humidity86[] PROGMEM = "13.45";
-const char humidity87[] PROGMEM = "13.61";
-const char humidity88[] PROGMEM = "13.77";
-const char humidity89[] PROGMEM = "13.92";
-const char humidity90[] PROGMEM = "14.08";
-const char humidity91[] PROGMEM = "14.24";
-const char humidity92[] PROGMEM = "14.40";
-const char humidity93[] PROGMEM = "14.56";
-const char humidity94[] PROGMEM = "14.71";
-const char humidity95[] PROGMEM = "14.87";
-const char humidity96[] PROGMEM = "15.03";
-const char humidity97[] PROGMEM = "15.19";
-const char humidity98[] PROGMEM = "15.34";
-const char humidity99[] PROGMEM = "15.50";
-const char humidity100[] PROGMEM = "15.66";
-const char humidity101[] PROGMEM = "15.82";
-const char humidity102[] PROGMEM = "15.97";
-const char humidity103[] PROGMEM = "16.13";
-const char humidity104[] PROGMEM = "16.29";
-const char humidity105[] PROGMEM = "16.45";
-const char humidity106[] PROGMEM = "16.61";
-const char humidity107[] PROGMEM = "16.76";
-const char humidity108[] PROGMEM = "16.92";
-const char humidity109[] PROGMEM = "17.08";
-const char humidity110[] PROGMEM = "17.24";
-const char humidity111[] PROGMEM = "17.39";
-const char humidity112[] PROGMEM = "17.55";
-const char humidity113[] PROGMEM = "17.71";
-const char humidity114[] PROGMEM = "17.87";
-const char humidity115[] PROGMEM = "18.02";
-const char humidity116[] PROGMEM = "18.18";
-const char humidity117[] PROGMEM = "18.34";
-const char humidity118[] PROGMEM = "18.50";
-const char humidity119[] PROGMEM = "18.65";
-const char humidity120[] PROGMEM = "18.81";
-const char humidity121[] PROGMEM = "18.97";
-const char humidity122[] PROGMEM = "19.13";
-const char humidity123[] PROGMEM = "19.29";
-const char humidity124[] PROGMEM = "19.44";
-const char humidity125[] PROGMEM = "19.60";
-const char humidity126[] PROGMEM = "19.76";
-const char humidity127[] PROGMEM = "19.92";
-const char humidity128[] PROGMEM = "20.07";
-const char humidity129[] PROGMEM = "20.23";
-const char humidity130[] PROGMEM = "20.39";
-const char humidity131[] PROGMEM = "20.55";
-const char humidity132[] PROGMEM = "20.70";
-const char humidity133[] PROGMEM = "20.86";
-const char humidity134[] PROGMEM = "21.02";
-const char humidity135[] PROGMEM = "21.18";
-const char humidity136[] PROGMEM = "21.34";
-const char humidity137[] PROGMEM = "21.49";
-const char humidity138[] PROGMEM = "21.65";
-const char humidity139[] PROGMEM = "21.81";
-const char humidity140[] PROGMEM = "21.97";
-const char humidity141[] PROGMEM = "22.12";
-const char humidity142[] PROGMEM = "22.28";
-const char humidity143[] PROGMEM = "22.44";
-const char humidity144[] PROGMEM = "22.60";
-const char humidity145[] PROGMEM = "22.75";
-const char humidity146[] PROGMEM = "22.91";
-const char humidity147[] PROGMEM = "23.07";
-const char humidity148[] PROGMEM = "23.23";
-const char humidity149[] PROGMEM = "23.38";
-const char humidity150[] PROGMEM = "23.54";
-const char humidity151[] PROGMEM = "23.70";
-const char humidity152[] PROGMEM = "23.86";
-const char humidity153[] PROGMEM = "24.02";
-const char humidity154[] PROGMEM = "24.17";
-const char humidity155[] PROGMEM = "24.33";
-const char humidity156[] PROGMEM = "24.49";
-const char humidity157[] PROGMEM = "24.65";
-const char humidity158[] PROGMEM = "24.80";
-const char humidity159[] PROGMEM = "24.96";
-const char humidity160[] PROGMEM = "25.12";
-const char humidity161[] PROGMEM = "25.28";
-const char humidity162[] PROGMEM = "25.43";
-const char humidity163[] PROGMEM = "25.59";
-const char humidity164[] PROGMEM = "25.75";
-const char humidity165[] PROGMEM = "25.91";
-const char humidity166[] PROGMEM = "26.07";
-const char humidity167[] PROGMEM = "26.22";
-const char humidity168[] PROGMEM = "26.38";
-const char humidity169[] PROGMEM = "26.54";
-const char humidity170[] PROGMEM = "26.70";
-const char humidity171[] PROGMEM = "26.85";
-const char humidity172[] PROGMEM = "27.01";
-const char humidity173[] PROGMEM = "27.17";
-const char humidity174[] PROGMEM = "27.33";
-const char humidity175[] PROGMEM = "27.48";
-const char humidity176[] PROGMEM = "27.64";
-const char humidity177[] PROGMEM = "27.80";
-const char humidity178[] PROGMEM = "27.96";
-const char humidity179[] PROGMEM = "28.11";
-const char humidity180[] PROGMEM = "28.27";
-const char humidity181[] PROGMEM = "28.43";
-const char humidity182[] PROGMEM = "28.59";
-const char humidity183[] PROGMEM = "28.75";
-const char humidity184[] PROGMEM = "28.90";
-const char humidity185[] PROGMEM = "29.06";
-const char humidity186[] PROGMEM = "29.22";
-const char humidity187[] PROGMEM = "29.38";
-const char humidity188[] PROGMEM = "29.53";
-const char humidity189[] PROGMEM = "29.69";
-const char humidity190[] PROGMEM = "29.85";
-const char humidity191[] PROGMEM = "30.01";
-const char humidity192[] PROGMEM = "30.16";
-const char humidity193[] PROGMEM = "30.32";
-const char humidity194[] PROGMEM = "30.48";
-const char humidity195[] PROGMEM = "30.64";
-const char humidity196[] PROGMEM = "30.79";
-const char humidity197[] PROGMEM = "30.95";
-const char humidity198[] PROGMEM = "31.11";
-const char humidity199[] PROGMEM = "31.27";
-const char humidity200[] PROGMEM = "31.43";
-const char humidity201[] PROGMEM = "31.58";
-const char humidity202[] PROGMEM = "31.74";
-const char humidity203[] PROGMEM = "31.90";
-const char humidity204[] PROGMEM = "32.06";
-const char humidity205[] PROGMEM = "32.21";
-const char humidity206[] PROGMEM = "32.37";
-const char humidity207[] PROGMEM = "32.53";
-const char humidity208[] PROGMEM = "32.69";
-const char humidity209[] PROGMEM = "32.84";
-const char humidity210[] PROGMEM = "33.00";
-const char humidity211[] PROGMEM = "33.16";
-const char humidity212[] PROGMEM = "33.32";
-const char humidity213[] PROGMEM = "33.48";
-const char humidity214[] PROGMEM = "33.63";
-const char humidity215[] PROGMEM = "33.79";
-const char humidity216[] PROGMEM = "33.95";
-const char humidity217[] PROGMEM = "34.11";
-const char humidity218[] PROGMEM = "34.26";
-const char humidity219[] PROGMEM = "34.42";
-const char humidity220[] PROGMEM = "34.58";
-const char humidity221[] PROGMEM = "34.74";
-const char humidity222[] PROGMEM = "34.89";
-const char humidity223[] PROGMEM = "35.05";
-const char humidity224[] PROGMEM = "35.21";
-const char humidity225[] PROGMEM = "35.37";
-const char humidity226[] PROGMEM = "35.52";
-const char humidity227[] PROGMEM = "35.68";
-const char humidity228[] PROGMEM = "35.84";
-const char humidity229[] PROGMEM = "36.00";
-const char humidity230[] PROGMEM = "36.16";
-const char humidity231[] PROGMEM = "36.31";
-const char humidity232[] PROGMEM = "36.47";
-const char humidity233[] PROGMEM = "36.63";
-const char humidity234[] PROGMEM = "36.79";
-const char humidity235[] PROGMEM = "36.94";
-const char humidity236[] PROGMEM = "37.10";
-const char humidity237[] PROGMEM = "37.26";
-const char humidity238[] PROGMEM = "37.42";
-const char humidity239[] PROGMEM = "37.57";
-const char humidity240[] PROGMEM = "37.73";
-const char humidity241[] PROGMEM = "37.89";
-const char humidity242[] PROGMEM = "38.05";
-const char humidity243[] PROGMEM = "38.21";
-const char humidity244[] PROGMEM = "38.36";
-const char humidity245[] PROGMEM = "38.52";
-const char humidity246[] PROGMEM = "38.68";
-const char humidity247[] PROGMEM = "38.84";
-const char humidity248[] PROGMEM = "38.99";
-const char humidity249[] PROGMEM = "39.15";
-const char humidity250[] PROGMEM = "39.31";
-const char humidity251[] PROGMEM = "39.47";
-const char humidity252[] PROGMEM = "39.62";
-const char humidity253[] PROGMEM = "39.78";
-const char humidity254[] PROGMEM = "39.94";
-const char humidity255[] PROGMEM = "40.10";
-const char humidity256[] PROGMEM = "40.25";
-const char humidity257[] PROGMEM = "40.41";
-const char humidity258[] PROGMEM = "40.57";
-const char humidity259[] PROGMEM = "40.73";
-const char humidity260[] PROGMEM = "40.89";
-const char humidity261[] PROGMEM = "41.04";
-const char humidity262[] PROGMEM = "41.20";
-const char humidity263[] PROGMEM = "41.36";
-const char humidity264[] PROGMEM = "41.52";
-const char humidity265[] PROGMEM = "41.67";
-const char humidity266[] PROGMEM = "41.83";
-const char humidity267[] PROGMEM = "41.99";
-const char humidity268[] PROGMEM = "42.15";
-const char humidity269[] PROGMEM = "42.30";
-const char humidity270[] PROGMEM = "42.46";
-const char humidity271[] PROGMEM = "42.62";
-const char humidity272[] PROGMEM = "42.78";
-const char humidity273[] PROGMEM = "42.94";
-const char humidity274[] PROGMEM = "43.09";
-const char humidity275[] PROGMEM = "43.25";
-const char humidity276[] PROGMEM = "43.41";
-const char humidity277[] PROGMEM = "43.57";
-const char humidity278[] PROGMEM = "43.72";
-const char humidity279[] PROGMEM = "43.88";
-const char humidity280[] PROGMEM = "44.04";
-const char humidity281[] PROGMEM = "44.20";
-const char humidity282[] PROGMEM = "44.35";
-const char humidity283[] PROGMEM = "44.51";
-const char humidity284[] PROGMEM = "44.67";
-const char humidity285[] PROGMEM = "44.83";
-const char humidity286[] PROGMEM = "44.98";
-const char humidity287[] PROGMEM = "45.14";
-const char humidity288[] PROGMEM = "45.30";
-const char humidity289[] PROGMEM = "45.46";
-const char humidity290[] PROGMEM = "45.62";
-const char humidity291[] PROGMEM = "45.77";
-const char humidity292[] PROGMEM = "45.93";
-const char humidity293[] PROGMEM = "46.09";
-const char humidity294[] PROGMEM = "46.25";
-const char humidity295[] PROGMEM = "46.40";
-const char humidity296[] PROGMEM = "46.56";
-const char humidity297[] PROGMEM = "46.72";
-const char humidity298[] PROGMEM = "46.88";
-const char humidity299[] PROGMEM = "47.03";
-const char humidity300[] PROGMEM = "47.19";
-const char humidity301[] PROGMEM = "47.35";
-const char humidity302[] PROGMEM = "47.51";
-const char humidity303[] PROGMEM = "47.66";
-const char humidity304[] PROGMEM = "47.82";
-const char humidity305[] PROGMEM = "47.98";
-const char humidity306[] PROGMEM = "48.14";
-const char humidity307[] PROGMEM = "48.30";
-const char humidity308[] PROGMEM = "48.45";
-const char humidity309[] PROGMEM = "48.61";
-const char humidity310[] PROGMEM = "48.77";
-const char humidity311[] PROGMEM = "48.93";
-const char humidity312[] PROGMEM = "49.08";
-const char humidity313[] PROGMEM = "49.24";
-const char humidity314[] PROGMEM = "49.40";
-const char humidity315[] PROGMEM = "49.56";
-const char humidity316[] PROGMEM = "49.71";
-const char humidity317[] PROGMEM = "49.87";
-const char humidity318[] PROGMEM = "50.03";
-const char humidity319[] PROGMEM = "50.19";
-const char humidity320[] PROGMEM = "50.35";
-const char humidity321[] PROGMEM = "50.50";
-const char humidity322[] PROGMEM = "50.66";
-const char humidity323[] PROGMEM = "50.82";
-const char humidity324[] PROGMEM = "50.98";
-const char humidity325[] PROGMEM = "51.13";
-const char humidity326[] PROGMEM = "51.29";
-const char humidity327[] PROGMEM = "51.45";
-const char humidity328[] PROGMEM = "51.61";
-const char humidity329[] PROGMEM = "51.76";
-const char humidity330[] PROGMEM = "51.92";
-const char humidity331[] PROGMEM = "52.08";
-const char humidity332[] PROGMEM = "52.24";
-const char humidity333[] PROGMEM = "52.39";
-const char humidity334[] PROGMEM = "52.55";
-const char humidity335[] PROGMEM = "52.71";
-const char humidity336[] PROGMEM = "52.87";
-const char humidity337[] PROGMEM = "53.03";
-const char humidity338[] PROGMEM = "53.18";
-const char humidity339[] PROGMEM = "53.34";
-const char humidity340[] PROGMEM = "53.50";
-const char humidity341[] PROGMEM = "53.66";
-const char humidity342[] PROGMEM = "53.81";
-const char humidity343[] PROGMEM = "53.97";
-const char humidity344[] PROGMEM = "54.13";
-const char humidity345[] PROGMEM = "54.29";
-const char humidity346[] PROGMEM = "54.44";
-const char humidity347[] PROGMEM = "54.60";
-const char humidity348[] PROGMEM = "54.76";
-const char humidity349[] PROGMEM = "54.92";
-const char humidity350[] PROGMEM = "55.08";
-const char humidity351[] PROGMEM = "55.23";
-const char humidity352[] PROGMEM = "55.39";
-const char humidity353[] PROGMEM = "55.55";
-const char humidity354[] PROGMEM = "55.71";
-const char humidity355[] PROGMEM = "55.86";
-const char humidity356[] PROGMEM = "56.02";
-const char humidity357[] PROGMEM = "56.18";
-const char humidity358[] PROGMEM = "56.34";
-const char humidity359[] PROGMEM = "56.49";
-const char humidity360[] PROGMEM = "56.65";
-const char humidity361[] PROGMEM = "56.81";
-const char humidity362[] PROGMEM = "56.97";
-const char humidity363[] PROGMEM = "57.12";
-const char humidity364[] PROGMEM = "57.28";
-const char humidity365[] PROGMEM = "57.44";
-const char humidity366[] PROGMEM = "57.60";
-const char humidity367[] PROGMEM = "57.76";
-const char humidity368[] PROGMEM = "57.91";
-const char humidity369[] PROGMEM = "58.07";
-const char humidity370[] PROGMEM = "58.23";
-const char humidity371[] PROGMEM = "58.39";
-const char humidity372[] PROGMEM = "58.54";
-const char humidity373[] PROGMEM = "58.70";
-const char humidity374[] PROGMEM = "58.86";
-const char humidity375[] PROGMEM = "59.02";
-const char humidity376[] PROGMEM = "59.17";
-const char humidity377[] PROGMEM = "59.33";
-const char humidity378[] PROGMEM = "59.49";
-const char humidity379[] PROGMEM = "59.65";
-const char humidity380[] PROGMEM = "59.81";
-const char humidity381[] PROGMEM = "59.96";
-const char humidity382[] PROGMEM = "60.12";
-const char humidity383[] PROGMEM = "60.28";
-const char humidity384[] PROGMEM = "60.44";
-const char humidity385[] PROGMEM = "60.59";
-const char humidity386[] PROGMEM = "60.75";
-const char humidity387[] PROGMEM = "60.91";
-const char humidity388[] PROGMEM = "61.07";
-const char humidity389[] PROGMEM = "61.22";
-const char humidity390[] PROGMEM = "61.38";
-const char humidity391[] PROGMEM = "61.54";
-const char humidity392[] PROGMEM = "61.70";
-const char humidity393[] PROGMEM = "61.85";
-const char humidity394[] PROGMEM = "62.01";
-const char humidity395[] PROGMEM = "62.17";
-const char humidity396[] PROGMEM = "62.33";
-const char humidity397[] PROGMEM = "62.49";
-const char humidity398[] PROGMEM = "62.64";
-const char humidity399[] PROGMEM = "62.80";
-const char humidity400[] PROGMEM = "62.96";
-const char humidity401[] PROGMEM = "63.12";
-const char humidity402[] PROGMEM = "63.27";
-const char humidity403[] PROGMEM = "63.43";
-const char humidity404[] PROGMEM = "63.59";
-const char humidity405[] PROGMEM = "63.75";
-const char humidity406[] PROGMEM = "63.90";
-const char humidity407[] PROGMEM = "64.06";
-const char humidity408[] PROGMEM = "64.22";
-const char humidity409[] PROGMEM = "64.38";
-const char humidity410[] PROGMEM = "64.54";
-const char humidity411[] PROGMEM = "64.69";
-const char humidity412[] PROGMEM = "64.85";
-const char humidity413[] PROGMEM = "65.01";
-const char humidity414[] PROGMEM = "65.17";
-const char humidity415[] PROGMEM = "65.32";
-const char humidity416[] PROGMEM = "65.48";
-const char humidity417[] PROGMEM = "65.64";
-const char humidity418[] PROGMEM = "65.80";
-const char humidity419[] PROGMEM = "65.95";
-const char humidity420[] PROGMEM = "66.11";
-const char humidity421[] PROGMEM = "66.27";
-const char humidity422[] PROGMEM = "66.43";
-const char humidity423[] PROGMEM = "66.58";
-const char humidity424[] PROGMEM = "66.74";
-const char humidity425[] PROGMEM = "66.90";
-const char humidity426[] PROGMEM = "67.06";
-const char humidity427[] PROGMEM = "67.22";
-const char humidity428[] PROGMEM = "67.37";
-const char humidity429[] PROGMEM = "67.53";
-const char humidity430[] PROGMEM = "67.69";
-const char humidity431[] PROGMEM = "67.85";
-const char humidity432[] PROGMEM = "68.00";
-const char humidity433[] PROGMEM = "68.16";
-const char humidity434[] PROGMEM = "68.32";
-const char humidity435[] PROGMEM = "68.48";
-const char humidity436[] PROGMEM = "68.63";
-const char humidity437[] PROGMEM = "68.79";
-const char humidity438[] PROGMEM = "68.95";
-const char humidity439[] PROGMEM = "69.11";
-const char humidity440[] PROGMEM = "69.26";
-const char humidity441[] PROGMEM = "69.42";
-const char humidity442[] PROGMEM = "69.58";
-const char humidity443[] PROGMEM = "69.74";
-const char humidity444[] PROGMEM = "69.90";
-const char humidity445[] PROGMEM = "70.05";
-const char humidity446[] PROGMEM = "70.21";
-const char humidity447[] PROGMEM = "70.37";
-const char humidity448[] PROGMEM = "70.53";
-const char humidity449[] PROGMEM = "70.68";
-const char humidity450[] PROGMEM = "70.84";
-const char humidity451[] PROGMEM = "71.00";
-const char humidity452[] PROGMEM = "71.16";
-const char humidity453[] PROGMEM = "71.31";
-const char humidity454[] PROGMEM = "71.47";
-const char humidity455[] PROGMEM = "71.63";
-const char humidity456[] PROGMEM = "71.79";
-const char humidity457[] PROGMEM = "71.95";
-const char humidity458[] PROGMEM = "72.10";
-const char humidity459[] PROGMEM = "72.26";
-const char humidity460[] PROGMEM = "72.42";
-const char humidity461[] PROGMEM = "72.58";
-const char humidity462[] PROGMEM = "72.73";
-const char humidity463[] PROGMEM = "72.89";
-const char humidity464[] PROGMEM = "73.05";
-const char humidity465[] PROGMEM = "73.21";
-const char humidity466[] PROGMEM = "73.36";
-const char humidity467[] PROGMEM = "73.52";
-const char humidity468[] PROGMEM = "73.68";
-const char humidity469[] PROGMEM = "73.84";
-const char humidity470[] PROGMEM = "73.99";
-const char humidity471[] PROGMEM = "74.15";
-const char humidity472[] PROGMEM = "74.31";
-const char humidity473[] PROGMEM = "74.47";
-const char humidity474[] PROGMEM = "74.63";
-const char humidity475[] PROGMEM = "74.78";
-const char humidity476[] PROGMEM = "74.94";
-const char humidity477[] PROGMEM = "75.10";
-const char humidity478[] PROGMEM = "75.26";
-const char humidity479[] PROGMEM = "75.41";
-const char humidity480[] PROGMEM = "75.57";
-const char humidity481[] PROGMEM = "75.73";
-const char humidity482[] PROGMEM = "75.89";
-const char humidity483[] PROGMEM = "76.04";
-const char humidity484[] PROGMEM = "76.20";
-const char humidity485[] PROGMEM = "76.36";
-const char humidity486[] PROGMEM = "76.52";
-const char humidity487[] PROGMEM = "76.68";
-const char humidity488[] PROGMEM = "76.83";
-const char humidity489[] PROGMEM = "76.99";
-const char humidity490[] PROGMEM = "77.15";
-const char humidity491[] PROGMEM = "77.31";
-const char humidity492[] PROGMEM = "77.46";
-const char humidity493[] PROGMEM = "77.62";
-const char humidity494[] PROGMEM = "77.78";
-const char humidity495[] PROGMEM = "77.94";
-const char humidity496[] PROGMEM = "78.09";
-const char humidity497[] PROGMEM = "78.25";
-const char humidity498[] PROGMEM = "78.41";
-const char humidity499[] PROGMEM = "78.57";
-const char humidity500[] PROGMEM = "78.72";
-const char humidity501[] PROGMEM = "78.88";
-const char humidity502[] PROGMEM = "79.04";
-const char humidity503[] PROGMEM = "79.20";
-const char humidity504[] PROGMEM = "79.36";
-const char humidity505[] PROGMEM = "79.51";
-const char humidity506[] PROGMEM = "79.67";
-const char humidity507[] PROGMEM = "79.83";
-const char humidity508[] PROGMEM = "79.99";
-const char humidity509[] PROGMEM = "80.14";
-const char humidity510[] PROGMEM = "80.30";
-const char humidity511[] PROGMEM = "80.46";
-const char humidity512[] PROGMEM = "80.62";
-const char humidity513[] PROGMEM = "80.77";
-const char humidity514[] PROGMEM = "80.93";
-const char humidity515[] PROGMEM = "81.09";
-const char humidity516[] PROGMEM = "81.25";
-const char humidity517[] PROGMEM = "81.41";
-const char humidity518[] PROGMEM = "81.56";
-const char humidity519[] PROGMEM = "81.72";
-const char humidity520[] PROGMEM = "81.88";
-const char humidity521[] PROGMEM = "82.04";
-const char humidity522[] PROGMEM = "82.19";
-const char humidity523[] PROGMEM = "82.35";
-const char humidity524[] PROGMEM = "82.51";
-const char humidity525[] PROGMEM = "82.67";
-const char humidity526[] PROGMEM = "82.82";
-const char humidity527[] PROGMEM = "82.98";
-const char humidity528[] PROGMEM = "83.14";
-const char humidity529[] PROGMEM = "83.30";
-const char humidity530[] PROGMEM = "83.45";
-const char humidity531[] PROGMEM = "83.61";
-const char humidity532[] PROGMEM = "83.77";
-const char humidity533[] PROGMEM = "83.93";
-const char humidity534[] PROGMEM = "84.09";
-const char humidity535[] PROGMEM = "84.24";
-const char humidity536[] PROGMEM = "84.40";
-const char humidity537[] PROGMEM = "84.56";
-const char humidity538[] PROGMEM = "84.72";
-const char humidity539[] PROGMEM = "84.87";
-const char humidity540[] PROGMEM = "85.03";
-const char humidity541[] PROGMEM = "85.19";
-const char humidity542[] PROGMEM = "85.35";
-const char humidity543[] PROGMEM = "85.50";
-const char humidity544[] PROGMEM = "85.66";
-const char humidity545[] PROGMEM = "85.82";
-const char humidity546[] PROGMEM = "85.98";
-const char humidity547[] PROGMEM = "86.14";
-const char humidity548[] PROGMEM = "86.29";
-const char humidity549[] PROGMEM = "86.45";
-const char humidity550[] PROGMEM = "86.61";
-const char humidity551[] PROGMEM = "86.77";
-const char humidity552[] PROGMEM = "86.92";
-const char humidity553[] PROGMEM = "87.08";
-const char humidity554[] PROGMEM = "87.24";
-const char humidity555[] PROGMEM = "87.40";
-const char humidity556[] PROGMEM = "87.55";
-const char humidity557[] PROGMEM = "87.71";
-const char humidity558[] PROGMEM = "87.87";
-const char humidity559[] PROGMEM = "88.03";
-const char humidity560[] PROGMEM = "88.18";
-const char humidity561[] PROGMEM = "88.34";
-const char humidity562[] PROGMEM = "88.50";
-const char humidity563[] PROGMEM = "88.66";
-const char humidity564[] PROGMEM = "88.82";
-const char humidity565[] PROGMEM = "88.97";
-const char humidity566[] PROGMEM = "89.13";
-const char humidity567[] PROGMEM = "89.29";
-const char humidity568[] PROGMEM = "89.45";
-const char humidity569[] PROGMEM = "89.60";
-const char humidity570[] PROGMEM = "89.76";
-const char humidity571[] PROGMEM = "89.92";
-const char humidity572[] PROGMEM = "90.08";
-const char humidity573[] PROGMEM = "90.23";
-const char humidity574[] PROGMEM = "90.39";
-const char humidity575[] PROGMEM = "90.55";
-const char humidity576[] PROGMEM = "90.71";
-const char humidity577[] PROGMEM = "90.86";
-const char humidity578[] PROGMEM = "91.02";
-const char humidity579[] PROGMEM = "91.18";
-const char humidity580[] PROGMEM = "91.34";
-const char humidity581[] PROGMEM = "91.50";
-const char humidity582[] PROGMEM = "91.65";
-const char humidity583[] PROGMEM = "91.81";
-const char humidity584[] PROGMEM = "91.97";
-const char humidity585[] PROGMEM = "92.13";
-const char humidity586[] PROGMEM = "92.28";
-const char humidity587[] PROGMEM = "92.44";
-const char humidity588[] PROGMEM = "92.60";
-const char humidity589[] PROGMEM = "92.76";
-const char humidity590[] PROGMEM = "92.91";
-const char humidity591[] PROGMEM = "93.07";
-const char humidity592[] PROGMEM = "93.23";
-const char humidity593[] PROGMEM = "93.39";
-const char humidity594[] PROGMEM = "93.55";
-const char humidity595[] PROGMEM = "93.70";
-const char humidity596[] PROGMEM = "93.86";
-const char humidity597[] PROGMEM = "94.02";
-const char humidity598[] PROGMEM = "94.18";
-const char humidity599[] PROGMEM = "94.33";
-const char humidity600[] PROGMEM = "94.49";
-const char humidity601[] PROGMEM = "94.65";
-const char humidity602[] PROGMEM = "94.81";
-const char humidity603[] PROGMEM = "94.96";
-const char humidity604[] PROGMEM = "95.12";
-const char humidity605[] PROGMEM = "95.28";
-const char humidity606[] PROGMEM = "95.44";
-const char humidity607[] PROGMEM = "95.59";
-const char humidity608[] PROGMEM = "95.75";
-const char humidity609[] PROGMEM = "95.91";
-const char humidity610[] PROGMEM = "96.07";
-const char humidity611[] PROGMEM = "96.23";
-const char humidity612[] PROGMEM = "96.38";
-const char humidity613[] PROGMEM = "96.54";
-const char humidity614[] PROGMEM = "96.70";
-const char humidity615[] PROGMEM = "96.86";
-const char humidity616[] PROGMEM = "97.01";
-const char humidity617[] PROGMEM = "97.17";
-const char humidity618[] PROGMEM = "97.33";
-const char humidity619[] PROGMEM = "97.49";
-const char humidity620[] PROGMEM = "97.64";
-const char humidity621[] PROGMEM = "97.80";
-const char humidity622[] PROGMEM = "97.96";
-const char humidity623[] PROGMEM = "98.12";
-const char humidity624[] PROGMEM = "98.28";
-const char humidity625[] PROGMEM = "98.43";
-const char humidity626[] PROGMEM = "98.59";
-const char humidity627[] PROGMEM = "98.75";
-const char humidity628[] PROGMEM = "98.91";
-const char humidity629[] PROGMEM = "99.06";
-const char humidity630[] PROGMEM = "99.22";
-const char humidity631[] PROGMEM = "99.38";
-const char humidity632[] PROGMEM = "99.54";
-const char humidity633[] PROGMEM = "99.69";
-const char humidity634[] PROGMEM = "99.85";
-const char humidity635[] PROGMEM = "100.01";
-const char humidity636[] PROGMEM = "100.17";
-const char humidity637[] PROGMEM = "100.32";
-const char humidity638[] PROGMEM = "100.48";
-const char humidity639[] PROGMEM = "100.64";
-const char humidity640[] PROGMEM = "100.80";
-const char humidity641[] PROGMEM = "100.96";
-const char humidity642[] PROGMEM = "101.11";
-const char humidity643[] PROGMEM = "101.27";
-const char humidity644[] PROGMEM = "101.43";
-const char humidity645[] PROGMEM = "101.59";
-const char humidity646[] PROGMEM = "101.74";
-const char humidity647[] PROGMEM = "101.90";
-const char humidity648[] PROGMEM = "102.06";
-const char humidity649[] PROGMEM = "102.22";
-const char humidity650[] PROGMEM = "102.37";
-const char humidity651[] PROGMEM = "102.53";
-const char humidity652[] PROGMEM = "102.69";
-const char humidity653[] PROGMEM = "102.85";
-const char humidity654[] PROGMEM = "103.01";
-const char humidity655[] PROGMEM = "103.16";
-const char humidity656[] PROGMEM = "103.32";
-const char humidity657[] PROGMEM = "103.48";
-const char humidity658[] PROGMEM = "103.64";
-const char humidity659[] PROGMEM = "103.79";
-const char humidity660[] PROGMEM = "103.95";
-const char humidity661[] PROGMEM = "104.11";
-const char humidity662[] PROGMEM = "104.27";
-const char humidity663[] PROGMEM = "104.42";
-const char humidity664[] PROGMEM = "104.58";
-const char humidity665[] PROGMEM = "104.74";
-const char humidity666[] PROGMEM = "104.90";
-const char humidity667[] PROGMEM = "105.05";
-const char humidity668[] PROGMEM = "105.21";
-const char humidity669[] PROGMEM = "105.37";
-const char humidity670[] PROGMEM = "105.53";
-const char humidity671[] PROGMEM = "105.69";
-const char humidity672[] PROGMEM = "105.84";
-const char humidity673[] PROGMEM = "106.00";
-const char humidity674[] PROGMEM = "106.16";
-const char humidity675[] PROGMEM = "106.32";
-const char humidity676[] PROGMEM = "106.47";
-const char humidity677[] PROGMEM = "106.63";
-const char humidity678[] PROGMEM = "106.79";
-const char humidity679[] PROGMEM = "106.95";
-const char humidity680[] PROGMEM = "107.10";
-const char humidity681[] PROGMEM = "107.26";
-const char humidity682[] PROGMEM = "107.42";
-const char humidity683[] PROGMEM = "107.58";
-const char humidity684[] PROGMEM = "107.73";
-const char humidity685[] PROGMEM = "107.89";
-const char humidity686[] PROGMEM = "108.05";
-const char humidity687[] PROGMEM = "108.21";
-const char humidity688[] PROGMEM = "108.37";
-const char humidity689[] PROGMEM = "108.52";
-const char humidity690[] PROGMEM = "108.68";
-const char humidity691[] PROGMEM = "108.84";
-const char humidity692[] PROGMEM = "109.00";
-const char humidity693[] PROGMEM = "109.15";
-const char humidity694[] PROGMEM = "109.31";
-const char humidity695[] PROGMEM = "109.47";
-const char humidity696[] PROGMEM = "109.63";
-const char humidity697[] PROGMEM = "109.78";
-const char humidity698[] PROGMEM = "109.94";
-const char humidity699[] PROGMEM = "110.10";
-
-static PGM_P const humidityLookup[HUMIDITY_LOOKUP_BUFFER_SIZE] PROGMEM = 
-{
-humidity0,
-humidity1,
-humidity2,
-humidity3,
-humidity4,
-humidity5,
-humidity6,
-humidity7,
-humidity8,
-humidity9,
-humidity10,
-humidity11,
-humidity12,
-humidity13,
-humidity14,
-humidity15,
-humidity16,
-humidity17,
-humidity18,
-humidity19,
-humidity20,
-humidity21,
-humidity22,
-humidity23,
-humidity24,
-humidity25,
-humidity26,
-humidity27,
-humidity28,
-humidity29,
-humidity30,
-humidity31,
-humidity32,
-humidity33,
-humidity34,
-humidity35,
-humidity36,
-humidity37,
-humidity38,
-humidity39,
-humidity40,
-humidity41,
-humidity42,
-humidity43,
-humidity44,
-humidity45,
-humidity46,
-humidity47,
-humidity48,
-humidity49,
-humidity50,
-humidity51,
-humidity52,
-humidity53,
-humidity54,
-humidity55,
-humidity56,
-humidity57,
-humidity58,
-humidity59,
-humidity60,
-humidity61,
-humidity62,
-humidity63,
-humidity64,
-humidity65,
-humidity66,
-humidity67,
-humidity68,
-humidity69,
-humidity70,
-humidity71,
-humidity72,
-humidity73,
-humidity74,
-humidity75,
-humidity76,
-humidity77,
-humidity78,
-humidity79,
-humidity80,
-humidity81,
-humidity82,
-humidity83,
-humidity84,
-humidity85,
-humidity86,
-humidity87,
-humidity88,
-humidity89,
-humidity90,
-humidity91,
-humidity92,
-humidity93,
-humidity94,
-humidity95,
-humidity96,
-humidity97,
-humidity98,
-humidity99,
-humidity100,
-humidity101,
-humidity102,
-humidity103,
-humidity104,
-humidity105,
-humidity106,
-humidity107,
-humidity108,
-humidity109,
-humidity110,
-humidity111,
-humidity112,
-humidity113,
-humidity114,
-humidity115,
-humidity116,
-humidity117,
-humidity118,
-humidity119,
-humidity120,
-humidity121,
-humidity122,
-humidity123,
-humidity124,
-humidity125,
-humidity126,
-humidity127,
-humidity128,
-humidity129,
-humidity130,
-humidity131,
-humidity132,
-humidity133,
-humidity134,
-humidity135,
-humidity136,
-humidity137,
-humidity138,
-humidity139,
-humidity140,
-humidity141,
-humidity142,
-humidity143,
-humidity144,
-humidity145,
-humidity146,
-humidity147,
-humidity148,
-humidity149,
-humidity150,
-humidity151,
-humidity152,
-humidity153,
-humidity154,
-humidity155,
-humidity156,
-humidity157,
-humidity158,
-humidity159,
-humidity160,
-humidity161,
-humidity162,
-humidity163,
-humidity164,
-humidity165,
-humidity166,
-humidity167,
-humidity168,
-humidity169,
-humidity170,
-humidity171,
-humidity172,
-humidity173,
-humidity174,
-humidity175,
-humidity176,
-humidity177,
-humidity178,
-humidity179,
-humidity180,
-humidity181,
-humidity182,
-humidity183,
-humidity184,
-humidity185,
-humidity186,
-humidity187,
-humidity188,
-humidity189,
-humidity190,
-humidity191,
-humidity192,
-humidity193,
-humidity194,
-humidity195,
-humidity196,
-humidity197,
-humidity198,
-humidity199,
-humidity200,
-humidity201,
-humidity202,
-humidity203,
-humidity204,
-humidity205,
-humidity206,
-humidity207,
-humidity208,
-humidity209,
-humidity210,
-humidity211,
-humidity212,
-humidity213,
-humidity214,
-humidity215,
-humidity216,
-humidity217,
-humidity218,
-humidity219,
-humidity220,
-humidity221,
-humidity222,
-humidity223,
-humidity224,
-humidity225,
-humidity226,
-humidity227,
-humidity228,
-humidity229,
-humidity230,
-humidity231,
-humidity232,
-humidity233,
-humidity234,
-humidity235,
-humidity236,
-humidity237,
-humidity238,
-humidity239,
-humidity240,
-humidity241,
-humidity242,
-humidity243,
-humidity244,
-humidity245,
-humidity246,
-humidity247,
-humidity248,
-humidity249,
-humidity250,
-humidity251,
-humidity252,
-humidity253,
-humidity254,
-humidity255,
-humidity256,
-humidity257,
-humidity258,
-humidity259,
-humidity260,
-humidity261,
-humidity262,
-humidity263,
-humidity264,
-humidity265,
-humidity266,
-humidity267,
-humidity268,
-humidity269,
-humidity270,
-humidity271,
-humidity272,
-humidity273,
-humidity274,
-humidity275,
-humidity276,
-humidity277,
-humidity278,
-humidity279,
-humidity280,
-humidity281,
-humidity282,
-humidity283,
-humidity284,
-humidity285,
-humidity286,
-humidity287,
-humidity288,
-humidity289,
-humidity290,
-humidity291,
-humidity292,
-humidity293,
-humidity294,
-humidity295,
-humidity296,
-humidity297,
-humidity298,
-humidity299,
-humidity300,
-humidity301,
-humidity302,
-humidity303,
-humidity304,
-humidity305,
-humidity306,
-humidity307,
-humidity308,
-humidity309,
-humidity310,
-humidity311,
-humidity312,
-humidity313,
-humidity314,
-humidity315,
-humidity316,
-humidity317,
-humidity318,
-humidity319,
-humidity320,
-humidity321,
-humidity322,
-humidity323,
-humidity324,
-humidity325,
-humidity326,
-humidity327,
-humidity328,
-humidity329,
-humidity330,
-humidity331,
-humidity332,
-humidity333,
-humidity334,
-humidity335,
-humidity336,
-humidity337,
-humidity338,
-humidity339,
-humidity340,
-humidity341,
-humidity342,
-humidity343,
-humidity344,
-humidity345,
-humidity346,
-humidity347,
-humidity348,
-humidity349,
-humidity350,
-humidity351,
-humidity352,
-humidity353,
-humidity354,
-humidity355,
-humidity356,
-humidity357,
-humidity358,
-humidity359,
-humidity360,
-humidity361,
-humidity362,
-humidity363,
-humidity364,
-humidity365,
-humidity366,
-humidity367,
-humidity368,
-humidity369,
-humidity370,
-humidity371,
-humidity372,
-humidity373,
-humidity374,
-humidity375,
-humidity376,
-humidity377,
-humidity378,
-humidity379,
-humidity380,
-humidity381,
-humidity382,
-humidity383,
-humidity384,
-humidity385,
-humidity386,
-humidity387,
-humidity388,
-humidity389,
-humidity390,
-humidity391,
-humidity392,
-humidity393,
-humidity394,
-humidity395,
-humidity396,
-humidity397,
-humidity398,
-humidity399,
-humidity400,
-humidity401,
-humidity402,
-humidity403,
-humidity404,
-humidity405,
-humidity406,
-humidity407,
-humidity408,
-humidity409,
-humidity410,
-humidity411,
-humidity412,
-humidity413,
-humidity414,
-humidity415,
-humidity416,
-humidity417,
-humidity418,
-humidity419,
-humidity420,
-humidity421,
-humidity422,
-humidity423,
-humidity424,
-humidity425,
-humidity426,
-humidity427,
-humidity428,
-humidity429,
-humidity430,
-humidity431,
-humidity432,
-humidity433,
-humidity434,
-humidity435,
-humidity436,
-humidity437,
-humidity438,
-humidity439,
-humidity440,
-humidity441,
-humidity442,
-humidity443,
-humidity444,
-humidity445,
-humidity446,
-humidity447,
-humidity448,
-humidity449,
-humidity450,
-humidity451,
-humidity452,
-humidity453,
-humidity454,
-humidity455,
-humidity456,
-humidity457,
-humidity458,
-humidity459,
-humidity460,
-humidity461,
-humidity462,
-humidity463,
-humidity464,
-humidity465,
-humidity466,
-humidity467,
-humidity468,
-humidity469,
-humidity470,
-humidity471,
-humidity472,
-humidity473,
-humidity474,
-humidity475,
-humidity476,
-humidity477,
-humidity478,
-humidity479,
-humidity480,
-humidity481,
-humidity482,
-humidity483,
-humidity484,
-humidity485,
-humidity486,
-humidity487,
-humidity488,
-humidity489,
-humidity490,
-humidity491,
-humidity492,
-humidity493,
-humidity494,
-humidity495,
-humidity496,
-humidity497,
-humidity498,
-humidity499,
-humidity500,
-humidity501,
-humidity502,
-humidity503,
-humidity504,
-humidity505,
-humidity506,
-humidity507,
-humidity508,
-humidity509,
-humidity510,
-humidity511,
-humidity512,
-humidity513,
-humidity514,
-humidity515,
-humidity516,
-humidity517,
-humidity518,
-humidity519,
-humidity520,
-humidity521,
-humidity522,
-humidity523,
-humidity524,
-humidity525,
-humidity526,
-humidity527,
-humidity528,
-humidity529,
-humidity530,
-humidity531,
-humidity532,
-humidity533,
-humidity534,
-humidity535,
-humidity536,
-humidity537,
-humidity538,
-humidity539,
-humidity540,
-humidity541,
-humidity542,
-humidity543,
-humidity544,
-humidity545,
-humidity546,
-humidity547,
-humidity548,
-humidity549,
-humidity550,
-humidity551,
-humidity552,
-humidity553,
-humidity554,
-humidity555,
-humidity556,
-humidity557,
-humidity558,
-humidity559,
-humidity560,
-humidity561,
-humidity562,
-humidity563,
-humidity564,
-humidity565,
-humidity566,
-humidity567,
-humidity568,
-humidity569,
-humidity570,
-humidity571,
-humidity572,
-humidity573,
-humidity574,
-humidity575,
-humidity576,
-humidity577,
-humidity578,
-humidity579,
-humidity580,
-humidity581,
-humidity582,
-humidity583,
-humidity584,
-humidity585,
-humidity586,
-humidity587,
-humidity588,
-humidity589,
-humidity590,
-humidity591,
-humidity592,
-humidity593,
-humidity594,
-humidity595,
-humidity596,
-humidity597,
-humidity598,
-humidity599,
-humidity600,
-humidity601,
-humidity602,
-humidity603,
-humidity604,
-humidity605,
-humidity606,
-humidity607,
-humidity608,
-humidity609,
-humidity610,
-humidity611,
-humidity612,
-humidity613,
-humidity614,
-humidity615,
-humidity616,
-humidity617,
-humidity618,
-humidity619,
-humidity620,
-humidity621,
-humidity622,
-humidity623,
-humidity624,
-humidity625,
-humidity626,
-humidity627,
-humidity628,
-humidity629,
-humidity630,
-humidity631,
-humidity632,
-humidity633,
-humidity634,
-humidity635,
-humidity636,
-humidity637,
-humidity638,
-humidity639,
-humidity640,
-humidity641,
-humidity642,
-humidity643,
-humidity644,
-humidity645,
-humidity646,
-humidity647,
-humidity648,
-humidity649,
-humidity650,
-humidity651,
-humidity652,
-humidity653,
-humidity654,
-humidity655,
-humidity656,
-humidity657,
-humidity658,
-humidity659,
-humidity660,
-humidity661,
-humidity662,
-humidity663,
-humidity664,
-humidity665,
-humidity666,
-humidity667,
-humidity668,
-humidity669,
-humidity670,
-humidity671,
-humidity672,
-humidity673,
-humidity674,
-humidity675,
-humidity676,
-humidity677,
-humidity678,
-humidity679,
-humidity680,
-humidity681,
-humidity682,
-humidity683,
-humidity684,
-humidity685,
-humidity686,
-humidity687,
-humidity688,
-humidity689,
-humidity690,
-humidity691,
-humidity692,
-humidity693,
-humidity694,
-humidity695,
-humidity696,
-humidity697,
-humidity698,
-humidity699
+&humidity0,
+&humidity1,
+&humidity2,
+&humidity3,
+&humidity4,
+&humidity5,
+&humidity6,
+&humidity7,
+&humidity8,
+&humidity9,
+&humidity10,
+&humidity11,
+&humidity12,
+&humidity13,
+&humidity14,
+&humidity15,
+&humidity16,
+&humidity17,
+&humidity18,
+&humidity19,
+&humidity20,
+&humidity21,
+&humidity22,
+&humidity23,
+&humidity24,
+&humidity25,
+&humidity26,
+&humidity27,
+&humidity28,
+&humidity29,
+&humidity30,
+&humidity31,
+&humidity32,
+&humidity33,
+&humidity34,
+&humidity35,
+&humidity36,
+&humidity37,
+&humidity38,
+&humidity39,
+&humidity40,
+&humidity41,
+&humidity42,
+&humidity43,
+&humidity44,
+&humidity45,
+&humidity46,
+&humidity47,
+&humidity48,
+&humidity49,
+&humidity50,
+&humidity51,
+&humidity52,
+&humidity53,
+&humidity54,
+&humidity55,
+&humidity56,
+&humidity57,
+&humidity58,
+&humidity59,
+&humidity60,
+&humidity61,
+&humidity62,
+&humidity63,
+&humidity64,
+&humidity65,
+&humidity66,
+&humidity67,
+&humidity68,
+&humidity69,
+&humidity70,
+&humidity71,
+&humidity72,
+&humidity73,
+&humidity74,
+&humidity75,
+&humidity76,
+&humidity77,
+&humidity78,
+&humidity79,
+&humidity80,
+&humidity81,
+&humidity82,
+&humidity83,
+&humidity84,
+&humidity85,
+&humidity86,
+&humidity87,
+&humidity88,
+&humidity89,
+&humidity90,
+&humidity91,
+&humidity92,
+&humidity93,
+&humidity94,
+&humidity95,
+&humidity96,
+&humidity97,
+&humidity98,
+&humidity99,
+&humidity100,
+&humidity101,
+&humidity102,
+&humidity103,
+&humidity104,
+&humidity105,
+&humidity106,
+&humidity107,
+&humidity108,
+&humidity109,
+&humidity110,
+&humidity111,
+&humidity112,
+&humidity113,
+&humidity114,
+&humidity115,
+&humidity116,
+&humidity117,
+&humidity118,
+&humidity119,
+&humidity120,
+&humidity121,
+&humidity122,
+&humidity123,
+&humidity124,
+&humidity125,
+&humidity126,
+&humidity127,
+&humidity128,
+&humidity129,
+&humidity130,
+&humidity131,
+&humidity132,
+&humidity133,
+&humidity134,
+&humidity135,
+&humidity136,
+&humidity137,
+&humidity138,
+&humidity139,
+&humidity140,
+&humidity141,
+&humidity142,
+&humidity143,
+&humidity144,
+&humidity145,
+&humidity146,
+&humidity147,
+&humidity148,
+&humidity149,
+&humidity150,
+&humidity151,
+&humidity152,
+&humidity153,
+&humidity154,
+&humidity155,
+&humidity156,
+&humidity157,
+&humidity158,
+&humidity159,
+&humidity160,
+&humidity161,
+&humidity162,
+&humidity163,
+&humidity164,
+&humidity165,
+&humidity166,
+&humidity167,
+&humidity168,
+&humidity169,
+&humidity170,
+&humidity171,
+&humidity172,
+&humidity173,
+&humidity174,
+&humidity175,
+&humidity176,
+&humidity177,
+&humidity178,
+&humidity179,
+&humidity180,
+&humidity181,
+&humidity182,
+&humidity183,
+&humidity184,
+&humidity185,
+&humidity186,
+&humidity187,
+&humidity188,
+&humidity189,
+&humidity190,
+&humidity191,
+&humidity192,
+&humidity193,
+&humidity194,
+&humidity195,
+&humidity196,
+&humidity197,
+&humidity198,
+&humidity199,
+&humidity200,
+&humidity201,
+&humidity202,
+&humidity203,
+&humidity204,
+&humidity205,
+&humidity206,
+&humidity207,
+&humidity208,
+&humidity209,
+&humidity210,
+&humidity211,
+&humidity212,
+&humidity213,
+&humidity214,
+&humidity215,
+&humidity216,
+&humidity217,
+&humidity218,
+&humidity219,
+&humidity220,
+&humidity221,
+&humidity222,
+&humidity223,
+&humidity224,
+&humidity225,
+&humidity226,
+&humidity227,
+&humidity228,
+&humidity229,
+&humidity230,
+&humidity231,
+&humidity232,
+&humidity233,
+&humidity234,
+&humidity235,
+&humidity236,
+&humidity237,
+&humidity238,
+&humidity239,
+&humidity240,
+&humidity241,
+&humidity242,
+&humidity243,
+&humidity244,
+&humidity245,
+&humidity246,
+&humidity247,
+&humidity248,
+&humidity249,
+&humidity250,
+&humidity251,
+&humidity252,
+&humidity253,
+&humidity254,
+&humidity255,
+&humidity256,
+&humidity257,
+&humidity258,
+&humidity259,
+&humidity260,
+&humidity261,
+&humidity262,
+&humidity263,
+&humidity264,
+&humidity265,
+&humidity266,
+&humidity267,
+&humidity268,
+&humidity269,
+&humidity270,
+&humidity271,
+&humidity272,
+&humidity273,
+&humidity274,
+&humidity275,
+&humidity276,
+&humidity277,
+&humidity278,
+&humidity279,
+&humidity280,
+&humidity281,
+&humidity282,
+&humidity283,
+&humidity284,
+&humidity285,
+&humidity286,
+&humidity287,
+&humidity288,
+&humidity289,
+&humidity290,
+&humidity291,
+&humidity292,
+&humidity293,
+&humidity294,
+&humidity295,
+&humidity296,
+&humidity297,
+&humidity298,
+&humidity299,
+&humidity300,
+&humidity301,
+&humidity302,
+&humidity303,
+&humidity304,
+&humidity305,
+&humidity306,
+&humidity307,
+&humidity308,
+&humidity309,
+&humidity310,
+&humidity311,
+&humidity312,
+&humidity313,
+&humidity314,
+&humidity315,
+&humidity316,
+&humidity317,
+&humidity318,
+&humidity319,
+&humidity320,
+&humidity321,
+&humidity322,
+&humidity323,
+&humidity324,
+&humidity325,
+&humidity326,
+&humidity327,
+&humidity328,
+&humidity329,
+&humidity330,
+&humidity331,
+&humidity332,
+&humidity333,
+&humidity334,
+&humidity335,
+&humidity336,
+&humidity337,
+&humidity338,
+&humidity339,
+&humidity340,
+&humidity341,
+&humidity342,
+&humidity343,
+&humidity344,
+&humidity345,
+&humidity346,
+&humidity347,
+&humidity348,
+&humidity349,
+&humidity350,
+&humidity351,
+&humidity352,
+&humidity353,
+&humidity354,
+&humidity355,
+&humidity356,
+&humidity357,
+&humidity358,
+&humidity359,
+&humidity360,
+&humidity361,
+&humidity362,
+&humidity363,
+&humidity364,
+&humidity365,
+&humidity366,
+&humidity367,
+&humidity368,
+&humidity369,
+&humidity370,
+&humidity371,
+&humidity372,
+&humidity373,
+&humidity374,
+&humidity375,
+&humidity376,
+&humidity377,
+&humidity378,
+&humidity379,
+&humidity380,
+&humidity381,
+&humidity382,
+&humidity383,
+&humidity384,
+&humidity385,
+&humidity386,
+&humidity387,
+&humidity388,
+&humidity389,
+&humidity390,
+&humidity391,
+&humidity392,
+&humidity393,
+&humidity394,
+&humidity395,
+&humidity396,
+&humidity397,
+&humidity398,
+&humidity399,
+&humidity400,
+&humidity401,
+&humidity402,
+&humidity403,
+&humidity404,
+&humidity405,
+&humidity406,
+&humidity407,
+&humidity408,
+&humidity409,
+&humidity410,
+&humidity411,
+&humidity412,
+&humidity413,
+&humidity414,
+&humidity415,
+&humidity416,
+&humidity417,
+&humidity418,
+&humidity419,
+&humidity420,
+&humidity421,
+&humidity422,
+&humidity423,
+&humidity424,
+&humidity425,
+&humidity426,
+&humidity427,
+&humidity428,
+&humidity429,
+&humidity430,
+&humidity431,
+&humidity432,
+&humidity433,
+&humidity434,
+&humidity435,
+&humidity436,
+&humidity437,
+&humidity438,
+&humidity439,
+&humidity440,
+&humidity441,
+&humidity442,
+&humidity443,
+&humidity444,
+&humidity445,
+&humidity446,
+&humidity447,
+&humidity448,
+&humidity449,
+&humidity450,
+&humidity451,
+&humidity452,
+&humidity453,
+&humidity454,
+&humidity455,
+&humidity456,
+&humidity457,
+&humidity458,
+&humidity459,
+&humidity460,
+&humidity461,
+&humidity462,
+&humidity463,
+&humidity464,
+&humidity465,
+&humidity466,
+&humidity467,
+&humidity468,
+&humidity469,
+&humidity470,
+&humidity471,
+&humidity472,
+&humidity473,
+&humidity474,
+&humidity475,
+&humidity476,
+&humidity477,
+&humidity478,
+&humidity479,
+&humidity480,
+&humidity481,
+&humidity482,
+&humidity483,
+&humidity484,
+&humidity485,
+&humidity486,
+&humidity487,
+&humidity488,
+&humidity489,
+&humidity490,
+&humidity491,
+&humidity492,
+&humidity493,
+&humidity494,
+&humidity495,
+&humidity496,
+&humidity497,
+&humidity498,
+&humidity499,
+&humidity500,
+&humidity501,
+&humidity502,
+&humidity503,
+&humidity504,
+&humidity505,
+&humidity506,
+&humidity507,
+&humidity508,
+&humidity509,
+&humidity510,
+&humidity511,
+&humidity512,
+&humidity513,
+&humidity514,
+&humidity515,
+&humidity516,
+&humidity517,
+&humidity518,
+&humidity519,
+&humidity520,
+&humidity521,
+&humidity522,
+&humidity523,
+&humidity524,
+&humidity525,
+&humidity526,
+&humidity527,
+&humidity528,
+&humidity529,
+&humidity530,
+&humidity531,
+&humidity532,
+&humidity533,
+&humidity534,
+&humidity535,
+&humidity536,
+&humidity537,
+&humidity538,
+&humidity539,
+&humidity540,
+&humidity541,
+&humidity542,
+&humidity543,
+&humidity544,
+&humidity545,
+&humidity546,
+&humidity547,
+&humidity548,
+&humidity549,
+&humidity550,
+&humidity551,
+&humidity552,
+&humidity553,
+&humidity554,
+&humidity555,
+&humidity556,
+&humidity557,
+&humidity558,
+&humidity559,
+&humidity560,
+&humidity561,
+&humidity562,
+&humidity563,
+&humidity564,
+&humidity565,
+&humidity566,
+&humidity567,
+&humidity568,
+&humidity569,
+&humidity570,
+&humidity571,
+&humidity572,
+&humidity573,
+&humidity574,
+&humidity575,
+&humidity576,
+&humidity577,
+&humidity578,
+&humidity579,
+&humidity580,
+&humidity581,
+&humidity582,
+&humidity583,
+&humidity584,
+&humidity585,
+&humidity586,
+&humidity587,
+&humidity588,
+&humidity589,
+&humidity590,
+&humidity591,
+&humidity592,
+&humidity593,
+&humidity594,
+&humidity595,
+&humidity596,
+&humidity597,
+&humidity598,
+&humidity599,
+&humidity600,
+&humidity601,
+&humidity602,
+&humidity603,
+&humidity604,
+&humidity605,
+&humidity606,
+&humidity607,
+&humidity608,
+&humidity609,
+&humidity610,
+&humidity611,
+&humidity612,
+&humidity613,
+&humidity614,
+&humidity615,
+&humidity616,
+&humidity617,
+&humidity618,
+&humidity619,
+&humidity620,
+&humidity621,
+&humidity622,
+&humidity623,
+&humidity624,
+&humidity625,
+&humidity626,
+&humidity627,
+&humidity628,
+&humidity629,
+&humidity630,
+&humidity631,
+&humidity632,
+&humidity633,
+&humidity634,
+&humidity635,
+&humidity636,
+&humidity637,
+&humidity638,
+&humidity639,
+&humidity640,
+&humidity641,
+&humidity642,
+&humidity643,
+&humidity644,
+&humidity645,
+&humidity646,
+&humidity647,
+&humidity648,
+&humidity649,
+&humidity650,
+&humidity651,
+&humidity652,
+&humidity653,
+&humidity654,
+&humidity655,
+&humidity656,
+&humidity657,
+&humidity658,
+&humidity659,
+&humidity660,
+&humidity661,
+&humidity662,
+&humidity663,
+&humidity664,
+&humidity665,
+&humidity666,
+&humidity667,
+&humidity668,
+&humidity669,
+&humidity670,
+&humidity671,
+&humidity672,
+&humidity673,
+&humidity674,
+&humidity675,
+&humidity676,
+&humidity677,
+&humidity678,
+&humidity679,
+&humidity680,
+&humidity681,
+&humidity682,
+&humidity683,
+&humidity684,
+&humidity685,
+&humidity686,
+&humidity687,
+&humidity688,
+&humidity689,
+&humidity690,
+&humidity691,
+&humidity692,
+&humidity693,
+&humidity694,
+&humidity695,
+&humidity696,
+&humidity697,
+&humidity698,
+&humidity699
 };
 
 #endif

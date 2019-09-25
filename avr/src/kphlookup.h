@@ -1,5 +1,7 @@
 #include <avr/pgmspace.h>
 
+#include "types.h"
+
 #ifndef _INCL_KPHLOOKUP
 #define _INCL_KPHLOOKUP
 
@@ -34,365 +36,365 @@
 ** macro to get the far pointer to the flash ROM.
 **
 ******************************************************************************/
-const char windSpeed0[] PROGMEM = "0.00";
-const char windSpeed1[] PROGMEM = "1.13";
-const char windSpeed2[] PROGMEM = "2.26";
-const char windSpeed3[] PROGMEM = "3.39";
-const char windSpeed4[] PROGMEM = "4.52";
-const char windSpeed5[] PROGMEM = "5.65";
-const char windSpeed6[] PROGMEM = "6.79";
-const char windSpeed7[] PROGMEM = "7.92";
-const char windSpeed8[] PROGMEM = "9.05";
-const char windSpeed9[] PROGMEM = "10.18";
-const char windSpeed10[] PROGMEM = "11.31";
-const char windSpeed11[] PROGMEM = "12.44";
-const char windSpeed12[] PROGMEM = "13.57";
-const char windSpeed13[] PROGMEM = "14.70";
-const char windSpeed14[] PROGMEM = "15.83";
-const char windSpeed15[] PROGMEM = "16.96";
-const char windSpeed16[] PROGMEM = "18.10";
-const char windSpeed17[] PROGMEM = "19.23";
-const char windSpeed18[] PROGMEM = "20.36";
-const char windSpeed19[] PROGMEM = "21.49";
-const char windSpeed20[] PROGMEM = "22.62";
-const char windSpeed21[] PROGMEM = "23.75";
-const char windSpeed22[] PROGMEM = "24.88";
-const char windSpeed23[] PROGMEM = "26.01";
-const char windSpeed24[] PROGMEM = "27.14";
-const char windSpeed25[] PROGMEM = "28.27";
-const char windSpeed26[] PROGMEM = "29.41";
-const char windSpeed27[] PROGMEM = "30.54";
-const char windSpeed28[] PROGMEM = "31.67";
-const char windSpeed29[] PROGMEM = "32.80";
-const char windSpeed30[] PROGMEM = "33.93";
-const char windSpeed31[] PROGMEM = "35.06";
-const char windSpeed32[] PROGMEM = "36.19";
-const char windSpeed33[] PROGMEM = "37.32";
-const char windSpeed34[] PROGMEM = "38.45";
-const char windSpeed35[] PROGMEM = "39.58";
-const char windSpeed36[] PROGMEM = "40.72";
-const char windSpeed37[] PROGMEM = "41.85";
-const char windSpeed38[] PROGMEM = "42.98";
-const char windSpeed39[] PROGMEM = "44.11";
-const char windSpeed40[] PROGMEM = "45.24";
-const char windSpeed41[] PROGMEM = "46.37";
-const char windSpeed42[] PROGMEM = "47.50";
-const char windSpeed43[] PROGMEM = "48.63";
-const char windSpeed44[] PROGMEM = "49.76";
-const char windSpeed45[] PROGMEM = "50.89";
-const char windSpeed46[] PROGMEM = "52.02";
-const char windSpeed47[] PROGMEM = "53.16";
-const char windSpeed48[] PROGMEM = "54.29";
-const char windSpeed49[] PROGMEM = "55.42";
-const char windSpeed50[] PROGMEM = "56.55";
-const char windSpeed51[] PROGMEM = "57.68";
-const char windSpeed52[] PROGMEM = "58.81";
-const char windSpeed53[] PROGMEM = "59.94";
-const char windSpeed54[] PROGMEM = "61.07";
-const char windSpeed55[] PROGMEM = "62.20";
-const char windSpeed56[] PROGMEM = "63.33";
-const char windSpeed57[] PROGMEM = "64.47";
-const char windSpeed58[] PROGMEM = "65.60";
-const char windSpeed59[] PROGMEM = "66.73";
-const char windSpeed60[] PROGMEM = "67.86";
-const char windSpeed61[] PROGMEM = "68.99";
-const char windSpeed62[] PROGMEM = "70.12";
-const char windSpeed63[] PROGMEM = "71.25";
-const char windSpeed64[] PROGMEM = "72.38";
-const char windSpeed65[] PROGMEM = "73.51";
-const char windSpeed66[] PROGMEM = "74.64";
-const char windSpeed67[] PROGMEM = "75.78";
-const char windSpeed68[] PROGMEM = "76.91";
-const char windSpeed69[] PROGMEM = "78.04";
-const char windSpeed70[] PROGMEM = "79.17";
-const char windSpeed71[] PROGMEM = "80.30";
-const char windSpeed72[] PROGMEM = "81.43";
-const char windSpeed73[] PROGMEM = "82.56";
-const char windSpeed74[] PROGMEM = "83.69";
-const char windSpeed75[] PROGMEM = "84.82";
-const char windSpeed76[] PROGMEM = "85.95";
-const char windSpeed77[] PROGMEM = "87.08";
-const char windSpeed78[] PROGMEM = "88.22";
-const char windSpeed79[] PROGMEM = "89.35";
-const char windSpeed80[] PROGMEM = "90.48";
-const char windSpeed81[] PROGMEM = "91.61";
-const char windSpeed82[] PROGMEM = "92.74";
-const char windSpeed83[] PROGMEM = "93.87";
-const char windSpeed84[] PROGMEM = "95.00";
-const char windSpeed85[] PROGMEM = "96.13";
-const char windSpeed86[] PROGMEM = "97.26";
-const char windSpeed87[] PROGMEM = "98.39";
-const char windSpeed88[] PROGMEM = "99.53";
-const char windSpeed89[] PROGMEM = "100.66";
-const char windSpeed90[] PROGMEM = "101.79";
-const char windSpeed91[] PROGMEM = "102.92";
-const char windSpeed92[] PROGMEM = "104.05";
-const char windSpeed93[] PROGMEM = "105.18";
-const char windSpeed94[] PROGMEM = "106.31";
-const char windSpeed95[] PROGMEM = "107.44";
-const char windSpeed96[] PROGMEM = "108.57";
-const char windSpeed97[] PROGMEM = "109.70";
-const char windSpeed98[] PROGMEM = "110.84";
-const char windSpeed99[] PROGMEM = "111.97";
-const char windSpeed100[] PROGMEM = "113.10";
-const char windSpeed101[] PROGMEM = "114.23";
-const char windSpeed102[] PROGMEM = "115.36";
-const char windSpeed103[] PROGMEM = "116.49";
-const char windSpeed104[] PROGMEM = "117.62";
-const char windSpeed105[] PROGMEM = "118.75";
-const char windSpeed106[] PROGMEM = "119.88";
-const char windSpeed107[] PROGMEM = "121.01";
-const char windSpeed108[] PROGMEM = "122.15";
-const char windSpeed109[] PROGMEM = "123.28";
-const char windSpeed110[] PROGMEM = "124.41";
-const char windSpeed111[] PROGMEM = "125.54";
-const char windSpeed112[] PROGMEM = "126.67";
-const char windSpeed113[] PROGMEM = "127.80";
-const char windSpeed114[] PROGMEM = "128.93";
-const char windSpeed115[] PROGMEM = "130.06";
-const char windSpeed116[] PROGMEM = "131.19";
-const char windSpeed117[] PROGMEM = "132.32";
-const char windSpeed118[] PROGMEM = "133.45";
-const char windSpeed119[] PROGMEM = "134.59";
-const char windSpeed120[] PROGMEM = "135.72";
-const char windSpeed121[] PROGMEM = "136.85";
-const char windSpeed122[] PROGMEM = "137.98";
-const char windSpeed123[] PROGMEM = "139.11";
-const char windSpeed124[] PROGMEM = "140.24";
-const char windSpeed125[] PROGMEM = "141.37";
-const char windSpeed126[] PROGMEM = "142.50";
-const char windSpeed127[] PROGMEM = "143.63";
-const char windSpeed128[] PROGMEM = "144.76";
-const char windSpeed129[] PROGMEM = "145.90";
-const char windSpeed130[] PROGMEM = "147.03";
-const char windSpeed131[] PROGMEM = "148.16";
-const char windSpeed132[] PROGMEM = "149.29";
-const char windSpeed133[] PROGMEM = "150.42";
-const char windSpeed134[] PROGMEM = "151.55";
-const char windSpeed135[] PROGMEM = "152.68";
-const char windSpeed136[] PROGMEM = "153.81";
-const char windSpeed137[] PROGMEM = "154.94";
-const char windSpeed138[] PROGMEM = "156.07";
-const char windSpeed139[] PROGMEM = "157.21";
-const char windSpeed140[] PROGMEM = "158.34";
-const char windSpeed141[] PROGMEM = "159.47";
-const char windSpeed142[] PROGMEM = "160.60";
-const char windSpeed143[] PROGMEM = "161.73";
-const char windSpeed144[] PROGMEM = "162.86";
-const char windSpeed145[] PROGMEM = "163.99";
-const char windSpeed146[] PROGMEM = "165.12";
-const char windSpeed147[] PROGMEM = "166.25";
-const char windSpeed148[] PROGMEM = "167.38";
-const char windSpeed149[] PROGMEM = "168.52";
-const char windSpeed150[] PROGMEM = "169.65";
-const char windSpeed151[] PROGMEM = "170.78";
-const char windSpeed152[] PROGMEM = "171.91";
-const char windSpeed153[] PROGMEM = "173.04";
-const char windSpeed154[] PROGMEM = "174.17";
-const char windSpeed155[] PROGMEM = "175.30";
-const char windSpeed156[] PROGMEM = "176.43";
-const char windSpeed157[] PROGMEM = "177.56";
-const char windSpeed158[] PROGMEM = "178.69";
-const char windSpeed159[] PROGMEM = "179.82";
-const char windSpeed160[] PROGMEM = "180.96";
-const char windSpeed161[] PROGMEM = "182.09";
-const char windSpeed162[] PROGMEM = "183.22";
-const char windSpeed163[] PROGMEM = "184.35";
-const char windSpeed164[] PROGMEM = "185.48";
-const char windSpeed165[] PROGMEM = "186.61";
-const char windSpeed166[] PROGMEM = "187.74";
-const char windSpeed167[] PROGMEM = "188.87";
-const char windSpeed168[] PROGMEM = "190.00";
-const char windSpeed169[] PROGMEM = "191.13";
-const char windSpeed170[] PROGMEM = "192.27";
-const char windSpeed171[] PROGMEM = "193.40";
-const char windSpeed172[] PROGMEM = "194.53";
-const char windSpeed173[] PROGMEM = "195.66";
-const char windSpeed174[] PROGMEM = "196.79";
-const char windSpeed175[] PROGMEM = "197.92";
-const char windSpeed176[] PROGMEM = "199.05";
-const char windSpeed177[] PROGMEM = "200.18";
+const decimal24_t windSpeed0 PROGMEM = populate_decimal(0, 0);
+const decimal24_t windSpeed1 PROGMEM = populate_decimal(1, 13);
+const decimal24_t windSpeed2 PROGMEM = populate_decimal(2, 26);
+const decimal24_t windSpeed3 PROGMEM = populate_decimal(3, 39);
+const decimal24_t windSpeed4 PROGMEM = populate_decimal(4, 52);
+const decimal24_t windSpeed5 PROGMEM = populate_decimal(5, 65);
+const decimal24_t windSpeed6 PROGMEM = populate_decimal(6, 78);
+const decimal24_t windSpeed7 PROGMEM = populate_decimal(7, 91);
+const decimal24_t windSpeed8 PROGMEM = populate_decimal(9, 4);
+const decimal24_t windSpeed9 PROGMEM = populate_decimal(10, 17);
+const decimal24_t windSpeed10 PROGMEM = populate_decimal(11, 30);
+const decimal24_t windSpeed11 PROGMEM = populate_decimal(12, 44);
+const decimal24_t windSpeed12 PROGMEM = populate_decimal(13, 57);
+const decimal24_t windSpeed13 PROGMEM = populate_decimal(14, 70);
+const decimal24_t windSpeed14 PROGMEM = populate_decimal(15, 83);
+const decimal24_t windSpeed15 PROGMEM = populate_decimal(16, 96);
+const decimal24_t windSpeed16 PROGMEM = populate_decimal(18, 9);
+const decimal24_t windSpeed17 PROGMEM = populate_decimal(19, 22);
+const decimal24_t windSpeed18 PROGMEM = populate_decimal(20, 35);
+const decimal24_t windSpeed19 PROGMEM = populate_decimal(21, 48);
+const decimal24_t windSpeed20 PROGMEM = populate_decimal(22, 61);
+const decimal24_t windSpeed21 PROGMEM = populate_decimal(23, 75);
+const decimal24_t windSpeed22 PROGMEM = populate_decimal(24, 88);
+const decimal24_t windSpeed23 PROGMEM = populate_decimal(26, 1);
+const decimal24_t windSpeed24 PROGMEM = populate_decimal(27, 14);
+const decimal24_t windSpeed25 PROGMEM = populate_decimal(28, 27);
+const decimal24_t windSpeed26 PROGMEM = populate_decimal(29, 40);
+const decimal24_t windSpeed27 PROGMEM = populate_decimal(30, 53);
+const decimal24_t windSpeed28 PROGMEM = populate_decimal(31, 66);
+const decimal24_t windSpeed29 PROGMEM = populate_decimal(32, 79);
+const decimal24_t windSpeed30 PROGMEM = populate_decimal(33, 92);
+const decimal24_t windSpeed31 PROGMEM = populate_decimal(35, 6);
+const decimal24_t windSpeed32 PROGMEM = populate_decimal(36, 19);
+const decimal24_t windSpeed33 PROGMEM = populate_decimal(37, 32);
+const decimal24_t windSpeed34 PROGMEM = populate_decimal(38, 45);
+const decimal24_t windSpeed35 PROGMEM = populate_decimal(39, 58);
+const decimal24_t windSpeed36 PROGMEM = populate_decimal(40, 71);
+const decimal24_t windSpeed37 PROGMEM = populate_decimal(41, 84);
+const decimal24_t windSpeed38 PROGMEM = populate_decimal(42, 97);
+const decimal24_t windSpeed39 PROGMEM = populate_decimal(44, 10);
+const decimal24_t windSpeed40 PROGMEM = populate_decimal(45, 23);
+const decimal24_t windSpeed41 PROGMEM = populate_decimal(46, 36);
+const decimal24_t windSpeed42 PROGMEM = populate_decimal(47, 50);
+const decimal24_t windSpeed43 PROGMEM = populate_decimal(48, 63);
+const decimal24_t windSpeed44 PROGMEM = populate_decimal(49, 76);
+const decimal24_t windSpeed45 PROGMEM = populate_decimal(50, 89);
+const decimal24_t windSpeed46 PROGMEM = populate_decimal(52, 2);
+const decimal24_t windSpeed47 PROGMEM = populate_decimal(53, 15);
+const decimal24_t windSpeed48 PROGMEM = populate_decimal(54, 28);
+const decimal24_t windSpeed49 PROGMEM = populate_decimal(55, 41);
+const decimal24_t windSpeed50 PROGMEM = populate_decimal(56, 54);
+const decimal24_t windSpeed51 PROGMEM = populate_decimal(57, 67);
+const decimal24_t windSpeed52 PROGMEM = populate_decimal(58, 81);
+const decimal24_t windSpeed53 PROGMEM = populate_decimal(59, 94);
+const decimal24_t windSpeed54 PROGMEM = populate_decimal(61, 7);
+const decimal24_t windSpeed55 PROGMEM = populate_decimal(62, 20);
+const decimal24_t windSpeed56 PROGMEM = populate_decimal(63, 33);
+const decimal24_t windSpeed57 PROGMEM = populate_decimal(64, 46);
+const decimal24_t windSpeed58 PROGMEM = populate_decimal(65, 59);
+const decimal24_t windSpeed59 PROGMEM = populate_decimal(66, 72);
+const decimal24_t windSpeed60 PROGMEM = populate_decimal(67, 85);
+const decimal24_t windSpeed61 PROGMEM = populate_decimal(68, 98);
+const decimal24_t windSpeed62 PROGMEM = populate_decimal(70, 12);
+const decimal24_t windSpeed63 PROGMEM = populate_decimal(71, 25);
+const decimal24_t windSpeed64 PROGMEM = populate_decimal(72, 38);
+const decimal24_t windSpeed65 PROGMEM = populate_decimal(73, 51);
+const decimal24_t windSpeed66 PROGMEM = populate_decimal(74, 64);
+const decimal24_t windSpeed67 PROGMEM = populate_decimal(75, 77);
+const decimal24_t windSpeed68 PROGMEM = populate_decimal(76, 90);
+const decimal24_t windSpeed69 PROGMEM = populate_decimal(78, 3);
+const decimal24_t windSpeed70 PROGMEM = populate_decimal(79, 16);
+const decimal24_t windSpeed71 PROGMEM = populate_decimal(80, 29);
+const decimal24_t windSpeed72 PROGMEM = populate_decimal(81, 43);
+const decimal24_t windSpeed73 PROGMEM = populate_decimal(82, 56);
+const decimal24_t windSpeed74 PROGMEM = populate_decimal(83, 69);
+const decimal24_t windSpeed75 PROGMEM = populate_decimal(84, 82);
+const decimal24_t windSpeed76 PROGMEM = populate_decimal(85, 95);
+const decimal24_t windSpeed77 PROGMEM = populate_decimal(87, 8);
+const decimal24_t windSpeed78 PROGMEM = populate_decimal(88, 21);
+const decimal24_t windSpeed79 PROGMEM = populate_decimal(89, 34);
+const decimal24_t windSpeed80 PROGMEM = populate_decimal(90, 47);
+const decimal24_t windSpeed81 PROGMEM = populate_decimal(91, 60);
+const decimal24_t windSpeed82 PROGMEM = populate_decimal(92, 73);
+const decimal24_t windSpeed83 PROGMEM = populate_decimal(93, 87);
+const decimal24_t windSpeed84 PROGMEM = populate_decimal(95, 0);
+const decimal24_t windSpeed85 PROGMEM = populate_decimal(96, 13);
+const decimal24_t windSpeed86 PROGMEM = populate_decimal(97, 26);
+const decimal24_t windSpeed87 PROGMEM = populate_decimal(98, 39);
+const decimal24_t windSpeed88 PROGMEM = populate_decimal(99, 52);
+const decimal24_t windSpeed89 PROGMEM = populate_decimal(100, 65);
+const decimal24_t windSpeed90 PROGMEM = populate_decimal(101, 78);
+const decimal24_t windSpeed91 PROGMEM = populate_decimal(102, 91);
+const decimal24_t windSpeed92 PROGMEM = populate_decimal(104, 4);
+const decimal24_t windSpeed93 PROGMEM = populate_decimal(105, 18);
+const decimal24_t windSpeed94 PROGMEM = populate_decimal(106, 31);
+const decimal24_t windSpeed95 PROGMEM = populate_decimal(107, 44);
+const decimal24_t windSpeed96 PROGMEM = populate_decimal(108, 57);
+const decimal24_t windSpeed97 PROGMEM = populate_decimal(109, 70);
+const decimal24_t windSpeed98 PROGMEM = populate_decimal(110, 83);
+const decimal24_t windSpeed99 PROGMEM = populate_decimal(111, 96);
+const decimal24_t windSpeed100 PROGMEM = populate_decimal(113, 9);
+const decimal24_t windSpeed101 PROGMEM = populate_decimal(114, 22);
+const decimal24_t windSpeed102 PROGMEM = populate_decimal(115, 35);
+const decimal24_t windSpeed103 PROGMEM = populate_decimal(116, 49);
+const decimal24_t windSpeed104 PROGMEM = populate_decimal(117, 62);
+const decimal24_t windSpeed105 PROGMEM = populate_decimal(118, 75);
+const decimal24_t windSpeed106 PROGMEM = populate_decimal(119, 88);
+const decimal24_t windSpeed107 PROGMEM = populate_decimal(121, 1);
+const decimal24_t windSpeed108 PROGMEM = populate_decimal(122, 14);
+const decimal24_t windSpeed109 PROGMEM = populate_decimal(123, 27);
+const decimal24_t windSpeed110 PROGMEM = populate_decimal(124, 40);
+const decimal24_t windSpeed111 PROGMEM = populate_decimal(125, 53);
+const decimal24_t windSpeed112 PROGMEM = populate_decimal(126, 66);
+const decimal24_t windSpeed113 PROGMEM = populate_decimal(127, 79);
+const decimal24_t windSpeed114 PROGMEM = populate_decimal(128, 93);
+const decimal24_t windSpeed115 PROGMEM = populate_decimal(130, 6);
+const decimal24_t windSpeed116 PROGMEM = populate_decimal(131, 19);
+const decimal24_t windSpeed117 PROGMEM = populate_decimal(132, 32);
+const decimal24_t windSpeed118 PROGMEM = populate_decimal(133, 45);
+const decimal24_t windSpeed119 PROGMEM = populate_decimal(134, 58);
+const decimal24_t windSpeed120 PROGMEM = populate_decimal(135, 71);
+const decimal24_t windSpeed121 PROGMEM = populate_decimal(136, 84);
+const decimal24_t windSpeed122 PROGMEM = populate_decimal(137, 97);
+const decimal24_t windSpeed123 PROGMEM = populate_decimal(139, 10);
+const decimal24_t windSpeed124 PROGMEM = populate_decimal(140, 24);
+const decimal24_t windSpeed125 PROGMEM = populate_decimal(141, 37);
+const decimal24_t windSpeed126 PROGMEM = populate_decimal(142, 50);
+const decimal24_t windSpeed127 PROGMEM = populate_decimal(143, 63);
+const decimal24_t windSpeed128 PROGMEM = populate_decimal(144, 76);
+const decimal24_t windSpeed129 PROGMEM = populate_decimal(145, 89);
+const decimal24_t windSpeed130 PROGMEM = populate_decimal(147, 2);
+const decimal24_t windSpeed131 PROGMEM = populate_decimal(148, 15);
+const decimal24_t windSpeed132 PROGMEM = populate_decimal(149, 28);
+const decimal24_t windSpeed133 PROGMEM = populate_decimal(150, 41);
+const decimal24_t windSpeed134 PROGMEM = populate_decimal(151, 55);
+const decimal24_t windSpeed135 PROGMEM = populate_decimal(152, 68);
+const decimal24_t windSpeed136 PROGMEM = populate_decimal(153, 81);
+const decimal24_t windSpeed137 PROGMEM = populate_decimal(154, 94);
+const decimal24_t windSpeed138 PROGMEM = populate_decimal(156, 7);
+const decimal24_t windSpeed139 PROGMEM = populate_decimal(157, 20);
+const decimal24_t windSpeed140 PROGMEM = populate_decimal(158, 33);
+const decimal24_t windSpeed141 PROGMEM = populate_decimal(159, 46);
+const decimal24_t windSpeed142 PROGMEM = populate_decimal(160, 59);
+const decimal24_t windSpeed143 PROGMEM = populate_decimal(161, 72);
+const decimal24_t windSpeed144 PROGMEM = populate_decimal(162, 86);
+const decimal24_t windSpeed145 PROGMEM = populate_decimal(163, 99);
+const decimal24_t windSpeed146 PROGMEM = populate_decimal(165, 12);
+const decimal24_t windSpeed147 PROGMEM = populate_decimal(166, 25);
+const decimal24_t windSpeed148 PROGMEM = populate_decimal(167, 38);
+const decimal24_t windSpeed149 PROGMEM = populate_decimal(168, 51);
+const decimal24_t windSpeed150 PROGMEM = populate_decimal(169, 64);
+const decimal24_t windSpeed151 PROGMEM = populate_decimal(170, 77);
+const decimal24_t windSpeed152 PROGMEM = populate_decimal(171, 90);
+const decimal24_t windSpeed153 PROGMEM = populate_decimal(173, 3);
+const decimal24_t windSpeed154 PROGMEM = populate_decimal(174, 16);
+const decimal24_t windSpeed155 PROGMEM = populate_decimal(175, 30);
+const decimal24_t windSpeed156 PROGMEM = populate_decimal(176, 43);
+const decimal24_t windSpeed157 PROGMEM = populate_decimal(177, 56);
+const decimal24_t windSpeed158 PROGMEM = populate_decimal(178, 69);
+const decimal24_t windSpeed159 PROGMEM = populate_decimal(179, 82);
+const decimal24_t windSpeed160 PROGMEM = populate_decimal(180, 95);
+const decimal24_t windSpeed161 PROGMEM = populate_decimal(182, 8);
+const decimal24_t windSpeed162 PROGMEM = populate_decimal(183, 21);
+const decimal24_t windSpeed163 PROGMEM = populate_decimal(184, 34);
+const decimal24_t windSpeed164 PROGMEM = populate_decimal(185, 47);
+const decimal24_t windSpeed165 PROGMEM = populate_decimal(186, 61);
+const decimal24_t windSpeed166 PROGMEM = populate_decimal(187, 74);
+const decimal24_t windSpeed167 PROGMEM = populate_decimal(188, 87);
+const decimal24_t windSpeed168 PROGMEM = populate_decimal(190, 0);
+const decimal24_t windSpeed169 PROGMEM = populate_decimal(191, 13);
+const decimal24_t windSpeed170 PROGMEM = populate_decimal(192, 26);
+const decimal24_t windSpeed171 PROGMEM = populate_decimal(193, 39);
+const decimal24_t windSpeed172 PROGMEM = populate_decimal(194, 52);
+const decimal24_t windSpeed173 PROGMEM = populate_decimal(195, 65);
+const decimal24_t windSpeed174 PROGMEM = populate_decimal(196, 78);
+const decimal24_t windSpeed175 PROGMEM = populate_decimal(197, 92);
+const decimal24_t windSpeed176 PROGMEM = populate_decimal(199, 5);
+const decimal24_t windSpeed177 PROGMEM = populate_decimal(200, 18);
 
-static PGM_P const kphLookup[KPH_LOOKUP_BUFFER_SIZE] PROGMEM = 
+static PGM_VOID_P const kphLookup[KPH_LOOKUP_BUFFER_SIZE] PROGMEM = 
 {
-windSpeed0,
-windSpeed1,
-windSpeed2,
-windSpeed3,
-windSpeed4,
-windSpeed5,
-windSpeed6,
-windSpeed7,
-windSpeed8,
-windSpeed9,
-windSpeed10,
-windSpeed11,
-windSpeed12,
-windSpeed13,
-windSpeed14,
-windSpeed15,
-windSpeed16,
-windSpeed17,
-windSpeed18,
-windSpeed19,
-windSpeed20,
-windSpeed21,
-windSpeed22,
-windSpeed23,
-windSpeed24,
-windSpeed25,
-windSpeed26,
-windSpeed27,
-windSpeed28,
-windSpeed29,
-windSpeed30,
-windSpeed31,
-windSpeed32,
-windSpeed33,
-windSpeed34,
-windSpeed35,
-windSpeed36,
-windSpeed37,
-windSpeed38,
-windSpeed39,
-windSpeed40,
-windSpeed41,
-windSpeed42,
-windSpeed43,
-windSpeed44,
-windSpeed45,
-windSpeed46,
-windSpeed47,
-windSpeed48,
-windSpeed49,
-windSpeed50,
-windSpeed51,
-windSpeed52,
-windSpeed53,
-windSpeed54,
-windSpeed55,
-windSpeed56,
-windSpeed57,
-windSpeed58,
-windSpeed59,
-windSpeed60,
-windSpeed61,
-windSpeed62,
-windSpeed63,
-windSpeed64,
-windSpeed65,
-windSpeed66,
-windSpeed67,
-windSpeed68,
-windSpeed69,
-windSpeed70,
-windSpeed71,
-windSpeed72,
-windSpeed73,
-windSpeed74,
-windSpeed75,
-windSpeed76,
-windSpeed77,
-windSpeed78,
-windSpeed79,
-windSpeed80,
-windSpeed81,
-windSpeed82,
-windSpeed83,
-windSpeed84,
-windSpeed85,
-windSpeed86,
-windSpeed87,
-windSpeed88,
-windSpeed89,
-windSpeed90,
-windSpeed91,
-windSpeed92,
-windSpeed93,
-windSpeed94,
-windSpeed95,
-windSpeed96,
-windSpeed97,
-windSpeed98,
-windSpeed99,
-windSpeed100,
-windSpeed101,
-windSpeed102,
-windSpeed103,
-windSpeed104,
-windSpeed105,
-windSpeed106,
-windSpeed107,
-windSpeed108,
-windSpeed109,
-windSpeed110,
-windSpeed111,
-windSpeed112,
-windSpeed113,
-windSpeed114,
-windSpeed115,
-windSpeed116,
-windSpeed117,
-windSpeed118,
-windSpeed119,
-windSpeed120,
-windSpeed121,
-windSpeed122,
-windSpeed123,
-windSpeed124,
-windSpeed125,
-windSpeed126,
-windSpeed127,
-windSpeed128,
-windSpeed129,
-windSpeed130,
-windSpeed131,
-windSpeed132,
-windSpeed133,
-windSpeed134,
-windSpeed135,
-windSpeed136,
-windSpeed137,
-windSpeed138,
-windSpeed139,
-windSpeed140,
-windSpeed141,
-windSpeed142,
-windSpeed143,
-windSpeed144,
-windSpeed145,
-windSpeed146,
-windSpeed147,
-windSpeed148,
-windSpeed149,
-windSpeed150,
-windSpeed151,
-windSpeed152,
-windSpeed153,
-windSpeed154,
-windSpeed155,
-windSpeed156,
-windSpeed157,
-windSpeed158,
-windSpeed159,
-windSpeed160,
-windSpeed161,
-windSpeed162,
-windSpeed163,
-windSpeed164,
-windSpeed165,
-windSpeed166,
-windSpeed167,
-windSpeed168,
-windSpeed169,
-windSpeed170,
-windSpeed171,
-windSpeed172,
-windSpeed173,
-windSpeed174,
-windSpeed175,
-windSpeed176,
-windSpeed177
+&windSpeed0,
+&windSpeed1,
+&windSpeed2,
+&windSpeed3,
+&windSpeed4,
+&windSpeed5,
+&windSpeed6,
+&windSpeed7,
+&windSpeed8,
+&windSpeed9,
+&windSpeed10,
+&windSpeed11,
+&windSpeed12,
+&windSpeed13,
+&windSpeed14,
+&windSpeed15,
+&windSpeed16,
+&windSpeed17,
+&windSpeed18,
+&windSpeed19,
+&windSpeed20,
+&windSpeed21,
+&windSpeed22,
+&windSpeed23,
+&windSpeed24,
+&windSpeed25,
+&windSpeed26,
+&windSpeed27,
+&windSpeed28,
+&windSpeed29,
+&windSpeed30,
+&windSpeed31,
+&windSpeed32,
+&windSpeed33,
+&windSpeed34,
+&windSpeed35,
+&windSpeed36,
+&windSpeed37,
+&windSpeed38,
+&windSpeed39,
+&windSpeed40,
+&windSpeed41,
+&windSpeed42,
+&windSpeed43,
+&windSpeed44,
+&windSpeed45,
+&windSpeed46,
+&windSpeed47,
+&windSpeed48,
+&windSpeed49,
+&windSpeed50,
+&windSpeed51,
+&windSpeed52,
+&windSpeed53,
+&windSpeed54,
+&windSpeed55,
+&windSpeed56,
+&windSpeed57,
+&windSpeed58,
+&windSpeed59,
+&windSpeed60,
+&windSpeed61,
+&windSpeed62,
+&windSpeed63,
+&windSpeed64,
+&windSpeed65,
+&windSpeed66,
+&windSpeed67,
+&windSpeed68,
+&windSpeed69,
+&windSpeed70,
+&windSpeed71,
+&windSpeed72,
+&windSpeed73,
+&windSpeed74,
+&windSpeed75,
+&windSpeed76,
+&windSpeed77,
+&windSpeed78,
+&windSpeed79,
+&windSpeed80,
+&windSpeed81,
+&windSpeed82,
+&windSpeed83,
+&windSpeed84,
+&windSpeed85,
+&windSpeed86,
+&windSpeed87,
+&windSpeed88,
+&windSpeed89,
+&windSpeed90,
+&windSpeed91,
+&windSpeed92,
+&windSpeed93,
+&windSpeed94,
+&windSpeed95,
+&windSpeed96,
+&windSpeed97,
+&windSpeed98,
+&windSpeed99,
+&windSpeed100,
+&windSpeed101,
+&windSpeed102,
+&windSpeed103,
+&windSpeed104,
+&windSpeed105,
+&windSpeed106,
+&windSpeed107,
+&windSpeed108,
+&windSpeed109,
+&windSpeed110,
+&windSpeed111,
+&windSpeed112,
+&windSpeed113,
+&windSpeed114,
+&windSpeed115,
+&windSpeed116,
+&windSpeed117,
+&windSpeed118,
+&windSpeed119,
+&windSpeed120,
+&windSpeed121,
+&windSpeed122,
+&windSpeed123,
+&windSpeed124,
+&windSpeed125,
+&windSpeed126,
+&windSpeed127,
+&windSpeed128,
+&windSpeed129,
+&windSpeed130,
+&windSpeed131,
+&windSpeed132,
+&windSpeed133,
+&windSpeed134,
+&windSpeed135,
+&windSpeed136,
+&windSpeed137,
+&windSpeed138,
+&windSpeed139,
+&windSpeed140,
+&windSpeed141,
+&windSpeed142,
+&windSpeed143,
+&windSpeed144,
+&windSpeed145,
+&windSpeed146,
+&windSpeed147,
+&windSpeed148,
+&windSpeed149,
+&windSpeed150,
+&windSpeed151,
+&windSpeed152,
+&windSpeed153,
+&windSpeed154,
+&windSpeed155,
+&windSpeed156,
+&windSpeed157,
+&windSpeed158,
+&windSpeed159,
+&windSpeed160,
+&windSpeed161,
+&windSpeed162,
+&windSpeed163,
+&windSpeed164,
+&windSpeed165,
+&windSpeed166,
+&windSpeed167,
+&windSpeed168,
+&windSpeed169,
+&windSpeed170,
+&windSpeed171,
+&windSpeed172,
+&windSpeed173,
+&windSpeed174,
+&windSpeed175,
+&windSpeed176,
+&windSpeed177
 };
 
 #endif
