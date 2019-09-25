@@ -67,7 +67,7 @@ decimal24_t getAvgWindSpeed()
 		avgRPS = KPH_LOOKUP_BUFFER_SIZE - 1;
 	}
 	
-	memcpy_P(&avgSpeed, &kphLookup[avgRPS], sizeof(decimal24_t));
+	memcpy_P(&avgSpeed, (void *)pgm_read_word(&kphLookup[avgRPS]), sizeof(decimal24_t));
 	
 	return avgSpeed;
 }
@@ -80,7 +80,7 @@ decimal24_t getMaxWindSpeed()
 		maxRPS = KPH_LOOKUP_BUFFER_SIZE - 1;
 	}
 
-	memcpy_P(&maxSpeed, &kphLookup[maxRPS], sizeof(decimal24_t));
+	memcpy_P(&maxSpeed, (void *)pgm_read_word(&kphLookup[maxRPS]), sizeof(decimal24_t));
 
 	return maxSpeed;
 }
