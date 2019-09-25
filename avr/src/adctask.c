@@ -134,6 +134,7 @@ uint16_t getADCMin(uint8_t channel)
 
 decimal24_t getHumidity(int queryType)
 {
+	PGM_VOID_P	ptr;
 	decimal24_t	humidity = populate_decimal(0, 0);
 	uint16_t	adcValue;
 	uint8_t		channel = ADC_CHANNEL0;
@@ -159,7 +160,8 @@ decimal24_t getHumidity(int queryType)
 	if (adcValue >= ADC_HUMIDITY_OFFSET && adcValue < (ADC_HUMIDITY_MAX + ADC_HUMIDITY_OFFSET)) {
 		adcValue -= ADC_HUMIDITY_OFFSET;
 
-		memcpy_P(&humidity, (void *)pgm_read_word(&humidityLookup[adcValue]), sizeof(decimal24_t));
+		memcpy_P(&ptr, &humidityLookup[adcValue], sizeof(PGM_VOID_P));
+		memcpy_P(&humidity, ptr, sizeof(decimal24_t));
 	}
 
 	return humidity;
@@ -167,6 +169,7 @@ decimal24_t getHumidity(int queryType)
 
 decimal24_t getPressure(int queryType)
 {
+	PGM_VOID_P	ptr;
 	decimal24_t	pressure = populate_decimal(0, 0);
 	uint16_t	adcValue;
 	uint8_t		channel = ADC_CHANNEL1;
@@ -192,7 +195,8 @@ decimal24_t getPressure(int queryType)
 	if (adcValue >= ADC_MBAR_OFFSET && adcValue < (ADC_MBAR_MAX + ADC_MBAR_OFFSET)) {
 		adcValue -= ADC_MBAR_OFFSET;
 
-		memcpy_P(&pressure, (void *)pgm_read_word(&mbarLookup[adcValue]), sizeof(decimal24_t));
+		memcpy_P(&ptr, &mbarLookup[adcValue], sizeof(PGM_VOID_P));
+		memcpy_P(&pressure, ptr, sizeof(decimal24_t));
 	}
 
 	return pressure;
@@ -200,6 +204,7 @@ decimal24_t getPressure(int queryType)
 
 decimal24_t getTemperature(int queryType)
 {
+	PGM_VOID_P	ptr;
 	decimal24_t	temperature = populate_decimal(0, 0);
 	int16_t		adcValue;
 	uint8_t		channel = ADC_CHANNEL2;
@@ -225,7 +230,8 @@ decimal24_t getTemperature(int queryType)
 	if (adcValue >= ADC_TEMP_OFFSET && adcValue < (ADC_TEMP_MAX + ADC_TEMP_OFFSET)) {
 		adcValue -= ADC_TEMP_OFFSET;
 
-		memcpy_P(&temperature, (void *)pgm_read_word(&tempLookup[adcValue]), sizeof(decimal24_t));
+		memcpy_P(&ptr, &tempLookup[adcValue], sizeof(PGM_VOID_P));
+		memcpy_P(&temperature, ptr, sizeof(decimal24_t));
 	}
 	
 	return temperature;
