@@ -134,7 +134,6 @@ uint16_t getADCMin(uint8_t channel)
 
 decimal24_t getHumidity(int queryType)
 {
-	PGM_VOID_P	ptr;
 	decimal24_t	humidity = populate_decimal(0, 0);
 	uint16_t	adcValue;
 	uint8_t		channel = ADC_CHANNEL0;
@@ -160,8 +159,7 @@ decimal24_t getHumidity(int queryType)
 	if (adcValue >= ADC_HUMIDITY_OFFSET && adcValue < (ADC_HUMIDITY_MAX + ADC_HUMIDITY_OFFSET)) {
 		adcValue -= ADC_HUMIDITY_OFFSET;
 
-		memcpy_P(&ptr, &humidityLookup[adcValue], sizeof(PGM_VOID_P));
-		memcpy_P(&humidity, ptr, sizeof(decimal24_t));
+		memcpy_P(&humidity, &humidityLookup[adcValue], sizeof(decimal24_t));
 	}
 
 	return humidity;
