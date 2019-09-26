@@ -2,15 +2,11 @@
 #include <string.h>
 #include <stdlib.h>
 #include <avr/io.h>
-#include <avr/pgmspace.h>
 #include <scheduler.h>
 
 #include "adctask.h"
 #include "taskdef.h"
 #include "adc_atmega328p.h"
-#include "mbarlookup.h"
-#include "humiditylookup.h"
-#include "templookup.h"
 #include "types.h"
 
 #define MOVING_AVG_ENABLE

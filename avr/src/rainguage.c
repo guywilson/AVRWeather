@@ -1,12 +1,10 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
-#include <avr/pgmspace.h>
 #include <scheduler.h>
 
 #include "extint_atmega328p.h"
 #include "rainguage.h"
-#include "rainfall.h"
 #include "taskdef.h"
 #include "types.h"
 

@@ -1,11 +1,9 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
-#include <avr/pgmspace.h>
 #include <scheduler.h>
 
 #include "extint_atmega328p.h"
-#include "kphlookup.h"
 #include "anemometer.h"
 #include "taskdef.h"
 #include "serial_atmega328p.h"
