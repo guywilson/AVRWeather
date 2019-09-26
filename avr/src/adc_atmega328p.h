@@ -28,6 +28,7 @@
 #define ADC_PRESCALER_DIV64			0x06
 #define ADC_PRESCALER_DIV128		0x07
 
+#define ADC_BIT_SIZE                10
 
 void setupADC(void);
 void triggerADC(void);

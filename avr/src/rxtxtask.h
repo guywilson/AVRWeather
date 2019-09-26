@@ -4,21 +4,21 @@
 #define _INCL_RXTXTASK
 
 typedef struct {
-    decimal24_t     temperature;
-    decimal24_t     pressure;
-    decimal24_t     humidity;
+    float           temperature;
+    float           pressure;
+    float           humidity;
 }
 TPH;
 
 typedef struct {
-    decimal24_t     avgWindspeed;
-    decimal24_t     maxWindspeed;
+    float           avgWindspeed;
+    float           maxWindspeed;
 }
 WINDSPEED;
 
 typedef struct {
-    decimal24_t     avgRainfall;
-    decimal24_t     totalRainfall;
+    float           avgRainfall;
+    float           totalRainfall;
 }
 RAINFALL;
 

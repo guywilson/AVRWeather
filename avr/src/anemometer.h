@@ -8,9 +8,16 @@
 
 #define ANEMOMETER_CHANNEL				  0
 
+/*
+** The diameter of the anemometer blades in metres...
+*/
+#define BLADE_DIAMETER					 0.1
+#define RPS_TO_KPH_SCALE_FACTOR			(11.30973355 * BLADE_DIAMETER)
+
+
 void		anemometerTask(PTASKPARM p);
 uint16_t	getAvgRPS(void);
-decimal24_t getAvgWindSpeed();
-decimal24_t	getMaxWindSpeed();
+float       getAvgWindSpeed();
+float	    getMaxWindSpeed();
 
 #endif

@@ -132,9 +132,12 @@ uint16_t getADCMin(uint8_t channel)
 	return adcMin[channel];
 }
 
-decimal24_t getHumidity(int queryType)
+/*
+** RH = ((ADC / 1023) - 0.16) / 0.0062
+*/
+float getHumidity(int queryType)
 {
-	decimal24_t	humidity = populate_decimal(0, 0);
+	float		humidity;
 	uint16_t	adcValue;
 	uint8_t		channel = ADC_CHANNEL0;
 
@@ -156,21 +159,17 @@ decimal24_t getHumidity(int queryType)
 			break;
 	}
 
-	if (adcValue >= ADC_HUMIDITY_OFFSET && adcValue < (ADC_HUMIDITY_MAX + ADC_HUMIDITY_OFFSET)) {
-		adcValue -= ADC_HUMIDITY_OFFSET;
-
-		humidity.integral = pgm_read_word_near(&humidityLookup[adcValue]);
-		humidity.mantissa = pgm_read_byte_near(&humidityLookup[adcValue]+2);
-//		memcpy_P(&humidity, &humidityLookup[adcValue], sizeof(decimal24_t));
-	}
+	humidity = ((adcValue / 1023) - 0.16) / 0.0062;
 
 	return humidity;
 }
 
-decimal24_t getPressure(int queryType)
+/*
+** Pmbar = (((adc / 1023) + 0.095) / 0.009) * 10
+*/
+float getPressure(int queryType)
 {
-	PGM_VOID_P	ptr;
-	decimal24_t	pressure = populate_decimal(0, 0);
+	float		pressure;
 	uint16_t	adcValue;
 	uint8_t		channel = ADC_CHANNEL1;
 
@@ -192,20 +191,17 @@ decimal24_t getPressure(int queryType)
 			break;
 	}
 
-	if (adcValue >= ADC_MBAR_OFFSET && adcValue < (ADC_MBAR_MAX + ADC_MBAR_OFFSET)) {
-		adcValue -= ADC_MBAR_OFFSET;
-
-		memcpy_P(&ptr, &mbarLookup[adcValue], sizeof(PGM_VOID_P));
-		memcpy_P(&pressure, ptr, sizeof(decimal24_t));
-	}
+	pressure = (((adcValue / 1023) + 0.095) / 0.009) * 10;
 
 	return pressure;
 }
 
-decimal24_t getTemperature(int queryType)
+/*
+** C = (((ADC / 1023) * 5) - 1.375) / 0.0225
+*/
+float getTemperature(int queryType)
 {
-	PGM_VOID_P	ptr;
-	decimal24_t	temperature = populate_decimal(0, 0);
+	float		temperature;
 	int16_t		adcValue;
 	uint8_t		channel = ADC_CHANNEL2;
 
@@ -226,13 +222,8 @@ decimal24_t getTemperature(int queryType)
 			adcValue = getADCAverage(channel);
 			break;
 	}
-
-	if (adcValue >= ADC_TEMP_OFFSET && adcValue < (ADC_TEMP_MAX + ADC_TEMP_OFFSET)) {
-		adcValue -= ADC_TEMP_OFFSET;
-
-		memcpy_P(&ptr, &tempLookup[adcValue], sizeof(PGM_VOID_P));
-		memcpy_P(&temperature, ptr, sizeof(decimal24_t));
-	}
 	
+	temperature = (((adcValue / 1023) * 5) - 1.375) / 0.0225;
+
 	return temperature;
 }

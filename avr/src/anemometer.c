@@ -31,7 +31,7 @@ void anemometerTask(PTASKPARM p)
 
 	rpsBuffer[i++] = revolutionsPerSecond;
 
-	if (i == 5) {
+	if (i == WIND_SPEED_AVG_COUNT) {
 		i = 0;
 	}
 
@@ -47,44 +47,30 @@ uint16_t getAvgRPS(void)
 	int			i;
 	uint16_t	avgRPS = 0;
 
-	for (i = 0;i < 5;i++) {
+	for (i = 0;i < WIND_SPEED_AVG_COUNT;i++) {
 		avgRPS += rpsBuffer[i];
 	}
 
-	avgRPS = avgRPS / 5;
+	avgRPS = avgRPS >> WIND_SPEED_AVG_SHIFT;
 
 	return avgRPS;
 }
 
-decimal24_t getAvgWindSpeed()
+float getAvgWindSpeed()
 {
-	PGM_VOID_P		ptr;
-	decimal24_t		avgSpeed;
+	float			avgSpeed;
 	uint16_t		avgRPS;
 	
-	avgRPS = getAvgRPS();
-	
-	if (avgRPS >= KPH_LOOKUP_BUFFER_SIZE) {
-		avgRPS = KPH_LOOKUP_BUFFER_SIZE - 1;
-	}
-	
-	memcpy_P(&ptr, &kphLookup[avgRPS], sizeof(PGM_VOID_P));
-	memcpy_P(&avgSpeed, ptr, sizeof(decimal24_t));
+	avgSpeed = getAvgRPS() * RPS_TO_KPH_SCALE_FACTOR;
 	
 	return avgSpeed;
 }
 
-decimal24_t getMaxWindSpeed()
+float getMaxWindSpeed()
 {
-	PGM_VOID_P		ptr;
-	decimal24_t		maxSpeed;
+	float			maxSpeed;
 
-	if (maxRPS >= KPH_LOOKUP_BUFFER_SIZE) {
-		maxRPS = KPH_LOOKUP_BUFFER_SIZE - 1;
-	}
-
-	memcpy_P(&ptr, &kphLookup[maxRPS], sizeof(PGM_VOID_P));
-	memcpy_P(&maxSpeed, ptr, sizeof(decimal24_t));
-
+	maxSpeed = maxRPS * RPS_TO_KPH_SCALE_FACTOR;
+	
 	return maxSpeed;
 }

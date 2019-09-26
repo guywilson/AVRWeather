@@ -20,6 +20,8 @@
 #define ADC_BAROMETER_CHANNEL			ADC_CHANNEL1
 #define ADC_THERMO_CHANNEL			    ADC_CHANNEL2
 
+#define getADCBitSize()					((uint8_t)ADC_BIT_SIZE)
+
 typedef struct
 {
 	uint8_t			channel;
@@ -34,8 +36,8 @@ void		ADCTask(PTASKPARM p);
 uint16_t	getADCAverage(uint8_t channel);
 uint16_t	getADCMax(uint8_t channel);
 uint16_t	getADCMin(uint8_t channel);
-decimal24_t getPressure(int queryType);
-decimal24_t getHumidity(int queryType);
-decimal24_t getTemperature(int queryType);
+float		getPressure(int queryType);
+float		getHumidity(int queryType);
+float		getTemperature(int queryType);
 
 #endif

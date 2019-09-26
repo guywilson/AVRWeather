@@ -7,14 +7,6 @@
 
 #define RAINFALL_LOOKUP_BUFFER_SIZE		255
 
-#define PI								3.14159265
-
-#define TIPPING_BUCKET_VOLUME			1750		// In mm^3 (1 cm^3 | 1 ml = 1000mm^3)
-#define COLLECTING_FUNNEL_RADIUS		50			// In mm
-
-#define TIPS_TO_MM_SCALE_FACTOR			(TIPPING_BUCKET_VOLUME / (PI * COLLECTING_FUNNEL_RADIUS * COLLECTING_FUNNEL_RADIUS))
-
-
 /******************************************************************************
 **
 ** Calculate the rainfall in mm for values of number of tips. This is an

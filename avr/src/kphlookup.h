@@ -7,13 +7,6 @@
 
 #define KPH_LOOKUP_BUFFER_SIZE			178
 
-/*
-** The diameter of the anemometer blades in metres...
-*/
-#define BLADE_DIAMETER					 0.1
-
-#define RPS_TO_KPH_SCALE_FACTOR			((3.14159265 * BLADE_DIAMETER * 3600) / 1000)
-
 /******************************************************************************
 **
 ** Calculate the wind speed in kph for values of revolutions per second (rps).

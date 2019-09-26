@@ -25,17 +25,15 @@ void rainGuageTask(PTASKPARM p)
 	rescheduleTask(TASK_RAINGUAGE, NULL);
 }
 
-decimal24_t getAvgRainfall()
+float getAvgRainfall()
 {
-	PGM_VOID_P	ptr;
-	decimal24_t	rainfall;
+	float	rainfall;
 
 	if (tips >= RAINFALL_LOOKUP_BUFFER_SIZE) {
 		tips = RAINFALL_LOOKUP_BUFFER_SIZE - 1;
 	}
-	
-	memcpy_P(&ptr, &rainfallLookup[tips], sizeof(PGM_VOID_P));
-	memcpy_P(&rainfall, ptr, sizeof(decimal24_t));
+
+	rainfall = tips * TIPS_TO_MM_SCALE_FACTOR;	
 	
 	totalTips += tips;
 
@@ -47,17 +45,11 @@ decimal24_t getAvgRainfall()
 	return rainfall;
 }
 
-decimal24_t getTotalRainfall()
+float getTotalRainfall()
 {
-	PGM_VOID_P	ptr;
-	decimal24_t rainfall;
+	float 	totalRainfall;
 
-	if (totalTips >= RAINFALL_LOOKUP_BUFFER_SIZE) {
-		totalTips = RAINFALL_LOOKUP_BUFFER_SIZE - 1;
-	}
-	
-	memcpy_P(&ptr, &rainfallLookup[totalTips], sizeof(PGM_VOID_P));
-	memcpy_P(&rainfall, ptr, sizeof(decimal24_t));
+	totalRainfall = totalTips * TIPS_TO_MM_SCALE_FACTOR;
 
-	return rainfall;
+	return totalRainfall;
 }
