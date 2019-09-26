@@ -159,7 +159,9 @@ decimal24_t getHumidity(int queryType)
 	if (adcValue >= ADC_HUMIDITY_OFFSET && adcValue < (ADC_HUMIDITY_MAX + ADC_HUMIDITY_OFFSET)) {
 		adcValue -= ADC_HUMIDITY_OFFSET;
 
-		memcpy_P(&humidity, &humidityLookup[adcValue], sizeof(decimal24_t));
+		humidity.integral = pgm_read_word(&humidityLookup[adcValue]);
+		humidity.mantissa = pgm_read_byte(&humidityLookup[adcValue]+2);
+//		memcpy_P(&humidity, &humidityLookup[adcValue], sizeof(decimal24_t));
 	}
 
 	return humidity;
