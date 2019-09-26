@@ -135,9 +135,8 @@ uint16_t getADCMin(uint8_t channel)
 /*
 ** RH = ((ADC / 1023) - 0.16) / 0.0062
 */
-float getHumidity(int queryType)
+uint16_t getHumidity(int queryType)
 {
-	float		humidity;
 	uint16_t	adcValue;
 	uint8_t		channel = ADC_CHANNEL0;
 
@@ -159,17 +158,14 @@ float getHumidity(int queryType)
 			break;
 	}
 
-	humidity = ((adcValue / 1023) - 0.16) / 0.0062;
-
-	return humidity;
+	return adcValue;
 }
 
 /*
 ** Pmbar = (((adc / 1023) + 0.095) / 0.009) * 10
 */
-float getPressure(int queryType)
+uint16_t getPressure(int queryType)
 {
-	float		pressure;
 	uint16_t	adcValue;
 	uint8_t		channel = ADC_CHANNEL1;
 
@@ -191,17 +187,14 @@ float getPressure(int queryType)
 			break;
 	}
 
-	pressure = (((adcValue / 1023) + 0.095) / 0.009) * 10;
-
-	return pressure;
+	return adcValue;
 }
 
 /*
 ** C = (((ADC / 1023) * 5) - 1.375) / 0.0225
 */
-float getTemperature(int queryType)
+uint16_t getTemperature(int queryType)
 {
-	float		temperature;
 	int16_t		adcValue;
 	uint8_t		channel = ADC_CHANNEL2;
 
@@ -223,7 +216,5 @@ float getTemperature(int queryType)
 			break;
 	}
 	
-	temperature = (((adcValue / 1023) * 5) - 1.375) / 0.0225;
-
-	return temperature;
+	return adcValue;
 }

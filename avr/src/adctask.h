@@ -36,8 +36,8 @@ void		ADCTask(PTASKPARM p);
 uint16_t	getADCAverage(uint8_t channel);
 uint16_t	getADCMax(uint8_t channel);
 uint16_t	getADCMin(uint8_t channel);
-float		getPressure(int queryType);
-float		getHumidity(int queryType);
-float		getTemperature(int queryType);
+uint16_t	getPressure(int queryType);
+uint16_t	getHumidity(int queryType);
+uint16_t	getTemperature(int queryType);
 
 #endif

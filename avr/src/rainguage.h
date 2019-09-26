@@ -15,7 +15,7 @@
 
 
 void 	    rainGuageTask(PTASKPARM p);
-float       getAvgRainfall();
-float       getTotalRainfall();
+uint16_t    getAvgRainfall();
+uint16_t    getTotalRainfall();
 
 #endif

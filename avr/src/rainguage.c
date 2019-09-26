@@ -25,16 +25,8 @@ void rainGuageTask(PTASKPARM p)
 	rescheduleTask(TASK_RAINGUAGE, NULL);
 }
 
-float getAvgRainfall()
+uint16_t getAvgRainfall()
 {
-	float	rainfall;
-
-	if (tips >= RAINFALL_LOOKUP_BUFFER_SIZE) {
-		tips = RAINFALL_LOOKUP_BUFFER_SIZE - 1;
-	}
-
-	rainfall = tips * TIPS_TO_MM_SCALE_FACTOR;	
-	
 	totalTips += tips;
 
 	/*
@@ -42,14 +34,10 @@ float getAvgRainfall()
 	*/
 	tips = 0;
 
-	return rainfall;
+	return tips;
 }
 
-float getTotalRainfall()
+uint16_t getTotalRainfall()
 {
-	float 	totalRainfall;
-
-	totalRainfall = totalTips * TIPS_TO_MM_SCALE_FACTOR;
-
-	return totalRainfall;
+	return totalTips;
 }

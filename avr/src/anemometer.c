@@ -56,21 +56,12 @@ uint16_t getAvgRPS(void)
 	return avgRPS;
 }
 
-float getAvgWindSpeed()
+uint16_t getAvgWindSpeed()
 {
-	float			avgSpeed;
-	uint16_t		avgRPS;
-	
-	avgSpeed = getAvgRPS() * RPS_TO_KPH_SCALE_FACTOR;
-	
-	return avgSpeed;
+	return getAvgRPS();
 }
 
-float getMaxWindSpeed()
+uint16_t getMaxWindSpeed()
 {
-	float			maxSpeed;
-
-	maxSpeed = maxRPS * RPS_TO_KPH_SCALE_FACTOR;
-	
-	return maxSpeed;
+	return maxRPS;
 }
