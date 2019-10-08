@@ -1,6 +1,7 @@
 avr/build/
 avr/dep/
 avr/avrw.s
+avr/avrw.hex
 .vscode/launch.json
 .vscode/c_cpp_properties.json
 .DS_Store
