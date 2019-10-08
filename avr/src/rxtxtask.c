@@ -102,6 +102,9 @@ void RxTask(PTASKPARM p)
 
 			case RX_CMD_GET_SCHED_VERSION:
 				strcpy(szBuffer, getSchedulerVersion());
+				strcat(szBuffer, " [");
+				strcat(szBuffer, getSchedulerBuildDate());
+				strcat(szBuffer, "]");
 				i = strlen(szBuffer);
 				
 				txACKStr(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), szBuffer, i);
