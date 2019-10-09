@@ -5,12 +5,12 @@
 
 #include <scheduler.h>
 #include "serial_atmega328p.h"
-#include "calibration.h"
 #include "taskdef.h"
 #include "adctask.h"
 #include "wdttask.h"
 #include "anemometer.h"
 #include "rainguage.h"
+#include "uptime.h"
 #include "rxtxtask.h"
 #include "version.h"
 
@@ -18,7 +18,6 @@ char				szBuffer[80];
 uint32_t			idleCount = 0;
 uint32_t			busyCount = 0;
 
-CALIBRATION_DATA	calibrationData;
 TPH					tph;
 WINDSPEED			ws;
 RAINFALL			rf;
@@ -28,6 +27,7 @@ void RxTask(PTASKPARM p)
 	PRXMSGSTRUCT	pMsgStruct;
 	int				i = 0;
 	float			cpuPct = 0.0;
+	uint32_t 		uptime;
 
 	pMsgStruct = (PRXMSGSTRUCT)p;
 
@@ -100,6 +100,11 @@ void RxTask(PTASKPARM p)
 				txACKStr(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), NULL, 0);
 				break;
 
+			case RX_CMD_GET_UPTIME:
+				uptime = getUptime();
+				txACK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), (uint8_t *)&uptime, sizeof(uptime));
+				break;
+
 			case RX_CMD_GET_SCHED_VERSION:
 				strcpy(szBuffer, getSchedulerVersion());
 				strcat(szBuffer, " [");
@@ -118,23 +123,6 @@ void RxTask(PTASKPARM p)
 				i = strlen(szBuffer);
 				
 				txACKStr(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), szBuffer, i);
-				break;
-
-			case RX_CMD_GET_CALIBRATION_DATA:
-				readCalibrationData(&calibrationData);
-				txACK(
-					pMsgStruct->frame.msgID, 
-					(pMsgStruct->frame.cmd << 4), 
-					(uint8_t *)&calibrationData, 
-					sizeof(CALIBRATION_DATA));
-				break;
-
-			case RX_CMD_SET_CALIBRATION_DATA:
-				memcpy(&calibrationData, pMsgStruct->frame.data, pMsgStruct->frame.cmdFrameLength - 2);
-
-				writeCalibrationData(&calibrationData);
-
-				txACKStr(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), NULL, 0);
 				break;
 
 			case RX_CMD_PING:

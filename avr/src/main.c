@@ -12,6 +12,7 @@
 #include "rainguage.h"
 #include "rxtxtask.h"
 #include "wdttask.h"
+#include "uptime.h"
 
 #include "led_utils.h"
 #include "rtc_atmega328p.h"
@@ -72,6 +73,7 @@ int main(void)
 	registerTask(TASK_ANEMOMETER, &anemometerTask);
 	registerTask(TASK_RAINGUAGE, &rainGuageTask);
 	registerTask(TASK_RXCMD, &RxTask);
+	registerTask(TASK_UPTIME, &uptimeTask);
 
 	scheduleTask(
 			TASK_WDT,
@@ -91,6 +93,11 @@ int main(void)
 	scheduleTask(
 			TASK_RAINGUAGE,
 			RTC_ONE_HOUR,
+			NULL);
+
+	scheduleTask(
+			TASK_UPTIME,
+			RTC_ONE_SECOND,
 			NULL);
 
     /*
