@@ -17,17 +17,18 @@
 char				szBuffer[80];
 uint32_t			idleCount = 0;
 uint32_t			busyCount = 0;
+uint32_t			messageCount = 0;
 
 TPH					tph;
 WINDSPEED			ws;
 RAINFALL			rf;
+DASHBOARD			db;
 
 void RxTask(PTASKPARM p)
 {
 	PRXMSGSTRUCT	pMsgStruct;
 	int				i = 0;
 	float			cpuPct = 0.0;
-	uint32_t 		uptime;
 
 	pMsgStruct = (PRXMSGSTRUCT)p;
 
@@ -100,29 +101,21 @@ void RxTask(PTASKPARM p)
 				txACKStr(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), NULL, 0);
 				break;
 
-			case RX_CMD_GET_UPTIME:
-				uptime = getUptime();
-				txACK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), (uint8_t *)&uptime, sizeof(uptime));
-				break;
-
-			case RX_CMD_GET_SCHED_VERSION:
-				strcpy(szBuffer, getSchedulerVersion());
-				strcat(szBuffer, " [");
-				strcat(szBuffer, getSchedulerBuildDate());
-				strcat(szBuffer, "]");
-				i = strlen(szBuffer);
+			case RX_CMD_GET_DASHBOARD:
+				strcpy(db.szAVRVersion, getVersion());
+				strcat(db.szAVRVersion, " [");
+				strcat(db.szAVRVersion, getBuildDate());
+				strcat(db.szAVRVersion, "]");
+				strcpy(db.szSchedVersion, getSchedulerVersion());
+				strcat(db.szSchedVersion, " [");
+				strcat(db.szSchedVersion, getSchedulerBuildDate());
+				strcat(db.szSchedVersion, "]");
 				
-				txACKStr(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), szBuffer, i);
-				break;
+				db.uptime = getUptime();
+				db.numMessagesProcessed = messageCount;
+				db.numTasksRun = getTaskRunCount();
 
-			case RX_CMD_GET_AVR_VERSION:
-				strcpy(szBuffer, getVersion());
-				strcat(szBuffer, " [");
-				strcat(szBuffer, getBuildDate());
-				strcat(szBuffer, "]");
-				i = strlen(szBuffer);
-				
-				txACKStr(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), szBuffer, i);
+				txACK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), (uint8_t *)&db, sizeof(DASHBOARD));
 				break;
 
 			case RX_CMD_PING:
@@ -133,5 +126,7 @@ void RxTask(PTASKPARM p)
 				txNAK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), MSG_NAK_UNKNOWN_CMD);
 				break;
 		}
+
+		messageCount++;
 	}
 }

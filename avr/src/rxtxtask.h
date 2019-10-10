@@ -22,6 +22,16 @@ typedef struct {
 }
 RAINFALL;
 
+typedef struct {
+    uint32_t        uptime;
+    uint32_t        numMessagesProcessed;
+    uint32_t        numTasksRun;
+
+    char            szAVRVersion[30];
+    char            szSchedVersion[30];
+}
+DASHBOARD;
+
 void RxTask(PTASKPARM p);
 void TxTask(PTASKPARM p);
 
