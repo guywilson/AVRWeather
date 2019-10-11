@@ -23,12 +23,11 @@ TPH					tph;
 WINDSPEED			ws;
 RAINFALL			rf;
 DASHBOARD			db;
+CPU_RATIO			cpu;
 
 void RxTask(PTASKPARM p)
 {
 	PRXMSGSTRUCT	pMsgStruct;
-	int				i = 0;
-	float			cpuPct = 0.0;
 
 	pMsgStruct = (PRXMSGSTRUCT)p;
 
@@ -67,19 +66,9 @@ void RxTask(PTASKPARM p)
 				break;
 
 			case RX_CMD_CPU_PERCENTAGE:
-				getCPURatio(&idleCount, &busyCount);
+				getCPURatio(&cpu);
 
-				if ((idleCount - busyCount) == 0) {
-					strcpy(szBuffer, "N/A");
-				}
-				else {
-					cpuPct = (busyCount * 100.0) / (idleCount - busyCount);
-					sprintf(szBuffer, "%.3f", cpuPct);
-				}
-
-				i = strlen(szBuffer);
-
-				txACKStr(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), szBuffer, i);
+				txACK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), (uint8_t *)(&cpu), sizeof(CPU_RATIO));
 				break;
 
 			case RX_CMD_WINDSPEED:
