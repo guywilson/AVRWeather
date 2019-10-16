@@ -11,6 +11,13 @@ typedef struct {
 TPH;
 
 typedef struct {
+    TPH         min;
+    TPH         max;
+    TPH         current;
+}
+TPH_PACKET;
+
+typedef struct {
     uint16_t           avgWindspeed;
     uint16_t           maxWindspeed;
 }

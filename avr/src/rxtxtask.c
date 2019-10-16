@@ -19,7 +19,7 @@ uint32_t			idleCount = 0;
 uint32_t			busyCount = 0;
 uint32_t			messageCount = 0;
 
-TPH					tph;
+TPH_PACKET			tph;
 WINDSPEED			ws;
 RAINFALL			rf;
 DASHBOARD			db;
@@ -36,28 +36,20 @@ void RxTask(PTASKPARM p)
 	}
 	else {
 		switch (pMsgStruct->frame.cmd) {
-			case RX_CMD_AVG_TPH:
-				tph.temperature = getTemperature(QUERY_TYPE_AVG);
-				tph.pressure = getPressure(QUERY_TYPE_AVG);
-				tph.humidity = getHumidity(QUERY_TYPE_AVG);
+			case RX_CMD_TPH:
+				tph.current.temperature = getTemperature(QUERY_TYPE_AVG);
+				tph.current.pressure = getPressure(QUERY_TYPE_AVG);
+				tph.current.humidity = getHumidity(QUERY_TYPE_AVG);
 
-				txACK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), (uint8_t *)(&tph), sizeof(TPH));
-				break;
+				tph.max.temperature = getTemperature(QUERY_TYPE_MAX);
+				tph.max.pressure = getPressure(QUERY_TYPE_MAX);
+				tph.max.humidity = getHumidity(QUERY_TYPE_MAX);
 
-			case RX_CMD_MAX_TPH:
-				tph.temperature = getTemperature(QUERY_TYPE_MAX);
-				tph.pressure = getPressure(QUERY_TYPE_MAX);
-				tph.humidity = getHumidity(QUERY_TYPE_MAX);
+				tph.min.temperature = getTemperature(QUERY_TYPE_MIN);
+				tph.min.pressure = getPressure(QUERY_TYPE_MIN);
+				tph.min.humidity = getHumidity(QUERY_TYPE_MIN);
 
-				txACK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), (uint8_t *)(&tph), sizeof(TPH));
-				break;
-
-			case RX_CMD_MIN_TPH:
-				tph.temperature = getTemperature(QUERY_TYPE_MIN);
-				tph.pressure = getPressure(QUERY_TYPE_MIN);
-				tph.humidity = getHumidity(QUERY_TYPE_MIN);
-
-				txACK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), (uint8_t *)(&tph), sizeof(TPH));
+				txACK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), (uint8_t *)(&tph), sizeof(TPH_PACKET));
 				break;
 
 			case RX_CMD_RESET_MINMAX:
