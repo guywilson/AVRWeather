@@ -14,6 +14,7 @@
 #define TIPS_TO_MM_SCALE_FACTOR			(TIPPING_BUCKET_VOLUME / (PI * COLLECTING_FUNNEL_RADIUS * COLLECTING_FUNNEL_RADIUS))
 
 
+void        resetTotalRainfall();
 void 	    rainGuageTask(PTASKPARM p);
 uint16_t    getAvgRainfall();
 uint16_t    getTotalRainfall();

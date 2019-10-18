@@ -23,7 +23,7 @@ uint16_t		adcResults[NUM_ADC_CHANNELS];
 uint16_t		adcMax[NUM_ADC_CHANNELS];
 uint16_t		adcMin[NUM_ADC_CHANNELS];
 
-void resetMinMax()
+void resetADCMinMax()
 {
 	int		channel;
 

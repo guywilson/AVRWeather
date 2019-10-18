@@ -11,6 +11,11 @@
 uint16_t		tips = 0;
 uint16_t		totalTips = 0;
 
+void resetTotalRainfall()
+{
+	totalTips = 0;
+}
+
 void rainGuageTask(PTASKPARM p)
 {
 	/*

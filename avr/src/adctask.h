@@ -31,7 +31,7 @@ ADCRESULT;
 
 typedef ADCRESULT *		PADCRESULT;
 
-void		resetMinMax();
+void		resetADCMinMax();
 void		ADCTask(PTASKPARM p);
 uint16_t	getADCAverage(uint8_t channel);
 uint16_t	getADCMax(uint8_t channel);

@@ -12,6 +12,11 @@
 uint16_t	rpsBuffer[WIND_SPEED_AVG_COUNT];
 uint16_t	maxRPS = 0;
 
+void resetMaxWindspeed()
+{
+	maxRPS = 0;
+}
+
 void anemometerTask(PTASKPARM p)
 {
 	static uint8_t		i = 0;

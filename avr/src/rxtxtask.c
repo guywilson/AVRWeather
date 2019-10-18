@@ -53,7 +53,9 @@ void RxTask(PTASKPARM p)
 				break;
 
 			case RX_CMD_RESET_MINMAX:
-				resetMinMax();
+				resetADCMinMax();
+				resetMaxWindspeed();
+				resetTotalRainfall();
 				txACKStr(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), NULL, 0);
 				break;
 

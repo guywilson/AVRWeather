@@ -15,6 +15,7 @@
 #define RPS_TO_KPH_SCALE_FACTOR			(11.30973355 * BLADE_DIAMETER)
 
 
+void        resetMaxWindspeed();
 void		anemometerTask(PTASKPARM p);
 uint16_t	getAvgRPS(void);
 uint16_t    getAvgWindSpeed();
