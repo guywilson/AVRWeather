@@ -49,7 +49,11 @@ void RxTask(PTASKPARM p)
 				tph.min.pressure = getPressure(QUERY_TYPE_MIN);
 				tph.min.humidity = getHumidity(QUERY_TYPE_MIN);
 
-				txACK(pMsgStruct->frame.msgID, (pMsgStruct->frame.cmd << 4), (uint8_t *)(&tph), sizeof(TPH_PACKET));
+				txACK(
+					pMsgStruct->frame.msgID, 
+					(pMsgStruct->frame.cmd << 4), 
+					(uint8_t *)(&tph), 
+					sizeof(TPH_PACKET));
 				break;
 
 			case RX_CMD_RESET_MINMAX:
