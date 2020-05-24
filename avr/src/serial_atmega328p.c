@@ -280,7 +280,7 @@ void handleRxComplete(uint8_t b)
 
 			state = RX_STATE_START;
 
-			scheduleTask(TASK_RXCMD, rtc_val_ms(1), pMsgStruct);
+			scheduleTaskOnce(TASK_RXCMD, rtc_val_ms(1), pMsgStruct);
 			break;
 	}
 }

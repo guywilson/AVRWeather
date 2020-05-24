@@ -41,8 +41,6 @@ void anemometerTask(PTASKPARM p)
 	if (revolutionsPerSecond > maxRPS) {
 		maxRPS = revolutionsPerSecond;
 	}
-
-	rescheduleTask(TASK_ANEMOMETER, NULL);
 }
 
 uint16_t getAvgRPS(void)

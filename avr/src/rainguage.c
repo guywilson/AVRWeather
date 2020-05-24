@@ -24,8 +24,6 @@ void rainGuageTask(PTASKPARM p)
 	** we can calculate the rainfall in mm/hour...
 	*/
 	tips = getExtIntPin1Count();
-	
-	rescheduleTask(TASK_RAINGUAGE, NULL);
 }
 
 uint16_t getAvgRainfall()

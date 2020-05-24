@@ -59,5 +59,5 @@ void handleADConversionComplete()
 	** This will fill the moving average buffer for each 
 	** channel every second...
 	*/
-	scheduleTask(TASK_ADC, rtc_val_ms(15), (PTASKPARM)&adcr);
+	scheduleTaskOnce(TASK_ADC, rtc_val_ms(15), (PTASKPARM)&adcr);
 }

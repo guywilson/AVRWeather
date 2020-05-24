@@ -19,6 +19,4 @@ void wdtTask(PTASKPARM p)
 	if (resetWDT) {
 		wdt_reset();
 	}
-
-	rescheduleTask(TASK_WDT, NULL);
 }
