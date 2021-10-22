@@ -5,3 +5,4 @@ avr/avrw.s
 .vscode/c_cpp_properties.json
 .DS_Store
 docs/~$Sensor_Lookup.xlsx
+avr/avrw.hex

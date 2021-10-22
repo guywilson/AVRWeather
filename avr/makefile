@@ -43,15 +43,16 @@ POSTCOMPILE = @ mv -f $(DEP)/$*.Td $(DEP)/$*.d
 
 CFLAGS = -c -O1 -Wall -ffunction-sections -fdata-sections -mmcu=$(DEVICE) -DF_CPU=16000000L -DARDUINO=10804 -D$(BOARD) -DARDUINO_ARCH_AVR -DARCH_SIZE=$(ARCHSIZE) -DBAUD=$(BAUD) -DBAUD_TOL=$(BAUD_TOL)
 DEPFLAGS = -MT $@ -MMD -MP -MF $(DEP)/$*.Td
-LFLAGS = -fuse-linker-plugin -Wl,--gc-sections -mmcu=$(DEVICE)
+INCLUDEFLAGS = -I$${HOME}/include
+LFLAGS = -fuse-linker-plugin -Wl,--gc-sections -mmcu=$(DEVICE) -L$${HOME}/lib
 OBJCOPYFLAGS = -O ihex -R .eeprom
-OBJDUMPFLAGS = -I $(SRC) -f -s -l -S
+OBJDUMPFLAGS = -I $(SOURCE) -f -s -l -S
 SFLAGS = -C --mcu=$(DEVICE)
 
 # Libraries
 STDLIBS = -lm -lsched
 
-COMPILE.c = $(CC) $(CFLAGS) $(DEPFLAGS) -o $@
+COMPILE.c = $(CC) $(CFLAGS) $(INCLUDEFLAGS) $(DEPFLAGS) -o $@
 LINK.o = $(LINKER) $(LFLAGS) -o $@
 
 CSRCFILES = $(wildcard $(SOURCE)/*.c)
